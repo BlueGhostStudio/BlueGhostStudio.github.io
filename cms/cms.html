@@ -3,8 +3,8 @@
         window.CMS = this;
         window.__body__ = compile($('body'));
         loadModules([
-            relPath + "../BGTmpls/BGTmpls.php",
-            relPath + "../BGTmpls/RPC.php"
+            relPath + "../BGTmpls/BGTmpls.html",
+            relPath + "../BGTmpls/RPC.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN"></pf-connections>'));
             rpc.onRemoteSignal = (obj, sig, args) => {
