@@ -1,0 +1,72 @@
+// out: false, main: main.less
+
+pf-text {
+    &.inline {
+        display: inline;
+    }
+    &:not(.inline) {
+        display: block;
+    }
+}
+
+pf-content,.content {
+    display: block;
+    &:first-child {
+        margin-top: 0;
+    }
+    > *:first-child {
+        margin-top: 0;
+    }
+    > *:last-child {
+        margin-bottom: 0;
+    }
+}
+
+article {
+    > header {
+        font-size: 220%;
+    }
+    > pf-content:extend(pf-content all) {
+        margin-top: 1em;
+        &:empty { display: none }
+        a::after {
+            display: inline-block;
+            content: "🔗";
+            font-size: 75%;
+            vertical-align: sub;
+        }
+    }
+}
+
+header { font-weight: bold }
+h1,h2,h3,h4,h5,h6 {
+    font-weight: bold;
+    &:not(:first-child) {
+        margin-top: 1.5em;
+        margin-bottom: 1ex;
+    }
+}
+h1 { font-size: 160%; }
+h2 { font-size: 130%; }
+h3 { font-size: 100%;  }
+h4 { font-size: 100%;  }
+h5 { font-size: 100%; font-style: italic; }
+h6 { font-size: 90%; }
+
+pre {
+    white-space: pre-wrap;
+}
+
+a {
+    text-decoration: none;
+    &,&:link,&:visited,&:active,&:hover {
+        color: inherit;
+    }
+    &[href]:active {
+        text-decoration-line: underline;
+        text-decoration-style: dashed;
+    }
+    &[href]:hover {
+        text-decoration-line: underline;
+    }
+}

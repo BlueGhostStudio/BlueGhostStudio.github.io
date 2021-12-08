@@ -1,0 +1,605 @@
+pf-text.inline {
+  display: inline;
+}
+pf-text:not(.inline) {
+  display: block;
+}
+pf-content,
+.content,
+article > pf-content,
+pf-card > pf-content,
+pf-card > .content,
+pf-card > article > pf-content {
+  display: block;
+}
+pf-content:first-child,
+.content:first-child,
+article > pf-content:first-child {
+  margin-top: 0;
+}
+pf-content > *:first-child,
+.content > *:first-child,
+article > pf-content > *:first-child {
+  margin-top: 0;
+}
+pf-content > *:last-child,
+.content > *:last-child,
+article > pf-content > *:last-child {
+  margin-bottom: 0;
+}
+article > header {
+  font-size: 220%;
+}
+article > pf-content {
+  margin-top: 1em;
+}
+article > pf-content:empty,
+article > article > pf-content:empty {
+  display: none;
+}
+article > pf-content a::after,
+article > article > pf-content a::after {
+  display: inline-block;
+  content: "🔗";
+  font-size: 75%;
+  vertical-align: sub;
+}
+header {
+  font-weight: bold;
+}
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: bold;
+}
+h1:not(:first-child),
+h2:not(:first-child),
+h3:not(:first-child),
+h4:not(:first-child),
+h5:not(:first-child),
+h6:not(:first-child) {
+  margin-top: 1.5em;
+  margin-bottom: 1ex;
+}
+h1 {
+  font-size: 160%;
+}
+h2 {
+  font-size: 130%;
+}
+h3 {
+  font-size: 100%;
+}
+h4 {
+  font-size: 100%;
+}
+h5 {
+  font-size: 100%;
+  font-style: italic;
+}
+h6 {
+  font-size: 90%;
+}
+pre {
+  white-space: pre-wrap;
+}
+a {
+  text-decoration: none;
+}
+a,
+a:link,
+a:visited,
+a:active,
+a:hover {
+  color: inherit;
+}
+a[href]:active {
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+}
+a[href]:hover {
+  text-decoration-line: underline;
+}
+.container-base,
+pf-container,
+pf-card,
+pf-viewport,
+pf-list,
+pf-list > pf-viewport > pf-list-item,
+pf-list > pf-viewport > * {
+  display: block;
+}
+/*.container-padding {
+    &.xx-narrow-padding { .padding(var(--xx-small-dist)) }
+    &.x-narrow-padding { .padding(var(--x-small-dist)) }
+    &.narrow-padding { .padding(var(--small-dist)) }
+    &.normal-padding { .padding(var(--normal-dist)) }
+    &.wide-padding { .padding(var(--large-dist)) }
+    &.x-wide-padding { .padding(var(--x-large-dist)) }
+    &.xx-wide-padding { .padding(var(--xx-large-dist)) }
+}
+.container-margin {
+    &.xx-small-margin { .margin(var(--xx-small-dist))}
+    &.x-small-margin { .margin(var(--x-small-dist)) }
+    &.small-margin { .margin(var(--small-dist)) }
+    &.normal-margin { .margin(var(--normal-dist)) }
+    &.large-margin { .margin(var(--large-dist)) }
+    &.x-large-margin { .margin(var(--x-large-dist)) }
+    &.xx-large-margin { .margin(var(--xx-large-dist)) }
+}*/
+.xx-narrow-padding {
+  padding: var(--xx-small-dist) calc(var(--xx-small-dist) * 1.5);
+}
+.xx-narrow-padding.h-p-zero,
+pf-list.sep > pf-viewport pf-list-item,
+pf-list.sep > pf-viewport > * {
+  padding: var(--xx-small-dist) 0;
+}
+.xx-narrow-padding.v-p-zero {
+  padding: 0 calc(var(--xx-small-dist) * 1.5);
+}
+.x-narrow-padding {
+  padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.5);
+}
+.x-narrow-padding.h-p-zero {
+  padding: var(--x-small-dist) 0;
+}
+.x-narrow-padding.v-p-zero {
+  padding: 0 calc(var(--x-small-dist) * 1.5);
+}
+.narrow-padding {
+  padding: var(--small-dist) calc(var(--small-dist) * 1.5);
+}
+.narrow-padding.h-p-zero {
+  padding: var(--small-dist) 0;
+}
+.narrow-padding.v-p-zero {
+  padding: 0 calc(var(--small-dist) * 1.5);
+}
+.normal-padding {
+  padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
+}
+.normal-padding.h-p-zero {
+  padding: var(--normal-dist) 0;
+}
+.normal-padding.v-p-zero {
+  padding: 0 calc(var(--normal-dist) * 1.5);
+}
+.wide-padding {
+  padding: var(--large-dist) calc(var(--large-dist) * 1.5);
+}
+.wide-padding.h-p-zero {
+  padding: var(--large-dist) 0;
+}
+.wide-padding.v-p-zero {
+  padding: 0 calc(var(--large-dist) * 1.5);
+}
+.x-wide-padding {
+  padding: var(--x-large-dist) calc(var(--x-large-dist) * 1.5);
+}
+.x-wide-padding.h-p-zero {
+  padding: var(--x-large-dist) 0;
+}
+.x-wide-padding.v-p-zero {
+  padding: 0 calc(var(--x-large-dist) * 1.5);
+}
+.xx-wide-padding {
+  padding: var(--xx-large-dist) calc(var(--xx-large-dist) * 1.5);
+}
+.xx-wide-padding.h-p-zero {
+  padding: var(--xx-large-dist) 0;
+}
+.xx-wide-padding.v-p-zero {
+  padding: 0 calc(var(--xx-large-dist) * 1.5);
+}
+.xx-small-margin {
+  margin: var(--xx-small-dist);
+}
+.xx-small-margin.h-m-zero {
+  margin: var(--xx-small-dist) 0;
+}
+.xx-small-margin.v-m-zero {
+  margin: 0 var(--xx-small-dist);
+}
+.x-small-margin {
+  margin: var(--x-small-dist);
+}
+.x-small-margin.h-m-zero {
+  margin: var(--x-small-dist) 0;
+}
+.x-small-margin.v-m-zero {
+  margin: 0 var(--x-small-dist);
+}
+.small-margin {
+  margin: var(--small-dist);
+}
+.small-margin.h-m-zero {
+  margin: var(--small-dist) 0;
+}
+.small-margin.v-m-zero {
+  margin: 0 var(--small-dist);
+}
+.normal-margin {
+  margin: var(--normal-dist);
+}
+.normal-margin.h-m-zero {
+  margin: var(--normal-dist) 0;
+}
+.normal-margin.v-m-zero {
+  margin: 0 var(--normal-dist);
+}
+.large-margin {
+  margin: var(--large-dist);
+}
+.large-margin.h-m-zero {
+  margin: var(--large-dist) 0;
+}
+.large-margin.v-m-zero {
+  margin: 0 var(--large-dist);
+}
+.x-large-margin {
+  margin: var(--x-large-dist);
+}
+.x-large-margin.h-m-zero {
+  margin: var(--x-large-dist) 0;
+}
+.x-large-margin.v-m-zero {
+  margin: 0 var(--x-large-dist);
+}
+.xx-large-margin {
+  margin: var(--xx-large-dist);
+}
+.xx-large-margin.h-m-zero {
+  margin: var(--xx-large-dist) 0;
+}
+.xx-large-margin.v-m-zero {
+  margin: 0 var(--xx-large-dist);
+}
+.container-color-scheme.base,
+.base {
+  background-color: var(--base);
+  color: var(--base-text);
+}
+.container-color-scheme.primary,
+.primary,
+pf-card:not(.clean).primary > header {
+  background-color: var(--primary);
+  color: var(--primary-text);
+}
+.container-color-scheme.accent,
+.accent,
+pf-card:not(.clean).accent > header {
+  background-color: var(--accent);
+  color: var(--accent-text);
+}
+.container-color-scheme.base-shade1,
+.base-shade1 {
+  background-color: var(--base-shade1);
+  color: var(--base-shade1-text);
+}
+.container-color-scheme.base-shade2,
+.base-shade2 {
+  background-color: var(--base-shade2);
+  color: var(--base-shade2-text);
+}
+.container-color-scheme.base-shade3,
+.base-shade3 {
+  background-color: var(--base-shade3);
+  color: var(--base-shade3-text);
+}
+.card-shadow,
+pf-card:not(.noshd) {
+  box-shadow: 0 0 1px 1px var(--shadow), 0 3px 7px -1px var(--shadow);
+}
+.card-shadow.large-shadow,
+pf-card:not(.noshd).large-shadow {
+  box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
+}
+pf-card {
+  background-color: var(--base);
+  color: var(--base-text);
+  padding: 0;
+}
+pf-card > header {
+  margin: 0;
+}
+pf-card.clean > header,
+pf-card.clean > pf-content,
+pf-card.clean > .content,
+pf-card.clean > article > pf-content {
+  padding: 0;
+}
+pf-card.clean > header {
+  font-size: 120%;
+}
+pf-card.clean.xx-narrow-padding > pf-content,
+pf-card.clean.xx-narrow-padding > .content,
+pf-card.clean.xx-narrow-padding > article > pf-content {
+  margin-top: 0;
+}
+pf-card.clean.x-narrow-padding > pf-content,
+pf-card.clean.x-narrow-padding > .content,
+pf-card.clean.x-narrow-padding > article > pf-content {
+  margin-top: var(--xx-small-dist);
+}
+pf-card.clean.narrow-padding > pf-content,
+pf-card.clean.narrow-padding > .content,
+pf-card.clean.narrow-padding > article > pf-content {
+  margin-top: var(--x-small-dist);
+}
+pf-card.clean.normal-padding > pf-content,
+pf-card.clean.normal-padding > .content,
+pf-card.clean.normal-padding > article > pf-content {
+  margin-top: var(--small-dist);
+}
+pf-card.clean.wide-padding > pf-content,
+pf-card.clean.wide-padding > .content,
+pf-card.clean.wide-padding > article > pf-content {
+  margin-top: var(--normal-dist);
+}
+pf-card.clean.x-wide-padding > pf-content,
+pf-card.clean.x-wide-padding > .content,
+pf-card.clean.x-wide-padding > article > pf-content {
+  margin-top: var(--normal-dist);
+}
+pf-card.clean.xx-wide-padding > pf-content,
+pf-card.clean.xx-wide-padding > .content,
+pf-card.clean.xx-wide-padding > article > pf-content {
+  margin-top: var(--normal-dist);
+}
+pf-card:not(.clean) {
+  padding: 0 !important;
+  background-color: var(--base);
+  color: var(--base-text);
+}
+pf-card:not(.clean) > header {
+  background-color: var(--base-shade1);
+  color: var(--base-shade1-text);
+}
+pf-card:not(.clean) > header {
+  font-size: 100% !important;
+}
+pf-card:not(.clean).xx-narrow-padding > header {
+  padding: var(--xx-small-dist) calc(var(--xx-small-dist) * 1.5);
+}
+pf-card:not(.clean).xx-narrow-padding > header.h-p-zero {
+  padding: var(--xx-small-dist) 0;
+}
+pf-card:not(.clean).xx-narrow-padding > header.v-p-zero {
+  padding: 0 calc(var(--xx-small-dist) * 1.5);
+}
+pf-card:not(.clean).xx-narrow-padding > pf-content,
+pf-card:not(.clean).xx-narrow-padding .content,
+pf-card:not(.clean).xx-narrow-padding > article > pf-content {
+  padding: var(--xx-small-dist) calc(var(--xx-small-dist) * 1.5);
+}
+pf-card:not(.clean).xx-narrow-padding > pf-content.h-p-zero,
+pf-card:not(.clean).xx-narrow-padding .content.h-p-zero,
+pf-card:not(.clean).xx-narrow-padding > article > pf-content.h-p-zero {
+  padding: var(--xx-small-dist) 0;
+}
+pf-card:not(.clean).xx-narrow-padding > pf-content.v-p-zero,
+pf-card:not(.clean).xx-narrow-padding .content.v-p-zero,
+pf-card:not(.clean).xx-narrow-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--xx-small-dist) * 1.5);
+}
+pf-card:not(.clean).x-narrow-padding > header {
+  padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.5);
+}
+pf-card:not(.clean).x-narrow-padding > header.h-p-zero {
+  padding: var(--x-small-dist) 0;
+}
+pf-card:not(.clean).x-narrow-padding > header.v-p-zero {
+  padding: 0 calc(var(--x-small-dist) * 1.5);
+}
+pf-card:not(.clean).x-narrow-padding > pf-content,
+pf-card:not(.clean).x-narrow-padding .content,
+pf-card:not(.clean).x-narrow-padding > article > pf-content {
+  padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.5);
+}
+pf-card:not(.clean).x-narrow-padding > pf-content.h-p-zero,
+pf-card:not(.clean).x-narrow-padding .content.h-p-zero,
+pf-card:not(.clean).x-narrow-padding > article > pf-content.h-p-zero {
+  padding: var(--x-small-dist) 0;
+}
+pf-card:not(.clean).x-narrow-padding > pf-content.v-p-zero,
+pf-card:not(.clean).x-narrow-padding .content.v-p-zero,
+pf-card:not(.clean).x-narrow-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--x-small-dist) * 1.5);
+}
+pf-card:not(.clean).narrow-padding > header {
+  padding: var(--small-dist) calc(var(--small-dist) * 1.5);
+}
+pf-card:not(.clean).narrow-padding > header.h-p-zero {
+  padding: var(--small-dist) 0;
+}
+pf-card:not(.clean).narrow-padding > header.v-p-zero {
+  padding: 0 calc(var(--small-dist) * 1.5);
+}
+pf-card:not(.clean).narrow-padding > pf-content,
+pf-card:not(.clean).narrow-padding .content,
+pf-card:not(.clean).narrow-padding > article > pf-content {
+  padding: var(--small-dist) calc(var(--small-dist) * 1.5);
+}
+pf-card:not(.clean).narrow-padding > pf-content.h-p-zero,
+pf-card:not(.clean).narrow-padding .content.h-p-zero,
+pf-card:not(.clean).narrow-padding > article > pf-content.h-p-zero {
+  padding: var(--small-dist) 0;
+}
+pf-card:not(.clean).narrow-padding > pf-content.v-p-zero,
+pf-card:not(.clean).narrow-padding .content.v-p-zero,
+pf-card:not(.clean).narrow-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--small-dist) * 1.5);
+}
+pf-card:not(.clean).normal-padding > header {
+  padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
+}
+pf-card:not(.clean).normal-padding > header.h-p-zero {
+  padding: var(--normal-dist) 0;
+}
+pf-card:not(.clean).normal-padding > header.v-p-zero {
+  padding: 0 calc(var(--normal-dist) * 1.5);
+}
+pf-card:not(.clean).normal-padding > pf-content,
+pf-card:not(.clean).normal-padding .content,
+pf-card:not(.clean).normal-padding > article > pf-content {
+  padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
+}
+pf-card:not(.clean).normal-padding > pf-content.h-p-zero,
+pf-card:not(.clean).normal-padding .content.h-p-zero,
+pf-card:not(.clean).normal-padding > article > pf-content.h-p-zero {
+  padding: var(--normal-dist) 0;
+}
+pf-card:not(.clean).normal-padding > pf-content.v-p-zero,
+pf-card:not(.clean).normal-padding .content.v-p-zero,
+pf-card:not(.clean).normal-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--normal-dist) * 1.5);
+}
+pf-card:not(.clean).wide-padding > header {
+  padding: var(--large-dist) calc(var(--large-dist) * 1.5);
+}
+pf-card:not(.clean).wide-padding > header.h-p-zero {
+  padding: var(--large-dist) 0;
+}
+pf-card:not(.clean).wide-padding > header.v-p-zero {
+  padding: 0 calc(var(--large-dist) * 1.5);
+}
+pf-card:not(.clean).wide-padding > pf-content,
+pf-card:not(.clean).wide-padding .content,
+pf-card:not(.clean).wide-padding > article > pf-content {
+  padding: var(--large-dist) calc(var(--large-dist) * 1.5);
+}
+pf-card:not(.clean).wide-padding > pf-content.h-p-zero,
+pf-card:not(.clean).wide-padding .content.h-p-zero,
+pf-card:not(.clean).wide-padding > article > pf-content.h-p-zero {
+  padding: var(--large-dist) 0;
+}
+pf-card:not(.clean).wide-padding > pf-content.v-p-zero,
+pf-card:not(.clean).wide-padding .content.v-p-zero,
+pf-card:not(.clean).wide-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--large-dist) * 1.5);
+}
+pf-card:not(.clean).x-wide-padding > header {
+  padding: var(--x-large-dist) calc(var(--x-large-dist) * 1.5);
+}
+pf-card:not(.clean).x-wide-padding > header.h-p-zero {
+  padding: var(--x-large-dist) 0;
+}
+pf-card:not(.clean).x-wide-padding > header.v-p-zero {
+  padding: 0 calc(var(--x-large-dist) * 1.5);
+}
+pf-card:not(.clean).x-wide-padding > pf-content,
+pf-card:not(.clean).x-wide-padding .content,
+pf-card:not(.clean).x-wide-padding > article > pf-content {
+  padding: var(--x-large-dist) calc(var(--x-large-dist) * 1.5);
+}
+pf-card:not(.clean).x-wide-padding > pf-content.h-p-zero,
+pf-card:not(.clean).x-wide-padding .content.h-p-zero,
+pf-card:not(.clean).x-wide-padding > article > pf-content.h-p-zero {
+  padding: var(--x-large-dist) 0;
+}
+pf-card:not(.clean).x-wide-padding > pf-content.v-p-zero,
+pf-card:not(.clean).x-wide-padding .content.v-p-zero,
+pf-card:not(.clean).x-wide-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--x-large-dist) * 1.5);
+}
+pf-card:not(.clean).xx-wide-padding > header {
+  padding: var(--xx-large-dist) calc(var(--xx-large-dist) * 1.5);
+}
+pf-card:not(.clean).xx-wide-padding > header.h-p-zero {
+  padding: var(--xx-large-dist) 0;
+}
+pf-card:not(.clean).xx-wide-padding > header.v-p-zero {
+  padding: 0 calc(var(--xx-large-dist) * 1.5);
+}
+pf-card:not(.clean).xx-wide-padding > pf-content,
+pf-card:not(.clean).xx-wide-padding .content,
+pf-card:not(.clean).xx-wide-padding > article > pf-content {
+  padding: var(--xx-large-dist) calc(var(--xx-large-dist) * 1.5);
+}
+pf-card:not(.clean).xx-wide-padding > pf-content.h-p-zero,
+pf-card:not(.clean).xx-wide-padding .content.h-p-zero,
+pf-card:not(.clean).xx-wide-padding > article > pf-content.h-p-zero {
+  padding: var(--xx-large-dist) 0;
+}
+pf-card:not(.clean).xx-wide-padding > pf-content.v-p-zero,
+pf-card:not(.clean).xx-wide-padding .content.v-p-zero,
+pf-card:not(.clean).xx-wide-padding > article > pf-content.v-p-zero {
+  padding: 0 calc(var(--xx-large-dist) * 1.5);
+}
+pf-page {
+  display: block;
+}
+pf-list.sep > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep > pf-viewport > *:not(:first-child) {
+  border-top: 1px solid var(--base-shade1);
+}
+pf-list.sep.solid > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.solid > pf-viewport > *:not(:first-child) {
+  border-top: 1px solid var(--base-shade1);
+}
+pf-list.sep.dashed > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.dashed > pf-viewport > *:not(:first-child) {
+  border-top: 1px dashed var(--base-shade1);
+}
+pf-list.sep.dotted > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.dotted > pf-viewport > *:not(:first-child) {
+  border-top: 1px dotted var(--base-shade1);
+}
+pf-list.sep.li-primary > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.li-primary > pf-viewport > *:not(:first-child) {
+  border-top: 1px solid var(--primary);
+}
+pf-list.sep.solid.li-primary > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.solid.li-primary > pf-viewport > *:not(:first-child) {
+  border-top: 1px solid var(--primary);
+}
+pf-list.sep.dashed.li-primary > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.dashed.li-primary > pf-viewport > *:not(:first-child) {
+  border-top: 1px dashed var(--primary);
+}
+pf-list.sep.dotted.li-primary > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.dotted.li-primary > pf-viewport > *:not(:first-child) {
+  border-top: 1px dotted var(--primary);
+}
+pf-list.sep.solid.li-accent > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.solid.li-accent > pf-viewport > *:not(:first-child) {
+  border-top: 1px solid var(--accent);
+}
+pf-list.sep.dashed.li-accent > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.dashed.li-accent > pf-viewport > *:not(:first-child) {
+  border-top: 1px dashed var(--accent);
+}
+pf-list.sep.dotted.li-accent > pf-viewport > pf-list-item:not(:first-child),
+pf-list.sep.dotted.li-accent > pf-viewport > *:not(:first-child) {
+  border-top: 1px dotted var(--accent);
+}
+:root {
+  --base: white;
+  --base-text: black;
+  --base-shade1: #999;
+  --base-shade1-text: white;
+  --base-shade2: #ccc;
+  --base-shade2-text: black;
+  --base-shade3: #eee;
+  --base-shade3-text: black;
+  --primary: #4499cc;
+  --primary-text: white;
+  --accent: #44cc99;
+  --accent-text: white;
+  --base-font-size: 12pt;
+  --xx-small-dist: 0.25ex;
+  --x-small-dist: 0.5ex;
+  --small-dist: 1ex;
+  --normal-dist: 1.5ex;
+  --large-dist: 1em;
+  --x-large-dist: 2em;
+  --xx-large-dist: 4em;
+}
+body {
+  background-color: var(--base);
+  color: var(--base-text);
+}

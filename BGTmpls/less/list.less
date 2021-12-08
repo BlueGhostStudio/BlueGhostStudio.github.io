@@ -1,0 +1,36 @@
+// out: false, main: main.less
+pf-list:extend(pf-container all) {
+    > pf-viewport {
+        > pf-list-item, > * {
+            &:extend(pf-container);
+        }
+    }
+
+    .sep_line(@c:~'', @l, @cl:var(--base-shade1)) {
+        &.sep@{c} > pf-viewport {
+            > pf-list-item, > * {
+                &:not(:first-child) {
+                    border-top: 1px @l @cl;
+                }
+            }
+        }
+    }
+    .sep_line(@l:solid);
+    &.sep > pf-viewport {
+        pf-list-item, > * {
+            &:extend(.xx-narrow-padding.h-p-zero);
+        }
+    }
+    .sep_line(e(".solid"), solid);
+    .sep_line(e(".dashed"), dashed);
+    .sep_line(e(".dotted"), dotted);
+
+    .sep_line(e(".li-primary"), solid, var(--primary));
+    .sep_line(e(".solid.li-primary"), solid, var(--primary));
+    .sep_line(e(".dashed.li-primary"), dashed, var(--primary));
+    .sep_line(e(".dotted.li-primary"), dotted, var(--primary));
+
+    .sep_line(e(".solid.li-accent"), solid, var(--accent));
+    .sep_line(e(".dashed.li-accent"), dashed, var(--accent));
+    .sep_line(e(".dotted.li-accent"), dotted, var(--accent));
+}

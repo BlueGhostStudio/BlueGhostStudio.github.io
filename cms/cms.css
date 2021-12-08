@@ -1,0 +1,12 @@
+cms-resource > header {
+  font-size: 220%;
+}
+cms-resource > pf-content {
+  margin-top: 1em;
+}
+cms-resource > pf-content:empty {
+  display: none;
+}
+cms-resource > pf-content a::after {
+  display: inline-block;content: "🔗";font-size: 75%;vertical-align: sub;
+}

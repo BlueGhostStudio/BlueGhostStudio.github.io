@@ -1,0 +1,165 @@
+// out: false, main: main.less
+
+.padding(@w) {
+    padding: @w e("calc(@{w} * 1.5)");
+    &.h-p-zero { padding: @w 0 }
+    &.v-p-zero { padding: 0 ~'calc(@{w} * 1.5)' }
+}
+.margin(@w) {
+    margin: @w;
+    &.h-m-zero { margin: @w 0 }
+    &.v-m-zero { margin: 0 @w }
+}
+
+.container-base {
+    display: block;
+}
+
+/*.container-padding {
+    &.xx-narrow-padding { .padding(var(--xx-small-dist)) }
+    &.x-narrow-padding { .padding(var(--x-small-dist)) }
+    &.narrow-padding { .padding(var(--small-dist)) }
+    &.normal-padding { .padding(var(--normal-dist)) }
+    &.wide-padding { .padding(var(--large-dist)) }
+    &.x-wide-padding { .padding(var(--x-large-dist)) }
+    &.xx-wide-padding { .padding(var(--xx-large-dist)) }
+}
+.container-margin {
+    &.xx-small-margin { .margin(var(--xx-small-dist))}
+    &.x-small-margin { .margin(var(--x-small-dist)) }
+    &.small-margin { .margin(var(--small-dist)) }
+    &.normal-margin { .margin(var(--normal-dist)) }
+    &.large-margin { .margin(var(--large-dist)) }
+    &.x-large-margin { .margin(var(--x-large-dist)) }
+    &.xx-large-margin { .margin(var(--xx-large-dist)) }
+}*/
+.xx-narrow-padding { .padding(var(--xx-small-dist)) }
+.x-narrow-padding { .padding(var(--x-small-dist)) }
+.narrow-padding { .padding(var(--small-dist)) }
+.normal-padding { .padding(var(--normal-dist)) }
+.wide-padding { .padding(var(--large-dist)) }
+.x-wide-padding { .padding(var(--x-large-dist)) }
+.xx-wide-padding { .padding(var(--xx-large-dist)) }
+
+.xx-small-margin { .margin(var(--xx-small-dist))}
+.x-small-margin { .margin(var(--x-small-dist)) }
+.small-margin { .margin(var(--small-dist)) }
+.normal-margin { .margin(var(--normal-dist)) }
+.large-margin { .margin(var(--large-dist)) }
+.x-large-margin { .margin(var(--x-large-dist)) }
+.xx-large-margin { .margin(var(--xx-large-dist)) }
+
+.container-color-scheme {
+    &.base {
+        background-color: var(--base);
+        color: var(--base-text);
+    }
+    &.primary {
+        background-color: var(--primary);
+        color: var(--primary-text);
+    }
+    &.accent {
+        background-color: var(--accent);
+        color: var(--accent-text);
+    }
+    &.base-shade1 {
+        background-color: var(--base-shade1);
+        color: var(--base-shade1-text);
+    }
+    &.base-shade2 {
+        background-color: var(--base-shade2);
+        color: var(--base-shade2-text);
+    }
+    &.base-shade3 {
+        background-color: var(--base-shade3);
+        color: var(--base-shade3-text);
+    }
+}
+
+.base { &:extend(.container-color-scheme.base); }
+.primary { &:extend(.container-color-scheme.primary); }
+.accent { &:extend(.container-color-scheme.accent); }
+.base-shade1 { &:extend(.container-color-scheme.base-shade1); }
+.base-shade2 { &:extend(.container-color-scheme.base-shade2); }
+.base-shade3 { &:extend(.container-color-scheme.base-shade3); }
+
+pf-container {
+    &:extend(.container-base);
+}
+
+pf-viewport {
+    &:extend(pf-container all);
+}
+
+.card-shadow {
+    box-shadow: 0 0 1px 1px var(--shadow), 0 3px 7px -1px var(--shadow);
+    &.large-shadow {
+        box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
+    }
+}
+
+pf-card {
+    background-color: var(--base);
+    color: var(--base-text);
+    padding: 0;
+    &:extend(.container-base);
+    &:extend(.container-margin all);
+
+    &:not(.noshd) {
+        &:extend(.card-shadow all);
+    }
+    
+    > header {
+        margin: 0;
+    }
+    > pf-content, > .content {
+        &:extend(pf-content);
+    }
+    &.clean {
+        > header, > pf-content, > .content { padding: 0 }
+        .clean-card-content-margin-top(@c, @d) {
+            &.@{c} {
+                > pf-content, > .content { margin-top: @d }
+            }
+        }
+        > header {
+            font-size: 120%;
+        }
+        .clean-card-content-margin-top(xx-narrow-padding, 0);
+        .clean-card-content-margin-top(x-narrow-padding, var(--xx-small-dist));
+        .clean-card-content-margin-top(narrow-padding, var(--x-small-dist));
+        .clean-card-content-margin-top(normal-padding, var(--small-dist));
+        .clean-card-content-margin-top(wide-padding, var(--normal-dist));
+        .clean-card-content-margin-top(x-wide-padding, var(--normal-dist));
+        .clean-card-content-margin-top(xx-wide-padding, var(--normal-dist));
+    }
+    &:not(.clean) {
+        padding: 0 !important;
+        background-color: var(--base);
+        color: var(--base-text);
+        > header {
+            background-color: var(--base-shade1);
+            color: var(--base-shade1-text);
+        }
+        &.primary > header {
+            &:extend(.container-color-scheme.primary);
+        }
+        &.accent > header {
+            &:extend(.container-color-scheme.accent);
+        }
+        > header { font-size: 100% !important }
+    }
+    .card-padding(@c, @d) {
+        &:not(.clean).@{c} {
+            > header { .padding(@d) }
+            > pf-content, .content { .padding(@d) }
+        }
+    }
+    .card-padding(xx-narrow-padding, var(--xx-small-dist));
+    .card-padding(x-narrow-padding, var(--x-small-dist));
+    .card-padding(narrow-padding, var(--small-dist));
+    .card-padding(normal-padding, var(--normal-dist));
+    .card-padding(wide-padding, var(--large-dist));
+    .card-padding(x-wide-padding, var(--x-large-dist));
+    .card-padding(xx-wide-padding, var(--xx-large-dist));
+}
