@@ -31,8 +31,8 @@
         this.call = this.__rpc__.call.bind(this.__rpc__);
         this.asyncCall = this.__rpc__.asyncCall.bind(this.__rpc__);
     </script>
-    <script data-fn="connect" data-args="host, port">
-        this.__rpc__.host = host;
+    <script data-fn="connect" data-args="url, port">
+        this.__rpc__.url = url;
         this.__rpc__.port = port;
         this.__rpc__.connectToHost();
     </script>
