@@ -15,127 +15,131 @@
             };
             nextLoad();
         });
-        $("head").append('<link type="text/css" rel="stylesheet" href="' + relPath + 'cms.css">');
+        $("head").append('<link type="text/css" rel="stylesheet" href="'
+            + relPath + 'cms.css">');
     </script>
 
-    <script data-fn="collections">
-        return rpc.asyncCall("CMS", "collections")
-            .then((ret) => {
-                if (Array.isArray(ret))
-                    return Promise.resolve(ret);
-                else if (ret !== undefined)
-                    return Promise.resolve([ret]);
-                else
-                    return Promise.resolve([]);
-            });
-    </script>
+    <pf-package>
+        <pf-body data-ft="defaultBodyTmpl" data-tagName="body">
+            <p>No site's framework</p>
+        </pf-body>
+    </pf-package>
 
-    <script data-fn="collection" data-args="cID">
-        return rpc.asyncCall("CMS", "collection", cID);
-    </script>
-
-    <script data-fn="categories" data-args="cID">
-        return rpc.asyncCall("CMS", "categories", cID, false)
-            .then((ret) => {
-                if (Array.isArray(ret))
-                    return Promise.resolve(ret);
-                else if (ret !== undefined)
-                    return Promise.resolve([ret]);
-                else
-                    return Promise.resolve([]);
-            });
-    </script>
-
-    <script data-fn="category" data-args="cateID">
-        return rpc.asyncCall("CMS", "category", cateID);
-    </script>
-
-    <script data-fn="resources" data-args="cID, cateID">
-        return rpc.asyncCall("CMS", "resources", cID, cateID, false)
-            .then((ret) => {
-                if (Array.isArray(ret))
-                    return Promise.resolve(ret);
-                else if (ret !== undefined)
-                    return Promise.resolve([ret]);
-                else
-                    return Promise.resolve([]);
-            });
-    </script>
-
-    <script data-fn="resource" data-args="rID">
-        return rpc.asyncCall("CMS", "resource", rID);
-    </script>
-
-    <script data-fn="resourceContent" data-args="rID">
-        return rpc.asyncCall("CMS", "resourceContent", rID)
+    <script data-fn="list" data-args="pNode">
+        return rpc.asyncCall("cms::main", "list", pNode, 0x03)
             .then((ret) => {
                 return Promise.resolve(ret);
             });
     </script>
 
-    <script data-fn="loadComponent" data-args="path">
-        return this.resourceContent(path)
+    <script data-fn="nodeInfo" data-args="node">
+        return rpc.asyncCall("cms::main", "nodeInfo", node)
             .then((ret) => {
-                var package = compile($(ret.content));
-                return package.load();
+                if (ret.ok)
+                    return Promise.resolve(ret.node);
+                else
+                    return Promise.reject(false);
             });
     </script>
 
-    <script data-fn="renderStyle" data-args="path">
-        console.log("in renderStyle", path);
-        return this.resourceContent(path)
+    <script data-fn="node" data-args="node">
+        return rpc.asyncCall("cms::main", "node", node)
             .then((ret) => {
-                return less.render(ret.content).then((output) => {
-                    return Promise.resolve({id: ret.id, css: output.css});
-                })
+                if (ret.ok)
+                    return Promise.resolve(ret.node);
+                else
+                    return Promise.reject(ret.error);
+            });
+    </script>
+
+    <script data-fn="nodePath" data-args="node">
+        return rpc.asyncCall("cms::main", "nodePath", node)
+            .then((ret) => {
+                if (ret.src.length > 0)
+                    return Promise.resolve(ret.str);
+                else
+                    return Promise.reject(false);
+            });
+    </script>
+
+    <script data-fn="loadComponent" data-args="node">
+        return this.node(node).then((ret) => {
+            var package = compile($(ret.content));
+            return package.load();
+        }, (ret) => {
+            return Promise.reject(ret);
+        });
+    </script>
+
+    <script data-fn="renderStyle" data-args="node">
+        return this.node(node).then((ret) => {
+            return less.render(ret.content).then((output) => {
+                return Promise.resolve({ id: ret.id, css: output.css });
+            });
+        }, (ret) => { return Promise.reject(ret); });
+    </script>
+
+    <script data-fn="traverse" data-args="node, target">
+        return rpc.asyncCall("cms::web", "traverse", node, target)
+            .then((ret) => {
+                if (ret.ok)
+                    return Promise.resolve(ret.node);
+                else
+                    return Promise.reject(ret.error);
             });
     </script>
 
     <script data-fn="addStyle" data-args="path, target">
-        console.log("in addStyle", path);
         return this.renderStyle(path)
             .then((ret) => {
-                console.log("------>", ret);
                 var style = '<style>' + ret.css + '</style>';
                 if (target !== undefined)
                     target.$.append(style);
                 else
-                    $('head').append(style);
+                    $('header').append(style);
 
                 return Promise.resolve(ret.id);
-            });
-        /*return this.resourceContent(path)
-            .then((ret) => {
-                return less.render(ret.content).then((output) => {
-                    var style = '<style>' + output.css + '</style>';
-                    if (target !== undefined)
-                        target.$.append(style);
-                    else
-                        $("head").append(style);
-
-                    return Promise.resolve(ret.id);
+                }, (ret) => {
+                    Promise.reject(ret);
                 });
-            });*/
     </script>
 
     <script data-fn="replaceBody" data-args="tmpl">
+        if ('removeSelf' in __body__)
+            __body__.removeSelf();
+
         __body__ = this.create(tmpl);
-        $('body').replaceWith(__body__.$);
+
+        $('html').append(__body__.$);
+    </script>
+
+    <script data-fn="loadSiteFramework" data-args="path">
+        return this.traverse(path, 'site/framework.fra')
+            .then((ret) => {
+                if (this.currentSiteFramework != ret.id) {
+                    this.currentSiteFramework = ret.id;
+                    return this.loadComponent(ret.id)
+                } else
+                    return Promise.resolve();
+            },(ret) => {
+                this.replaceBody('defaultBodyTmpl');
+            });
     </script>
 
     <script data-fn="connect" data-args="ip, port, path">
         rpc.connect(ip, port);
-        rpc.onConnected = () => {
-            console.log("connected");
-            rpc.asyncCall("CMS", "join")
-            .then((ret) => {
-                console.log("---joined---");
-                return this.loadComponent(path);
-            })
-            .then(() => {
-                console.log("CMS end");
-            });
-        }
+        return new Promise(resolve => {
+            rpc.onConnected = () => {
+                rpc.asyncCall("cms::main", "join")
+                    .then(() => {
+                        resolve();
+                    });
+            }
+        });
+    </script>
+
+    <script data-fn="constructor">
+        this.currentSiteFramework = null;
     </script>
 
 </pf-package>

@@ -12,12 +12,13 @@
     <script>
         $(document).ready(() => {
             loadModules([
-                "https://bgstudio.tk/cms/cms.html"
+                "cms/cms.html"
             ], false).onEnd(() => {
-                console.log("--ok--");
-                CMS.connect("wss://rpc.bgstudio.tk", 8000, "Site/cmps/siteFramework.cmp");
+                CMS.connect("wss://122.114.67.199", 8000).then(() => {
+                    CMS.loadSiteFramework(__queryString__('p', location) || '/');
+                });
             });
-        })
+        });
     </script>
   </head>
   <body></body>
