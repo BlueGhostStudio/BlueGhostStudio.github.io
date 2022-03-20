@@ -14,8 +14,12 @@
             loadModules([
                 "cms/cms.html"
             ], false).onEnd(() => {
-                CMS.connect("wss://122.114.67.199", 8000).then(() => {
-                    CMS.loadSiteFramework(__queryString__('p', location) || '/');
+                CMS.connect("wss://rpc.bgstudio.tk", 8000).then(() => {
+                    CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
+                        console.log('error:', ret);
+                    }).then(() => {
+                        CMS.open(__queryString__('p', location) || '/');
+                    });
                 });
             });
         });
