@@ -44,6 +44,9 @@
     </script>
 
     <script data-fn="node" data-args="node, pNode">
+        if (!isNaN(node))
+            node = Number(node);
+
         return (pNode !== undefined
             ? rpc.asyncCall("cms::main", "node", pNode, node)
             : rpc.asyncCall("cms::main", "node", node))
@@ -56,6 +59,9 @@
     </script>
 
     <script data-fn="nodePath" data-args="node">
+        if (!isNaN(node))
+            node = Number(node);
+
         return rpc.asyncCall("cms::main", "nodePath", node)
             .then((ret) => {
                 if (ret.src.length > 0)
@@ -83,12 +89,22 @@
     </script>
 
     <script data-fn="traverse" data-args="node, target">
+        if (!isNaN(node))
+            node = Number(node);
+
         return rpc.asyncCall("cms::web", "traverse", node, target)
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret);
                 else
                     return Promise.reject(ret.error);
+            });
+    </script>
+
+    <script data-fn="mediaUrl" data-args="media">
+        return rpc.asyncCall("cms::media", "mediaURL", media)
+            .then((ret) => {
+                return Promise.resolve(ret);
             });
     </script>
 
@@ -136,6 +152,7 @@
     </script>
 
     <script data-fn="open" data-args="path">
+        console.log("----open----", Object.prototype.toString.call(path));
         return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__)
                     __body__.openNode(ret);
