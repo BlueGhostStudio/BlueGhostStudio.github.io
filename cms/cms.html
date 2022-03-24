@@ -133,7 +133,7 @@
     </script>
 
     <script data-fn="loadSiteFramework" data-args="path">
-        if (path == undefined || path.length = 0)
+        if (path == undefined || path.length == 0)
             path = '/';
         return this.traverse(path, 'site/framework.fra')
             .then((ret) => {
