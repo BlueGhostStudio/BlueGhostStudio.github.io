@@ -133,6 +133,8 @@
     </script>
 
     <script data-fn="loadSiteFramework" data-args="path">
+        if (path == undefined)
+            path = '/';
         return this.traverse(path, 'site/framework.fra')
             .then((ret) => {
                 var tID = ret.target.id;
