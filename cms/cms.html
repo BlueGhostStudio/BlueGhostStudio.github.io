@@ -6,7 +6,7 @@
             relPath + "../BGTmpls/BGTmpls.html",
             relPath + "../BGTmpls/RPC.html"
         ], false).onEnd(() => {
-            compile($('<pf-connections id="CMSCONN"></pf-connections>'));
+            compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal = (obj, sig, args) => {
                 if (obj === "cms::main") {
                     CMSCONN.emit(sig, args);
@@ -152,7 +152,6 @@
     </script>
 
     <script data-fn="open" data-args="path">
-        console.log("----open----", Object.prototype.toString.call(path));
         return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__)
                     __body__.openNode(ret);

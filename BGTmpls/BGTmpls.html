@@ -71,7 +71,8 @@
             </script>
 
             <script data-fn="constructor">
-                window[this.__NAME__()] = this;
+                if (this.$.attr("data-global") !== undefined)
+                    window[this.__NAME__()] = this;
             </script>
         </pf-connections-tmpl>
     </pf-package>

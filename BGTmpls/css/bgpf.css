@@ -32,17 +32,16 @@ article > header {
 }
 article > pf-content {
   margin-top: 1em;
+  /*a::after {
+            display: inline-block;
+            content: "🔗";
+            font-size: 75%;
+            vertical-align: sub;
+        }*/
 }
 article > pf-content:empty,
 article > article > pf-content:empty {
   display: none;
-}
-article > pf-content a::after,
-article > article > pf-content a::after {
-  display: inline-block;
-  content: "🔗";
-  font-size: 75%;
-  vertical-align: sub;
 }
 header {
   font-weight: bold;
@@ -529,9 +528,6 @@ pf-card:not(.clean).xx-wide-padding > pf-content.v-p-zero,
 pf-card:not(.clean).xx-wide-padding .content.v-p-zero,
 pf-card:not(.clean).xx-wide-padding > article > pf-content.v-p-zero {
   padding: 0 calc(var(--xx-large-dist) * 1.5);
-}
-pf-page {
-  display: block;
 }
 pf-list.sep > pf-viewport > pf-list-item:not(:first-child),
 pf-list.sep > pf-viewport > *:not(:first-child) {
