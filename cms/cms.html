@@ -115,7 +115,7 @@
                 if (targetHtml !== undefined)
                     targetHtml.$.append(style);
                 else
-                    $('header').append(style);
+                    $('head').append(style);
 
                 return Promise.resolve(ret.id);
                 }, (ret) => {
