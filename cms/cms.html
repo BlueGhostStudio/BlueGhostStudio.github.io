@@ -24,8 +24,8 @@
         </pf-body>
     </pf-package>
 
-    <script data-fn="list" data-args="pNode">
-        return rpc.asyncCall("cms::main", "list", pNode, 0x03)
+    <script data-fn="list" data-args="pNode, query">
+        return rpc.asyncCall("cms::main", "list", pNode, 0x03, query)
             .then((ret) => {
                 return Promise.resolve(ret);
             });
