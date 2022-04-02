@@ -80,9 +80,9 @@
         });
     </script>
 
-    <script data-fn="renderStyle" data-args="node, pNode">
+    <script data-fn="renderStyle" data-args="node, pNode, option">
         return this.node(node, pNode).then((ret) => {
-            return less.render(ret.content).then((output) => {
+            return less.render(ret.content, option).then((output) => {
                 return Promise.resolve({ id: ret.id, css: output.css });
             });
         }, (ret) => { return Promise.reject(ret); });
