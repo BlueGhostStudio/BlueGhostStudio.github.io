@@ -154,6 +154,7 @@
     </script>
 
     <script data-fn="open" data-args="path">
+        CMSCONN.emit("openNode", []);
         return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__)
                     __body__.openNode(ret);
