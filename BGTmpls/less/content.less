@@ -11,7 +11,7 @@ pf-text {
 
 pf-content,.content {
     display: block;
-    &:first-child {
+    /*&:first-child {
         margin-top: 0;
     }
     > *:first-child {
@@ -19,16 +19,18 @@ pf-content,.content {
     }
     > *:last-child {
         margin-bottom: 0;
-    }
+    }*/
+    margin: 1em 0;
 }
 
 article {
     > header {
         font-size: 220%;
+        margin: 1em 0;
     }
     > pf-content:extend(pf-content all) {
-        margin-top: 1em;
-        &:empty { display: none }
+        //margin-top: 1em;
+        //&:empty { display: none }
         /*a::after {
             display: inline-block;
             content: "🔗";

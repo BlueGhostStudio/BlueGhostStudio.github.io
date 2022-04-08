@@ -11,37 +11,28 @@ pf-card > pf-content,
 pf-card > .content,
 pf-card > article > pf-content {
   display: block;
-}
-pf-content:first-child,
-.content:first-child,
-article > pf-content:first-child {
-  margin-top: 0;
-}
-pf-content > *:first-child,
-.content > *:first-child,
-article > pf-content > *:first-child {
-  margin-top: 0;
-}
-pf-content > *:last-child,
-.content > *:last-child,
-article > pf-content > *:last-child {
-  margin-bottom: 0;
+  /*&:first-child {
+        margin-top: 0;
+    }
+    > *:first-child {
+        margin-top: 0;
+    }
+    > *:last-child {
+        margin-bottom: 0;
+    }*/
+  margin: 1em 0;
 }
 article > header {
   font-size: 220%;
+  margin: 1em 0;
 }
 article > pf-content {
-  margin-top: 1em;
   /*a::after {
             display: inline-block;
             content: "🔗";
             font-size: 75%;
             vertical-align: sub;
         }*/
-}
-article > pf-content:empty,
-article > article > pf-content:empty {
-  display: none;
 }
 header {
   font-weight: bold;
