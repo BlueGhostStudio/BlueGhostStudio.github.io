@@ -101,6 +101,19 @@
             });
     </script>
 
+    <script data-fn="traverseCheck" data-args="node, target, stop">
+        if (!isNaN(node))
+            node = Number(node);
+
+        return rpc.asyncCall("cms::web", "traverseCheck", node, target, stop)
+            .then((ret) => {
+                if (ret.ok)
+                    return Promise.resolve(ret);
+                else
+                    return Promise.reject(ret.error);
+            });
+    </script>
+
     <script data-fn="mediaUrl" data-args="media">
         return rpc.asyncCall("cms::media", "mediaURL", media)
             .then((ret) => {
