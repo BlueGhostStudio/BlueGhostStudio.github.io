@@ -88,11 +88,11 @@
         }, (ret) => { return Promise.reject(ret); });
     </script>
 
-    <script data-fn="traverse" data-args="node, target">
+    <script data-fn="traverse" data-args="node, target, stop">
         if (!isNaN(node))
             node = Number(node);
 
-        return rpc.asyncCall("cms::web", "traverse", node, target)
+        return rpc.asyncCall("cms::web", "traverse", node, target, stop)
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret);
