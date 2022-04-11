@@ -65,7 +65,7 @@
         return rpc.asyncCall("cms::main", "nodePath", node)
             .then((ret) => {
                 if (ret.str.length > 0)
-                    return Promise.resolve(ret.str);
+                    return Promise.resolve(ret);
                 else
                     return Promise.reject(false);
             });
