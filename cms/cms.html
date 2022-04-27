@@ -7,11 +7,10 @@
             relPath + "../BGTmpls/RPC.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
-            rpc.onRemoteSignal = (obj, sig, args) => {
-                if (obj === "cms::main") {
+            rpc.onRemoteSignal((ev, obj, sig, args) => {
+                if (obj == "cms::main")
                     CMSCONN.emit(sig, args);
-                }
-            };
+            });
             nextLoad();
         });
         $("head").append('<link type="text/css" rel="stylesheet" href="'

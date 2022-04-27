@@ -24,13 +24,17 @@
         }).bind(this);
 
         this.__rpc__.onRemoteSignal = (function (obj, sig, args) {
-            if (this.onRemoteSignal)
-                this.onRemoteSignal(obj, sig, args);
+            this.$.trigger("remoteSignal", [obj, sig, args]);
         }).bind(this);
 
         this.call = this.__rpc__.call.bind(this.__rpc__);
         this.asyncCall = this.__rpc__.asyncCall.bind(this.__rpc__);
     </script>
+
+    <script data-fn="onRemoteSignal" data-args="cb">
+        this.$.on("remoteSignal", cb);
+    </script>
+
     <script data-fn="connect" data-args="url, port">
         this.__rpc__.url = url;
         this.__rpc__.port = port;
