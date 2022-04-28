@@ -12,12 +12,12 @@
         <pf-list-tmpl data-ft="BGTmpls::list" data-item-tmpl="BGTmpls::listItem" data-fns="listRoot" data-fra="pf-list" data-tagName="pf-list" data-overloaded-prefix="list">
             <pf-viewport id="viewport"></pf-viewport>
             <script data-fn="append" data-args="itemData">
-                this.putInto(itemData, true);
+                this.addItem(itemData, true);
             </script>
             <script data-fn="prepend" data-args="itemData">
-                this.putInto(itemData, false);
+                this.addItem(itemData, false);
             </script>
-            <script data-fn="putInto" data-args="itemData, append">
+            <script data-fn="addItem" data-args="itemData, append">
                 var li = this.create(this.$.attr("data-item-tmpl"));
                 li.load(itemData);
                 if (append)
