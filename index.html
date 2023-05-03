@@ -4,8 +4,8 @@
     <!-- Place your kit's code here -->
     <title>BlueGhost Studio</title>
     <script src="https://kit.fontawesome.com/210a49543e.js" crossorigin="anonymous"></script>
-    <script src="https://bgstudio.tk/BG.js/BGMRPC/BGMRPC.js"></script>
-    <script src="https://bgstudio.tk/BG.js/BGPF/page_framework.js"></script>
+    <script src="https://github.bgstudio.live/BG.js/BGMRPC/BGMRPC.js"></script>
+    <script src="https://github.bgstudio.live/BG.js/BGPF/page_framework.js"></script>
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery/3.6.0/jquery.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/less@4.1.2/dist/less.min.js"></script>
@@ -19,7 +19,7 @@
             loadModules([
                 "cms/cms.html"
             ], false).onEnd(() => {
-                CMS.connect("wss://rpc.bgstudio.tk", 8000).then(() => {
+                CMS.connect("wss://rpc.bgstudio.live", 8000).then(() => {
                     CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
                         console.log('error:', ret);
                     }).then(() => {
