@@ -1,0 +1,125 @@
+<pf-package>
+    <script data-fn="load" data-args="relPath, nextLoad">
+        nextLoad();
+    </script>
+
+    <!-- style -->
+    <cms-style-tmpl data-ft="cms::style"
+                    data-style
+                    data-fra="cms-style"
+                    data-tagName="style">
+        <script data-fn="load" data-args="path, basePath, requestUpdate">
+            if (basePath == undefined)
+                basePath = CMS.rootNode.id;
+
+            return CMS.renderStyle(path, basePath)
+                .then((ret) => {
+                    if (requestUpdate || this.id != ret.id) {
+                        this.id = ret.id;
+                        this.text(ret.css);
+                    }
+                }, (ret) => {
+                    if (basePath == CMS.rootNode.id)
+                        return Promise.reject(ret);
+                    else
+                        return this.load(path);
+                });
+        </script>
+
+        <script data-fn="backtracLoad" data-args="path, basePath">
+            return CMS.backtracNode(base, path).then((ret) => {
+                return this.load(ret.target.id);
+            })
+        </script>
+        
+        <script data-fn="constructor">
+            var sPath = this.$.attr("data-style");
+            if (sPath.length > 0)
+                this.load(sPath);
+
+            CMSCONN.on("contentUpdated", (args) => {
+                if (args[0] == this.id)
+                    this.load(this.id, undefined, true);
+            });
+        </script>
+    </cms-style-tmpl> <!-- style end -->
+
+    <header data-ft="cms::node::header"
+            data-overloaded-prefix="cms_node_header"
+            data-fra="cms-node-header"
+            data-tagName="header">
+        <pf-extend data-fr="cms::node::loadContent"></pf-extend>
+
+        <script data-fn="constructor">
+            this.initial(this, // headerElem
+                         undefined, // contentElem
+                         true, // info
+                         undefined, // dirRef
+                         false // summary
+                        );
+        </script>
+    </header>
+
+    <pf-content data-ft="cms::node::content"
+                data-overloaded-prefix="cms_node_content"
+                data-fra="cms-node-content"
+                data-tagName="pf-content">
+        <pf-extend data-fr="cms::node::loadContent"></pf-extend>
+
+        <script data-fn="constructor">
+            var summary = this.$.attr("data-summary") != undefined;
+            this.initial(undefined, // headerElem
+                         this, // contentElem
+                         summary != undefined, // info
+                         this.$.attr("data-dir-ref"), // dirRef
+                         summary // summary
+                        );
+        </script>
+    </pf-content>
+
+    <pf-content data-ft="cms::node::summary"
+                data-overloaded-prefix="cms_node_summary"
+                data-fra="cms-node-summary"
+                data-tagName="pf-content">
+        <pf-extend data-fr="cms::node::loadContent"></pf-content>
+
+        <script data-fn="constructor">
+            this.initial(undefined, // headerElem
+                         this, // contentElem
+                         true, // info
+                         this.$.attr("data-dir-ref"), // dirRef
+                         true // summary
+                        );
+        </script>
+    </pf-content>
+
+    <pf-article data-ft="cms::node"
+                data-overloaded-prefix="cms_node"
+                data-fra="cms-node">
+        <pf-extend data-fr="cms::node::loadContent"></pf-extend>
+
+        <script data-fn="constructor">
+            var summary = this.$.attr("data-summary") != undefined;
+
+            var noTitle = this.$.attr("data-notitle") != undefined;
+            if (this.noTitle)
+                this.header.removeSelf();
+
+            var noContent = this.$.attr("data-nocontent") != undefined;
+            if (this.noContent)
+                this.content.removeSelf();
+
+            this.initial(noTitle ? undefined : this.header, // headerElem
+                         noContent ? undefined : this.content, // contentElem
+                         summary, // info
+                         this.$.attr("data-dir-ref"), // dirRef
+                         summary // summary
+                        }
+
+            var __node__ = this.$.attr("data-node");
+            if (__node__ != undefined)
+                this.load(__node__);
+        </script>
+    </pf-article>
+
+</pf-package>

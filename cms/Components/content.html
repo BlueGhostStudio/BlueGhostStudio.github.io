@@ -1,0 +1,228 @@
+<pf-package>
+    <script data-fn="load" data-args="relPath, nextLoad">
+        window.contentGenerate = {
+            "txt": (content, elem) => {
+                return Promise.resolve().then(() => {
+                    elem.text(content)
+                    elem.$.trigger("contentGenerated");
+                });
+            }, "html": (content, elem) => {
+                return Promise.resolve().then(() => {
+                    elem.html(content)
+                    elem.$.trigger("contentGenerated");
+                });
+            }, "md": (content, elem) => {
+                return Promise.resolve().then(() => {
+                    elme.html(markd.parse(content))
+                    elem.$.trigger("contentGenerated");
+                });
+            }, "fra": (content, elem) => {
+                let package = compile($(content));
+                return package.load().then((cmpObj) => {
+                    elem.$.html(cmpObj.$.contents());
+                    elem.$.trigger("componentLoaded", [cmpObj]);
+
+                    return Promise.resolve(cmpObj);
+                });
+            }, "png": (content, elem, summary) => {
+                if (summary == undefined)
+                    summary = "";
+
+                return Promise.resolve().then(() => {
+                    if (/^link:/.test(content))
+                        return Promise.resolve(content.substring(5));
+                    else if (/^res:/.test(content))
+                        return CMS.mediaUrl(content, substring(4));
+                    else
+                        return Promise.reject();
+                }).then((href) => {
+                    elem.html('<img src="' + href + '" alt="' + summary + '">');
+                    elem.$.trigger("contentGenerated");
+                }, () => {
+                    elem.html('<img src="" alt="' + summary + '">');
+                });
+            }
+        }
+        contentGenerate["cmp"] =
+            = contentGenerate["pkg"]
+            = contentGenerate["fra"];
+        contentGenerate["jpg"] =
+            = contentGenerate["gif"]
+            = contentGenerate["png"];
+
+        nextLoad();
+    </script>
+
+    <!-- cms::node::loadContent -->
+    <pf-extend-tmpl data-ft="cms::node::loadContent"
+                    data-overloaded-prefix="cms_node_loadContent">
+        <script data-fn="initial" data-args="headerElem, contentElem, info, dirRef, summary">
+            this.refContentID = -1; /* refContentID是个什么,现在是个迷
+                              * refContentID应该是content的ID,当refContentID为-1时,表明这个content是未加载
+                              * 若为-2,则加载错误,例如没有这个content的Node
+                              * refContentID >= 0,则已加载
+                              * 此值作用除了表示加载状态之外,当组件内容更改时还依据此值
+                              * 判断是否需要重载 */
+            /* this.refContentID 与 this.node.id 的区别
+             * 在某些情况下,当前节点的内容是参照另一个节点来生成
+             * 例如当前节点为一个dir时,内容是由此节点的dirRef所指定的cmp来决定 */
+
+            this.headerElem = headerElem;
+            this.contentElem = contentElem;
+
+            this.info = info; // 指示此组件生成的是info
+            this.summary = summary; // 指示此组件内容只加载描述而非内容
+
+            this.dirRef = dirRef; /* dirRef的意义是,
+                                   * 当node为一个目录时,
+                                   * 依据此字段指定的文件
+                                   * 来生成内容 */
+        </script>
+
+        <script data-fn="onComponentLoaded" data-args="elem">
+            elem.$.off("componentLoaded");
+            elem.$.one("componentLoaded", (cmpObj) => {
+                cmpObj.node = this.node;
+                if (typeof cmpObj.load === "function")
+                    cmpObj.load();
+            });
+        </script>
+
+        <script data-fn="generate" data-args="elem, contentType, content, summary">
+            /*
+             * 不知是否有必要,回想起当初或许是为了延迟加载
+             * 若内容是一个组件(cmp, pkg, fra),生成时只装载框架,
+             * 当装载完后调用框架的load(若存在)加载实际内容
+             */
+            if (contentType in ["cmp", "pkg", "fra"])
+                this.onComponentLoaded(elem);
+
+            return contentGenerate[contentType](content, elem, summary);
+        </script>
+
+        <script data-fn="loadRefContent" data-args="path">
+            return CMS.node(path, this.node.id).then((node) => {
+                return node;
+            }, () => {
+                try {
+                    var ext = JSON.parse(this.node.extData);
+                } catch(e) {}
+
+                if (ext != undefined && "dirRef" in ext && path in ext.dirRef)
+                    return CMS.node(ext.dirRef[path]);
+                else
+                    return Promise.reject();
+            }).then((node) => {
+                this.refContentID = node.id;
+                this.generate(this.contentElem, node.contentType, node.content);
+            }, () => {
+                this.generate(this.contentElem, "md", node.content);
+                this.refContentID = -2;
+            });
+        </script>
+
+        <script data-fn="load" data-args="node, requestUpdate">
+            this.clear();
+
+            if (!requestUpdate)
+                this.refContentID = -1; // 到底这个refContentID是什么,现在是个迷
+
+            if (node instanceof Object) { // 如果参数'node'是node对象
+                this.node = node;
+
+                if (this.headerElem) // 若组件存在header元素,元素加载node的标题
+                    this.headerElem.text(this.node.title);
+
+                /* 依据this.info或否生成内容 */
+                if (this.info) { // 组件要求的是info,则内容元素(若有)加载node的描述
+                    return this.contentElem // 若存在内容元素,元素加载node的简述
+                        ? this.generate(this.contentElem, "md", this.node.summary)
+                        : Promise.resolve();
+                } else {
+                    // 设置组件node的类型(D,F,R)和内容类型(html,md,cmp,etc...)
+                    this.$.attr("data-type", node.type);
+                    this.$.attr("data-content", node.contentType);
+
+                    /* 如果存在contentElem */
+                    if (this.contentElem) {
+                        return Promise.resolve().then(() => {
+                            if (node.type == 'D') { //若node为'D'时
+                                if (this.dirRef == undefined) // 若没有指定 dirRef,则只加载摘要
+                                    return this.generate(this.contentElem, "md", this.node.summary)
+                                else {
+                                    if (this.refContentID == -1) // 若组件未加载
+                                        return this.loadRefContent(this.dirRef);
+                                    else if (this.refContentID == -2) // 若此dir node没有指定的内容
+                                        return this.generate(this.contentElem, "md",
+                                            this.node.summary);
+                                }
+                            } else if (this.node.type == 'F' || this.node.type == 'R') {
+                                // this.onComponentLoaded(this.contentElem()); // 忘了此行用意何在
+
+                                this.refContentID = -1;
+                                /*
+                                 * 如果组件不是摘要, 或者node类型为'R'且内容类型为图像
+                                 */
+                                if (!this.summary || (node.type == 'R'
+                                    && ['png', 'jpg', 'gif'].indexOf(this.node.contentType) >= 0)) {
+                                    /*
+                                     * 若this.node没有内容就从远端抓取,否则采用原有内容
+                                     */
+                                    (this.node.content == undefined
+                                        ? CMS.node(this.node.id)
+                                        : Promise.resolve(this.node)).then((node) => {
+                                            // 若this.node没有内容,更新为抓取的内容
+                                            if (this.node.content == undefined)
+                                                this.node.content = node.content;
+
+                                            // 生成内容
+                                            return this.generate(this.contentElem,
+                                                this.node.contentType, this.node.content,
+                                                this.node.summary);
+                                        });
+                                } else // 组件若为组件且不是图像,则生成摘要内容
+                                    return this.generate(this.contentElem, "md", this.node.summary);
+                            } else {
+                                this.refContentID = -1;
+                                this.contentElem.text("unknow type");
+                                return Promise.resolve();
+                            }
+                        }).then(() => {
+                            /*
+                             * 生成内容后,如果组件的headerElem以及contentElem都为空时
+                             * 设置组件的class为 "empty"
+                             */
+                            if ((this.headerElem == undefined
+                                    || this.headerElem.$.html().trim().length == 0)
+                                && (this.contentElem == undefined
+                                    || this.contentElem.$.html().trim().length == 0))
+                                this.$.addClass("empty");
+                        });
+                    }
+                }
+            } else { // 否则 'node' 是 id 或 path
+                (this.info ? CMS.nodeInfo(node, CMS.rootNode.id)
+                           : CMS.node(node, CMS.rootNode.id)).then((node) => {
+                    return this.load(node, requestUpdate);
+                }, (error) => {
+                    return Promise.reject(error);
+                });
+            }
+        </script>
+
+        <script data-fn="constructor">
+            this.refContentID = -1;
+            CMSCONN.on("contentUpdated", (args) => {
+                if (args[0] == this.refContentID)
+                    this.loadRefContent(this.refContentID);
+                else if (this.node && this.node.id  == args[0]) {
+                    if (this.info)
+                        this.load(args[1].node, true);
+                    else
+                        this.load(args[0], true);
+                }
+            });
+        </script>
+    </pf-extend-tmpl> <!-- cms::node::loadContent end -->
+
+</pf-package>

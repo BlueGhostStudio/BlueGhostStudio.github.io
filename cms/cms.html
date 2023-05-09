@@ -4,7 +4,10 @@
         window.__body__ = compile($('body'));
         loadModules([
             relPath + "../BGTmpls/BGTmpls.html",
-            relPath + "../BGTmpls/RPC.html"
+            relPath + "../BGTmpls/RPC.html",
+            relPath + "/components/content.html",
+            relPath + "/Components/node.html",
+            relPath + "/Components/list.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal((ev, obj, sig, args) => {
@@ -87,7 +90,7 @@
         }, (ret) => { return Promise.reject(ret); });
     </script>
 
-    <script data-fn="traverse" data-args="node, target, stop">
+    <!--<script data-fn="traverse" data-args="node, target, stop">
         if (!isNaN(node))
             node = Number(node);
 
@@ -107,6 +110,19 @@
         return rpc.asyncCall("cms::web", "traverseCheck", node, target, stop)
             .then((ret) => {
                 if (ret.ok)
+                    return Promise.resolve(ret);
+                else
+                    return Promise.reject(ret.error);
+            });
+    </script>-->
+
+    <script data-fn="backtrackNode" data-args="node, target, stop">
+        if (!isNaN(node))
+            node = Number(node);
+
+        return rpc.asyncCall("cms::web",  "backtrackNode", node, target, stop)
+            .then((ret) => {
+                if (ret.ok) {
                     return Promise.resolve(ret);
                 else
                     return Promise.reject(ret.error);
@@ -147,7 +163,7 @@
     <script data-fn="loadSiteFramework" data-args="path">
         if (path == undefined || path.length == 0)
             path = '/';
-        return this.traverse(path, 'site/framework.fra')
+        return this.backtrackNode(path, 'site/framework.fra')
             .then((ret) => {
                 var tID = ret.target.id;
                 if (this.currentSiteFramework != tID) {

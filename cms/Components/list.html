@@ -1,0 +1,186 @@
+<pf-package>
+    <script data-fn="load" data-args="relPath, nextLoad">
+        nextLoad();
+    </script>
+
+    <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
+        <script data-fn="constructor">
+            this.content.$.on("contentGenerated", () => {
+                this(!this.node)
+                return;
+
+                var listRoot = this.toNS("listRoot");
+                var gch = listRoot.gridCellHeight;
+
+                var round = listRoot.$.attr("data-grid-round") == undefined
+                    ? Math.floor : Math.round;
+
+                var updateSpanRow = () => {
+                    var e = this.$[0];
+                    var pt = Number($(e).css("padding-top").replace("px", ""));
+                    var pb = Number($(e).css("padding-bottom").replace("px", ""));
+                    var h = pt + pb + e.scrollHeight;
+                    this.$.css("--spanrow",
+                        round((h + listRoot.gridGap) / (gch + listRoot.gridGap))
+                    );
+                };
+                updateSpanRow();
+                this.$.find("*").on("load", () => {
+                    updateSpanRow();
+                });
+            });
+
+            /* 替换header原本的text()函数*/
+            this.header.text = (text) => {
+                if (text !== undefined) {
+                    var a = $('<a href="javascript:;">' + text + '</a>';
+                    this.header.$.html(a);
+                    a.click(() = > {
+                        this.toNS("listRoot").LISTCONN.emit("click", [this.node, this]);
+                    });
+                }
+
+                return this.header.$.text();
+            }
+
+            if (!this.noContent) {
+                this.content.html = (html) => {
+                    if (this.node.type == "R"
+                        && [
+                            "jpg", "png", "gif"
+                        ].indexOf(this.node.contentType) >= 0) {
+                        var a = $('<a href="javascript:;">' + html + '</a>');
+                        this.content.$.html(a);
+                        a.click(() => {
+                            this.toNS("listRoot").LISTCONN.emit("click",
+                                [this.node, this]);
+                        });
+                    } else
+                        this.content.$.html(html);
+                }
+            }
+
+            this.cms_node_constructor();
+
+            var listRoot = this.toNS("listRoot");
+            this.summary = true;
+            this.noContent = listRoot.onlyTitle;
+            this.noTitle = false;
+            this.dirRef = listRoot.dirRef;
+        </script>
+    </cms-node>
+
+    <pf-list data-ft="cms::list"
+             class="cms"
+             data-item-tmpl="cms::list::node"
+             data-overloaded-prefix="cms_list"
+             data-fra="cms-list">
+        <pf-connections id="LISTCONN" data-prepend></pf-connections>
+
+        <script data-fn="load" data-args="path, query, forceCalcGridCellHeight">
+            if (this.queryType != undefined) {
+                if (query == undefined)
+                    query = {}
+
+                query["type"] = this.queryType;
+            }
+
+            if (this.listNode == path) {
+                if (forceCalcGridCellHeight) {
+                    for (var x in this.items) {
+                        if (this.items[x].content)
+                            this.items[x].content.$.trigger("contentGenerated");
+                    }
+                }
+                return Promise.resolve();
+            } else {
+                this.listNode = -1;
+                return CMS.list(path, query).then((ret) => {
+                    this.listNode = ret.id;
+                    this.list_load(ret.list);
+                }, (ret) => { console.log("error", ret); });
+            }
+        </script>
+
+        <script data-fn="constructor">
+            this.listNode = -1;
+
+            var onlyFile = this.$.attr("data-onlyfile") != undefined;
+            var onlyDir = this.$.attr("data-onlydir") != undefined;
+            this.queryType = onlyFile != onlyDir
+                ? (onlyFile ? "F" : "D")
+                : undefined;
+
+            this.onlyTitle = this.$.attr("data-onlytitle") != undefined;
+            this.dirRef = this.$.attr("data-dir-ref");
+
+            this.gridGap = Number(this.$.attr("data-grid-gap") || 10);
+            this.$.css("--grid-gap", this.gridGap + 'px');
+            this.gridColumnGap = Number(this.$.attr("data-grid-column-gap") || this.gridGap);
+            this.$.css("--grid-column-gap", this.gridColumnGap + 'px');
+
+            this.gridCellWidth = Number(this.$.attr("data-grid-cellwidth") || 300);
+            this.$.css("--cell-width", this.gridCellWidth + 'px');
+
+            this.gridCellHeight = Number(this.$.attr("data-grid-cellheight") || 20);
+            this.$.css("--cell-height", this.gridCellHeight + 'px');
+
+            var node = this.$.attr("data-node");
+            if (node != undefined)
+                this.load(node);
+
+            var findIndex = (id) => {
+                return this.items.findIndex((item) => {
+                    if (item.node.id == id)
+                        return true;
+                    else
+                        return false;
+                });
+            }
+
+            CMSCONN.on("nodeCreated", (args) => {
+                var newNode = args[0].node;
+                if (newNode.pid == this.listNode
+                    && (this.queryType == newNode.type
+                        || this.queryType == newNode.type
+                        || (this.queryType == 'F' && newNode.type == 'R'))) {
+                    this.append(newNode);
+                }
+            });
+
+            CMSCONN.on("nodeRemoved", (args) => {
+                var rmID = args[0];
+                var rmIndex = findIndex(rmID);
+                if (rmIndex >= 0)
+                    this.removeItem(rmIndex);
+            });
+
+            CMSCONN.on("nodeMoved", (args) => {
+                var rmID = args[0].id;
+                var toNode = args[1];
+
+                var rmIndex = findIndex(rmID);
+                if (rmIndex >= 0)
+                    this.removeItem(rmIndex);
+
+                if (args[1] == this.listNode) {
+                    var moveNode = args[0].node;
+                    if (this.queryType == undefined
+                        || this.queryType == movedNode.type
+                        || (this.queryType == 'F' && movedNode.type == 'R'))
+                        this.append(movedNode);
+                }
+            });
+
+            CMSCONN.on("nodeCopied", (args) => {
+                var newNode = args[0].node;
+                if (newNode.pid == this.listNode
+                    && (this.queryType == undefined
+                        || this.queryType == newNode.type
+                        || (this.queryType == 'F' && newNode.type == 'R')))
+                    this.append(newNode);
+            });
+        </script>
+    </pf-list>
+</pf-package>
+
