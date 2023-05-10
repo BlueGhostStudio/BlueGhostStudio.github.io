@@ -5,9 +5,9 @@
         loadModules([
             relPath + "../BGTmpls/BGTmpls.html",
             relPath + "../BGTmpls/RPC.html",
-            relPath + "/components/content.html",
-            relPath + "/Components/node.html",
-            relPath + "/Components/list.html"
+            relPath + "Components/content.html",
+            relPath + "Components/node.html",
+            relPath + "Components/list.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal((ev, obj, sig, args) => {
@@ -122,7 +122,7 @@
 
         return rpc.asyncCall("cms::web",  "backtrackNode", node, target, stop)
             .then((ret) => {
-                if (ret.ok) {
+                if (ret.ok)
                     return Promise.resolve(ret);
                 else
                     return Promise.reject(ret.error);
@@ -163,8 +163,12 @@
     <script data-fn="loadSiteFramework" data-args="path">
         if (path == undefined || path.length == 0)
             path = '/';
+        
+        console.log("------->", path);
+
         return this.backtrackNode(path, 'site/framework.fra')
             .then((ret) => {
+                console.log("------>")
                 var tID = ret.target.id;
                 if (this.currentSiteFramework != tID) {
                     this.currentSiteFramework = tID;

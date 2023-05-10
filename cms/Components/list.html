@@ -33,9 +33,9 @@
             /* 替换header原本的text()函数*/
             this.header.text = (text) => {
                 if (text !== undefined) {
-                    var a = $('<a href="javascript:;">' + text + '</a>';
+                    var a = $('<a href="javascript:;">' + text + '</a>');
                     this.header.$.html(a);
-                    a.click(() = > {
+                    a.click(() => {
                         this.toNS("listRoot").LISTCONN.emit("click", [this.node, this]);
                     });
                 }

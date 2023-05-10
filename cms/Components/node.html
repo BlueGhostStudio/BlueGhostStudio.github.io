@@ -70,7 +70,7 @@
             var summary = this.$.attr("data-summary") != undefined;
             this.initial(undefined, // headerElem
                          this, // contentElem
-                         summary != undefined, // info
+                         summary, // info
                          this.$.attr("data-dir-ref"), // dirRef
                          summary // summary
                         );
@@ -81,7 +81,7 @@
                 data-overloaded-prefix="cms_node_summary"
                 data-fra="cms-node-summary"
                 data-tagName="pf-content">
-        <pf-extend data-fr="cms::node::loadContent"></pf-content>
+        <pf-extend data-fr="cms::node::loadContent"></pf-extend>
 
         <script data-fn="constructor">
             this.initial(undefined, // headerElem
@@ -114,7 +114,7 @@
                          summary, // info
                          this.$.attr("data-dir-ref"), // dirRef
                          summary // summary
-                        }
+                        );
 
             var __node__ = this.$.attr("data-node");
             if (__node__ != undefined)
