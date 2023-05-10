@@ -164,11 +164,8 @@
         if (path == undefined || path.length == 0)
             path = '/';
         
-        console.log("------->", path);
-
         return this.backtrackNode(path, 'site/framework.fra')
             .then((ret) => {
-                console.log("------>")
                 var tID = ret.target.id;
                 if (this.currentSiteFramework != tID) {
                     this.currentSiteFramework = tID;
