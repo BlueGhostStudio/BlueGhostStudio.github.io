@@ -8,12 +8,12 @@
                 });
             }, "html": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elem.html(content)
+                    elem.$.html(content)
                     elem.$.trigger("contentGenerated");
                 });
             }, "md": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elme.html(markd.parse(content))
+                    elem.$.html(marked.parse(content))
                     elem.$.trigger("contentGenerated");
                 });
             }, "fra": (content, elem) => {
@@ -32,14 +32,14 @@
                     if (/^link:/.test(content))
                         return Promise.resolve(content.substring(5));
                     else if (/^res:/.test(content))
-                        return CMS.mediaUrl(content, substring(4));
+                        return CMS.mediaUrl(content.substring(4));
                     else
                         return Promise.reject();
                 }).then((href) => {
-                    elem.html('<img src="' + href + '" alt="' + summary + '">');
+                    elem.$.html('<img src="' + href + '" alt="' + summary + '">');
                     elem.$.trigger("contentGenerated");
                 }, () => {
-                    elem.html('<img src="" alt="' + summary + '">');
+                    elem.$.html('<img src="" alt="' + summary + '">');
                 });
             }
         }
@@ -81,7 +81,7 @@
 
         <script data-fn="onComponentLoaded" data-args="elem">
             elem.$.off("componentLoaded");
-            elem.$.one("componentLoaded", (cmpObj) => {
+            elem.$.one("componentLoaded", (ev, cmpObj) => {
                 cmpObj.node = this.node;
                 if (typeof cmpObj.load === "function")
                     cmpObj.load();
@@ -94,7 +94,7 @@
              * 若内容是一个组件(cmp, pkg, fra),生成时只装载框架,
              * 当装载完后调用框架的load(若存在)加载实际内容
              */
-            if (contentType in ["cmp", "pkg", "fra"])
+            if (["cmp", "pkg", "fra"].includes(contentType))
                 this.onComponentLoaded(elem);
 
             return contentGenerate[contentType](content, elem, summary);
@@ -119,6 +119,14 @@
                 this.generate(this.contentElem, "md", node.content);
                 this.refContentID = -2;
             });
+        </script>
+
+        <script data-fn="clear">
+            if (this.headerElem)
+                this.headerElem.$.empty();
+            if (this.contentElem)
+                this.contentElem.$.empty();
+            this.node = undefined;
         </script>
 
         <script data-fn="load" data-args="node, requestUpdate">
@@ -156,7 +164,8 @@
                                         return this.generate(this.contentElem, "md",
                                             this.node.summary);
                                 }
-                            } else if (this.node.type == 'F' || this.node.type == 'R') {
+                            } else if (this.node.type == 'F' /* 若node为'F'或'R'时 */
+                                || this.node.type == 'R') {
                                 // this.onComponentLoaded(this.contentElem()); // 忘了此行用意何在
 
                                 this.refContentID = -1;
@@ -180,9 +189,13 @@
                                                 this.node.contentType, this.node.content,
                                                 this.node.summary);
                                         });
-                                } else // 组件若为组件且不是图像,则生成摘要内容
+                                }
+                                /* 
+                                 * 若为摘要且不是图像,生成摘要
+                                 */
+                                else
                                     return this.generate(this.contentElem, "md", this.node.summary);
-                            } else {
+                            } else { // 未知的类型
                                 this.refContentID = -1;
                                 this.contentElem.text("unknow type");
                                 return Promise.resolve();
@@ -212,7 +225,20 @@
 
         <script data-fn="constructor">
             this.refContentID = -1;
-            CMSCONN.on("contentUpdated", (args) => {
+            var contentUpdated = (args) => {
+                if (args[0] == this.refContentID)
+                    this.loadRefContent(this.refContentID);
+                else if (this.node && this.node.id == args[0]) {
+                    if (this.info)
+                        this.load(args[1].node, true);
+                    else
+                        this.load(args[0], true);
+                }
+            }
+            CMSCONN.on("contentUpdated", contentUpdated);
+            CMSCONN.on("summaryUpdated", contentUpdated);
+            CMSCONN.on("titleUpdated", contentUpdated);
+            /*CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.refContentID)
                     this.loadRefContent(this.refContentID);
                 else if (this.node && this.node.id  == args[0]) {
@@ -221,7 +247,7 @@
                     else
                         this.load(args[0], true);
                 }
-            });
+            });*/
         </script>
     </pf-extend-tmpl> <!-- cms::node::loadContent end -->
 

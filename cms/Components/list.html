@@ -6,8 +6,8 @@
     <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
         <script data-fn="constructor">
             this.content.$.on("contentGenerated", () => {
-                this(!this.node)
-                return;
+                if(!this.node)
+                    return;
 
                 var listRoot = this.toNS("listRoot");
                 var gch = listRoot.gridCellHeight;
