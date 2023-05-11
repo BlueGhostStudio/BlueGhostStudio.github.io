@@ -42,7 +42,7 @@
             return q ? q[2] : null;
         }
         window.__queryStringArray__ = function (url) {
-            url = url.replace(/^\?/, '');
+            url = url.replace(/^[^?]\?/, '');
             var arr = url.split('&');
             var v = {};
             for (var x in arr) {
