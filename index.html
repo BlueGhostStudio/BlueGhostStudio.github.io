@@ -23,7 +23,13 @@
                     CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
                         console.log('error:', ret);
                     }).then(() => {
-                        CMS.open(__queryString__('p', location) || '/');
+                        var qsa = __queryStringArray__(location.href);
+                        if (qsa.id)
+                            CMS.open(qsa.id);
+                        else if (qsa.p)
+                            CMS.open(qsa.p);
+                        else
+                            CMS.open('/');
                     });
                 });
             });

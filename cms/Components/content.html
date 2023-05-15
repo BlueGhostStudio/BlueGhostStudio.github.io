@@ -102,7 +102,7 @@
 
         <script data-fn="loadRefContent" data-args="path">
             return CMS.node(path, this.node.id).then((node) => {
-                return node;
+                return Promise.resolve(node);
             }, () => {
                 try {
                     var ext = JSON.parse(this.node.extData);
@@ -116,7 +116,8 @@
                 this.refContentID = node.id;
                 this.generate(this.contentElem, node.contentType, node.content);
             }, () => {
-                this.generate(this.contentElem, "md", node.content);
+                //this.generate(this.contentElem, "md", node.content);
+                this.generate(this.contentElem, "md", this.node.summary);
                 this.refContentID = -2;
             });
         </script>
