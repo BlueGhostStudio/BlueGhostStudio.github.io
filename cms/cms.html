@@ -2,6 +2,22 @@
     <script data-fn="load" data-args="relPath, nextLoad">
         window.CMS = this;
         window.__body__ = compile($('body'));
+
+        __PF_BASE_CLASS__.prototype.html = function (h) {
+            if (h !== undefined) {
+                this.$.html(h);
+                this.$.find("a").click((ev) => {
+                    var href = $(ev.target).attr("href");
+                    if (/^\?(p|id)=/.test(href)) {
+                        CMS.open(href.replace(/\?(p|id)=/, ''));
+                        return false;
+                    } else
+                        return true;
+                });
+            }
+            return this.$.html();
+        }
+
         loadModules([
             relPath + "../BGTmpls/BGTmpls.html",
             relPath + "../BGTmpls/RPC.html",
