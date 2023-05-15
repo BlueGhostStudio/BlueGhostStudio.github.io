@@ -51,8 +51,8 @@
 
     <script data-fn="nodeInfo" data-args="node, pNode">
         return (pNode !== undefined
-            ? rpc.asyncCall("cms::main", "nodeInfo", pNode, node)
-            : rpc.asyncCall("cms::main", "nodeInfo", node))
+            ? rpc.asyncCall("cms::main", "refNodeInfo", pNode, node)
+            : rpc.asyncCall("cms::main", "refNodeInfo", node))
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret.node);
@@ -66,8 +66,8 @@
             node = Number(node);
 
         return (pNode !== undefined
-            ? rpc.asyncCall("cms::main", "node", pNode, node)
-            : rpc.asyncCall("cms::main", "node", node))
+            ? rpc.asyncCall("cms::main", "refNode", pNode, node)
+            : rpc.asyncCall("cms::main", "refNode", node))
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret.node);
