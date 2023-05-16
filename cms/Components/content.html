@@ -178,7 +178,7 @@
                                     /*
                                      * 若this.node没有内容就从远端抓取,否则采用原有内容
                                      */
-                                    (this.node.content == undefined
+                                    return (this.node.content == undefined
                                         ? CMS.node(this.node.id)
                                         : Promise.resolve(this.node)).then((node) => {
                                             // 若this.node没有内容,更新为抓取的内容
