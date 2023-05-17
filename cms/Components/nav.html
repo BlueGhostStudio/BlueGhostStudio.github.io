@@ -1,0 +1,46 @@
+<pf-package>
+    <script data-fn="load">
+        nextLoad();
+    </script>
+
+    <a data-ft="cms::nav::item" href="javascript:;">
+        <script data-fn="load" data-args="item, node">
+            this.text(item.title);
+                if ("url" in item) {
+                    //this.$.attr("href", item.url);
+                    this.$.click(() => {
+                        CMS.open(item.url.replace(/\?(p|id)=/, ''));
+                    });
+                } else if ("path" in item) {
+                    CMS.backtrackNode(node, item.path)
+                        .then((ret) => {
+                            //this.$.attr("href", "?id=" + ret.target.id);
+                            this.$.click(() => CMS.open(ret.target.id) );
+                        }, () => this.$.hide() );
+                }
+        </script>
+    </a>
+
+    <span data-ft="cms::nav::sep"></span>
+
+    <nav data-ft="cms::nav" data-fra="cms-nav" data-tagName="nav">
+        <script data-fn="load" data-args="node">
+            return CMS.backtrackNode(node, "site/nav.json").then((ret) => {
+                    return CMS.node(ret.target.id);
+                }).then((ret) => {
+                    this.empty();
+                    var navData = JSON.parse(ret.content);
+                    for (let x in navData) {
+                        var itemData = navData[x];
+                        if (itemData.title == "sep"){
+                            this.create("cms::nav::sep").putInto(this);
+                        } else {
+                            var item = this.create("cms::nav::item");
+                            item.load(itemData, node);
+                            item.putInto(this);
+                        }
+                    }
+                });
+        </script>
+    </nav>
+</pf-package>
