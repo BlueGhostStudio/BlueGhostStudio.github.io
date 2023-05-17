@@ -212,10 +212,11 @@
                                     || this.contentElem.$.html().trim().length == 0))
                                 this.$.addClass("empty");
                         });
-                    }
+                    } else
+                        return Promise.resolve();
                 }
             } else { // 否则 'node' 是 id 或 path
-                (this.info ? CMS.nodeInfo(node, CMS.rootNode.id)
+                return (this.info ? CMS.nodeInfo(node, CMS.rootNode.id)
                            : CMS.node(node, CMS.rootNode.id)).then((node) => {
                     return this.load(node, requestUpdate);
                 }, (error) => {
