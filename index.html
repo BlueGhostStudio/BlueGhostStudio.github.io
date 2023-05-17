@@ -23,13 +23,19 @@
                     CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
                         console.log('error:', ret);
                     }).then(() => {
+                        return CMS.loadComponent('/site/config').then(null, (ret) => {
+                            console.log('no config');
+                        })
+                    }).then(() => {
                         var qsa = __queryStringArray__(location.href);
                         if (qsa.id)
                             CMS.open(qsa.id);
                         else if (qsa.p)
                             CMS.open(qsa.p);
-                        else
-                            CMS.open('/');
+                        else {
+                            console.log("home path", CMS.homePath);
+                            CMS.open(CMS.homePath);
+                        }
                     });
                 });
             });
