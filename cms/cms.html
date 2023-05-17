@@ -23,7 +23,8 @@
             relPath + "../BGTmpls/RPC.html",
             relPath + "Components/content.html",
             relPath + "Components/node.html",
-            relPath + "Components/list.html"
+            relPath + "Components/list.html",
+            relPath + "Components/nav.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal((ev, obj, sig, args) => {
@@ -105,32 +106,6 @@
             });
         }, (ret) => { return Promise.reject(ret); });
     </script>
-
-    <!--<script data-fn="traverse" data-args="node, target, stop">
-        if (!isNaN(node))
-            node = Number(node);
-
-        return rpc.asyncCall("cms::web", "traverse", node, target, stop)
-            .then((ret) => {
-                if (ret.ok)
-                    return Promise.resolve(ret);
-                else
-                    return Promise.reject(ret.error);
-            });
-    </script>
-
-    <script data-fn="traverseCheck" data-args="node, target, stop">
-        if (!isNaN(node))
-            node = Number(node);
-
-        return rpc.asyncCall("cms::web", "traverseCheck", node, target, stop)
-            .then((ret) => {
-                if (ret.ok)
-                    return Promise.resolve(ret);
-                else
-                    return Promise.reject(ret.error);
-            });
-    </script>-->
 
     <script data-fn="backtrackNode" data-args="node, target, stop">
         if (!isNaN(node))

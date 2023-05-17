@@ -42,5 +42,12 @@
                     }
                 });
         </script>
+
+        <script data-fn="constructor">
+            var path = this.$.attr("data-path");
+            if (path !== undefined) {
+                this.load(path);
+            }
+        </script>
     </nav>
 </pf-package>
