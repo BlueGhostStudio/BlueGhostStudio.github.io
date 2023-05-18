@@ -41,7 +41,7 @@
             var backtrack = this.$.attr("data-backtrack") != undefined;
             var sPath = this.$.attr("data-style");
             if (sPath.length > 0)
-                backtrack ? backtrackLoad(sPath) : this.load(sPath);
+                backtrack ? this.backtrackLoad(sPath) : this.load(sPath);
 
             CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.id)
