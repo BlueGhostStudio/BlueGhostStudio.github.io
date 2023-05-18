@@ -27,7 +27,7 @@
         </script>
 
         <script data-fn="backtrackLoad" data-args="path, basePath">
-            return CMS.backtrackNode(base, path).then((ret) => {
+            return CMS.backtrackNode(basePath, path).then((ret) => {
                 return this.load(ret.target.id);
             })
         </script>
