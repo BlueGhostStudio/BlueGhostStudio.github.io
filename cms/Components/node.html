@@ -12,7 +12,7 @@
             if (basePath == undefined)
                 basePath = CMS.rootNode.id;
 
-            return CMS.renderStyle(path, basePath)
+            return CMS.renderStyle(path, basePath, this.options)
                 .then((ret) => {
                     if (requestUpdate || this.id != ret.id) {
                         this.id = ret.id;
@@ -26,20 +26,26 @@
                 });
         </script>
 
-        <script data-fn="backtracLoad" data-args="path, basePath">
-            return CMS.backtracNode(base, path).then((ret) => {
+        <script data-fn="backtrackLoad" data-args="path, basePath">
+            return CMS.backtrackNode(base, path).then((ret) => {
                 return this.load(ret.target.id);
             })
         </script>
+
+        <script data-fn="setOption" data-args="opt">
+            this.options = opt;
+        </script>
         
         <script data-fn="constructor">
+            this.options = {};
+            var backtrack = this.$.attr("data-backtrack") != undefined;
             var sPath = this.$.attr("data-style");
             if (sPath.length > 0)
-                this.load(sPath);
+                backtrack ? backtrackLoad(sPath) : this.load(sPath);
 
             CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.id)
-                    this.load(this.id, undefined, true);
+                    this.load(this.id, this.options, true);
             });
         </script>
     </cms-style-tmpl> <!-- style end -->
