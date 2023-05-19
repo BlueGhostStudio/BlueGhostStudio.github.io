@@ -5,7 +5,7 @@
 
     <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
         <script data-fn="constructor">
-            this.content.$.on("contentGenerated", () => {
+            /*this.content.$.on("contentGenerated", () => {
                 if(!this.node)
                     return;
 
@@ -28,7 +28,23 @@
                 this.$.find("*").on("load", () => {
                     updateSpanRow();
                 });
+            });*/
+
+            var resizeObserver = new ResizeObserver((entries) => {
+                var round = listRoot.$.attr("data-grid-round") === undefined
+                    ? Math.floor : Math.round;
+                for (var entry of entries) {
+                    var cbs =
+                        Array.isArray(entry.borderBoxSize)
+                            ? entry.borderBoxSize[0]
+                            : entry.borderBoxSize;
+                    this.$.css("--spanrow",
+                        round((cbs.blockSize + listRoot.gridGap)
+                            / (listRoot.gridCellHeight + listRoot.gridGap))
+                    );
+                }
             });
+            resizeObserver.observe(this.$[0]);
 
             /* 替换header原本的text()函数*/
             this.header.text = (text) => {
