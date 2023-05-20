@@ -3,6 +3,14 @@
         window.CMS = this;
         window.__body__ = compile($('body'));
 
+        this.currentSiteFramework = null;
+        this.rootNode = {
+            pid: null,
+            id: null,
+            title: '/',
+            type: 'D'
+        }
+
         __PF_BASE_CLASS__.prototype.html = function (h) {
             if (h !== undefined) {
                 this.$.html(h);
@@ -197,9 +205,9 @@
         });
     </script>
 
-    <script data-fn="constructor">
+    <!-- <script data-fn="constructor">
         this.currentSiteFramework = null;
         this.rootNode = null;
-    </script>
+    </script> -->
 
 </pf-package>
