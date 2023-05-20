@@ -36,7 +36,7 @@
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal((ev, obj, sig, args) => {
-                if (obj == "cms::main")
+                if (obj == this.RPCOBJ("cms::main"))
                     CMSCONN.emit(sig, args);
             });
             nextLoad();
@@ -53,8 +53,12 @@
         </pf-body>
     </pf-package>
 
+    <script data-fn="RPCOBJ" data-args="obj">
+        return "bgstudio::" + obj;
+    </script>
+
     <script data-fn="list" data-args="pNode, query">
-        return rpc.asyncCall("cms::main", "list", pNode, 0x03, query)
+        return rpc.asyncCall(this.RPCOBJ("cms::main"), "list", pNode, 0x03, query)
             .then((ret) => {
                 return Promise.resolve(ret);
             });
@@ -62,8 +66,8 @@
 
     <script data-fn="nodeInfo" data-args="node, pNode">
         return (pNode !== undefined
-            ? rpc.asyncCall("cms::main", "refNodeInfo", pNode, node)
-            : rpc.asyncCall("cms::main", "refNodeInfo", node))
+            ? rpc.asyncCall(this.RPCOBJ("cms::main"), "refNodeInfo", pNode, node)
+            : rpc.asyncCall(this.RPCOBJ("cms::main"), "refNodeInfo", node))
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret.node);
@@ -77,8 +81,8 @@
             node = Number(node);
 
         return (pNode !== undefined
-            ? rpc.asyncCall("cms::main", "refNode", pNode, node)
-            : rpc.asyncCall("cms::main", "refNode", node))
+            ? rpc.asyncCall(this.RPCOBJ("cms::main"), "refNode", pNode, node)
+            : rpc.asyncCall(this.RPCOBJ("cms::main"), "refNode", node))
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret.node);
@@ -91,7 +95,7 @@
         if (!isNaN(node))
             node = Number(node);
 
-        return rpc.asyncCall("cms::main", "nodePath", node)
+        return rpc.asyncCall(this.RPCOBJ("cms::main"), "nodePath", node)
             .then((ret) => {
                 if (ret.str.length > 0)
                     return Promise.resolve(ret);
@@ -121,7 +125,7 @@
         if (!isNaN(node))
             node = Number(node);
 
-        return rpc.asyncCall("cms::web",  "backtrackNode", node, target, stop)
+        return rpc.asyncCall(this.RPCOBJ("cms::web"),  "backtrackNode", node, target, stop)
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret);
@@ -131,7 +135,7 @@
     </script>
 
     <script data-fn="mediaUrl" data-args="media">
-        return rpc.asyncCall("cms::media", "mediaURL", media)
+        return rpc.asyncCall(this.RPCOBJ("cms::media"), "mediaURL", media)
             .then((ret) => {
                 return Promise.resolve(ret);
             });
@@ -197,7 +201,7 @@
         rpc.connect(ip, port);
         return new Promise(resolve => {
             rpc.onConnected = () => {
-                rpc.asyncCall("cms::main", "join")
+                rpc.asyncCall(this.RPCOBJ("cms::main"), "join")
                     .then(() => {
                         resolve();
                     });
