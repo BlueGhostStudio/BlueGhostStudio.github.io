@@ -23,6 +23,12 @@
                     CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
                         console.log('error:', ret);
                     }).then(() => {
+                        var defaultStyle = compile($('<cms-style></cms-style>'));
+                        $('head').append(defaultStyle.$);
+                        return defaultStyle.load('/site/style/default').then(null, (ret) => {
+                            console.log('no default style');
+                        });
+                    }).then(() => {
                         return CMS.loadComponent('/site/config').then(null, (ret) => {
                             console.log('no config');
                         })
