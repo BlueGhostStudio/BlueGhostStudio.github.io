@@ -19,6 +19,10 @@
             loadModules([
                 "cms/cms.html"
             ], false).onEnd(() => {
+                var qsa = __queryStringArray__(location.href);
+                if (qsa.g)
+                    CMS.RPCGRP = qsa.g;
+
                 CMS.connect("wss://rpc.bgstudio.live", 8000).then(() => {
                     CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
                         console.log('error:', ret);
@@ -33,7 +37,7 @@
                             console.log('no config');
                         })
                     }).then(() => {
-                        var qsa = __queryStringArray__(location.href);
+                        // var qsa = __queryStringArray__(location.href);
                         if (qsa.id)
                             CMS.open(qsa.id);
                         else if (qsa.p)

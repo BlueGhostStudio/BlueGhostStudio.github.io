@@ -54,7 +54,7 @@
     </pf-package>
 
     <script data-fn="RPCOBJ" data-args="obj">
-        return "bgstudio::" + obj;
+        return (this.RPCGRP ? this.RPCGRP + "::" : "") + obj;
     </script>
 
     <script data-fn="list" data-args="pNode, query">
