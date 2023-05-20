@@ -205,6 +205,10 @@
                         || (this.queryType == 'F' && newNode.type == 'R')))
                     this.append(newNode);
             });
+
+            this.LISTCONN.on("click", (args) => {
+                CMS.open(args[0].id);
+            });
         </script>
     </pf-list>
 </pf-package>
