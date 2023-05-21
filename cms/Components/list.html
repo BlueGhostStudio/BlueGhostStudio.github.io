@@ -38,19 +38,19 @@
                 var round = listRoot.$.attr("data-grid-round") === undefined
                     ? Math.floor : Math.round;
                 for (var entry of entries) {
-                    var cbs =
+                    /*var cbs =
                         Array.isArray(entry.contentBoxSize)
                             ? entry.contentBoxSize[0]
                             : entry.contentBoxSize;
-                    /*this.$.css("--spanrow",
+                    this.$.css("--spanrow",
                         Math.floor((cbs.blockSize + listRoot.gridGap)
                             / (listRoot.gridCellHeight + listRoot.gridGap))
-                    );
+                    );*/
                     var e = this.$[0];
                     var pt = Number($(e).css("padding-top").replace("px", ""));
                     var pb = Number($(e).css("padding-bottom").replace("px", ""));
-                    var h = pt + pb + e.scrollHeight;*/
-                    this.$.css("--spanrow", round((cbs.blockSize + gg) / (gch + gg)));
+                    var h = pt + pb + e.scrollHeight;
+                    this.$.css("--spanrow", round((h + gg) / (gch + gg)));
                 }
             });
             resizeObserver.observe(this.$[0]);
