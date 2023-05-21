@@ -49,7 +49,9 @@
                     var e = this.$[0];
                     var pt = Number($(e).css("padding-top").replace("px", ""));
                     var pb = Number($(e).css("padding-bottom").replace("px", ""));
-                    var h = pt + pb + e.scrollHeight;
+                    var mt = Number($(e).css("margin-top").replace("px", ""));
+                    var mb = Number($(e).css("margin-bottom").replace("px", ""));
+                    var h = pt + pb + mt + mb + e.scrollHeight;
                     this.$.css("--spanrow", round((h + gg) / (gch + gg)));
                 }
             });
