@@ -17,31 +17,6 @@
         </script>
 
         <script data-fn="constructor">
-            /*this.content.$.on("contentGenerated", () => {
-                if(!this.node)
-                    return;
-
-                var listRoot = this.toNS("listRoot");
-                var gch = listRoot.gridCellHeight;
-
-                var round = listRoot.$.attr("data-grid-round") == undefined
-                    ? Math.floor : Math.round;
-
-                var updateSpanRow = () => {
-                    var e = this.$[0];
-                    var pt = Number($(e).css("padding-top").replace("px", ""));
-                    var pb = Number($(e).css("padding-bottom").replace("px", ""));
-                    var h = pt + pb + e.scrollHeight;
-                    this.$.css("--spanrow",
-                        round((h + listRoot.gridGap) / (gch + listRoot.gridGap))
-                    );
-                };
-                updateSpanRow();
-                this.$.find("*").on("load", () => {
-                    updateSpanRow();
-                });
-            });*/
-
             var resizeObserver = new ResizeObserver((entries) => {
                 var listRoot = this.toNS("listRoot");
                 var gch = listRoot.gridCellHeight;
@@ -225,5 +200,32 @@
             });
         </script>
     </pf-list>
+
+    <cms-index-node data-ft="cms::index::node" data-fr="cms::list::node">
+        <cms-style data-fn="indexNodeStyle" data-prepend></cms-style>
+
+        <script data-fn="load" data-args="item">
+            return this.cms_list_node_load(item).then(() => {
+                        this.$.attr("data-node-id", this.node.id);
+                        this.indexNodeStyle.setOptions({
+                            modifyVars: {
+                                '@indexNode': '~\'article[data-node-id="' + this.node.id + '"]\''
+                            }
+                        });
+                        this.indexNodeStyle.backtrackLoad("site/style/indexListItem",
+                                                          this.node.id);
+                    }, (ret) => { this.$.attr("data-node-id", -2); });
+        </script>
+
+        <script data-fn="constructor">
+            this.cms_list_node_constructor();
+        </script>
+    </cms-index-node>
+
+    <cms-list class="index" data-ft="cms::index"
+                            data-dir-ref="desc"
+                            data-fra="cms-index"
+                            data-item-tmpl="cms::index::node"></cms-index>
+
 </pf-package>
 

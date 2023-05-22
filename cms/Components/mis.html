@@ -1,0 +1,39 @@
+<pf-package>
+    <script data-fn="load" data-args="relPath, nextLoad">
+        nextLoad();
+    </script>
+
+    <cms-img-tmpl data-ft="cms::img" data-fra="cms-img" data-tagName="img">
+        <script data-fn="constructor">
+            return CMS.node(this.$.attr("src"))
+                        .then((ret) => {
+                            if (ret.type === 'R'
+                                && ['png', 'jpg', 'gif'].includes(ret.contentType)) {
+                                var content = ret.content;
+                                if (/^link:/.test(content))
+                                    this.$.attr("src", content.substring(5));
+                                else
+                                    return CMS.mediaUrl(content.substring(4))
+                                        .then((ret) => {
+                                            this.$.attr("src", ret);
+                                        }, (ret) => {
+                                            console.log("error", ret);
+                                            return Promise.reject();
+                                        });
+                            }
+                        }, (ret) => {
+                            console.log("error", ret);
+                            return Promise.reject();
+                        });
+        </script>
+    </cms-img-tmpl>
+
+    <pf-text data-ft="cms::siteTitle"
+             data-fra="cms-site-title"
+             data-tagName="pf-text">
+        <script data-fn="constructor">
+            this.text(CMS.siteTitle);
+        </script>
+    </pf-text>
+</pf-package>
+

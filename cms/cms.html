@@ -32,7 +32,8 @@
             relPath + "Components/content.html",
             relPath + "Components/node.html",
             relPath + "Components/list.html",
-            relPath + "Components/nav.html"
+            relPath + "Components/nav.html",
+            relPath + "Components/mis.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal((ev, obj, sig, args) => {
