@@ -188,6 +188,9 @@
     </script>
 
     <script data-fn="open" data-args="path">
+        if (path == '/'|| path == null || (path instanceof Object && path.id == null))
+            path = CMS.homePath;
+
         CMSCONN.emit("openNode", []);
         return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__)
