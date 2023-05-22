@@ -4,6 +4,18 @@
     </script>
 
     <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
+        <script data-fn="load" data-args="node">
+            return this.cms_node_load(node).then(() => {
+                if (["jpg", "gif", "png"].includes(this.node.contentType)) {
+                    var a = $('<a href="javascript:;"></a>');
+                    a.click(() => {
+                        CMS.open(this.node.id);
+                    });
+                    this.contentElem.$.wrapInner(a);
+                }
+            });
+        </script>
+
         <script data-fn="constructor">
             /*this.content.$.on("contentGenerated", () => {
                 if(!this.node)
