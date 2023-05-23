@@ -206,15 +206,15 @@
 
         <script data-fn="load" data-args="item">
             return this.cms_list_node_load(item).then(() => {
-                        this.$.attr("data-node-id", this.node.id);
-                        this.indexNodeStyle.setOptions({
-                            modifyVars: {
-                                '@indexNode': '~\'article[data-node-id="' + this.node.id + '"]\''
-                            }
-                        });
-                        this.indexNodeStyle.backtrackLoad("site/style/indexListItem",
-                                                          this.node.id);
-                    }, (ret) => { this.$.attr("data-node-id", -2); });
+                this.$.attr("data-node-id", this.node.id);
+                this.indexNodeStyle.setOptions({
+                    modifyVars: {
+                        '@indexNode': '~\'article[data-node-id="' + this.node.id + '"]\''
+                    }
+                });
+                this.indexNodeStyle.load("site/style/indexListItem",
+                                                  this.node.id);
+            }, (ret) => { this.$.attr("data-node-id", -2); });
         </script>
 
         <script data-fn="constructor">

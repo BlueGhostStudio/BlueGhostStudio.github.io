@@ -1,0 +1,41 @@
+<pf-package>
+    <script data-fn="load" data-args="relPath, nextLoad">
+        nextLoad();
+    </script>
+
+    <pf-framework data-ft="cms::defautlHome::framework">
+        <script data-fn="load"></script>
+            return Promise.resolve().then(() => {
+                CMS.replaceBody('cms::defautlHome::body');
+            });
+        </script>
+
+        <pf-body data-ft="cms::defaultHome::body">
+            <cms-style data-fn="pageStyle"></cms-style>
+
+            <pf-page data-fri="true">
+                <header>
+                    <cms-img id="logo" src="/site/imgs/logo"></cms-img>
+                    <cms-site-title id="siteTitle"></cms-site-title>
+                </header>
+                <main data-fri="true">
+                    <cms-index data-node="/"
+                               class="home index"
+                               data-grid-gap="0"
+                               data-grid-cellheight="10"></cms-index>
+                </main>
+            </pf-page>
+
+            <script data-fn="openNode" data-args="path">
+                if (path === CMS.homePath || path === '/'
+                    || (path instanceof Object
+                        && path.id == null)) {
+                    this.pageStyle.load(CMS.homePath + '/site/style/page');
+                }
+            </script>
+
+            <footer></footer>
+        </pf-body>
+    </pf-framework>
+</pf-package>
+
