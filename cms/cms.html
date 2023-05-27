@@ -131,7 +131,7 @@
                 if (ret.ok)
                     return Promise.resolve(ret);
                 else
-                    return Promise.reject(ret.error);
+                    return Promise.reject(ret);
             });
     </script>
 
@@ -183,8 +183,11 @@
                 } else
                     return Promise.resolve(path);
             },(ret) => {
-                this.replaceBody('defaultBodyTmpl');
-                return Promise.resolve(path);
+                if (ret.errno == 0) {
+                    this.replaceBody('defaultBodyTmpl');
+                    return Promise.resolve(path);
+                } else
+                    return Promise.reject(ret.error);
             });
     </script>
 
