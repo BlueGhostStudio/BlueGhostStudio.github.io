@@ -75,6 +75,7 @@
             </script>
 
             <script data-fn="constructor">
+                this.items = [];
                 if (this.$.attr("data-noviewport") === undefined) {
                     this.viewport = this.create("BGTmpls::list::viewport");
                     this.viewport.putInto(this);
