@@ -12,9 +12,18 @@
 
         <pf-viewport data-ft="BGTmpls::list::viewport"></pf-viewport>
 
-        <pf-list-tmpl data-ft="BGTmpls::list" data-item-tmpl="BGTmpls::listItem" data-fns="listRoot" data-fra="pf-list" data-tagName="pf-list" data-overloaded-prefix="list">
+        <pf-list-tmpl data-ft="BGTmpls::list"
+                      data-item-tmpl="BGTmpls::listItem"
+                      data-fns="listRoot"
+                      data-fra="pf-list"
+                      data-tagName="pf-list"
+                      data-overloaded-prefix="list">
 
-            <!-- <pf-viewport id="viewport"></pf-viewport> -->
+            <script data-fn="findIndex" data-args="callback, data">
+                return this.items.findIndex((item) => {
+                    return callback(item, data);
+                });
+            </script>
 
             <script data-fn="append" data-args="itemData">
                 this.addItem(itemData, true);

@@ -144,13 +144,16 @@
             if (node != undefined)
                 this.load(node);
 
-            var findIndex = (id) => {
+            /*var findIndex = (id) => {
                 return this.items.findIndex((item) => {
                     if (item.node.id == id)
                         return true;
                     else
                         return false;
                 });
+            }*/
+            var fiCB = (item, id) => {
+                return item.node.id == id;
             }
 
             CMSCONN.on("nodeCreated", (args) => {
@@ -165,7 +168,7 @@
 
             CMSCONN.on("nodeRemoved", (args) => {
                 var rmID = args[0];
-                var rmIndex = findIndex(rmID);
+                var rmIndex = this.findIndex(fiCB, rmID);//findIndex(rmID);
                 if (rmIndex >= 0)
                     this.removeItem(rmIndex);
             });
@@ -174,7 +177,7 @@
                 var rmID = args[0].id;
                 var toNode = args[1];
 
-                var rmIndex = findIndex(rmID);
+                var rmIndex = this.findIndex(fiCB, rmID);//findIndex(rmID);
                 if (rmIndex >= 0)
                     this.removeItem(rmIndex);
 
