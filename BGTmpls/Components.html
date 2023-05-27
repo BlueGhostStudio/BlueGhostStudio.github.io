@@ -9,21 +9,28 @@
                 this.text(itemData);
             </script>
         </pf-list-item-tmpl>
+
+        <pf-viewport data-ft="BGTmpls::list::viewport"></pf-viewport>
+
         <pf-list-tmpl data-ft="BGTmpls::list" data-item-tmpl="BGTmpls::listItem" data-fns="listRoot" data-fra="pf-list" data-tagName="pf-list" data-overloaded-prefix="list">
-            <pf-viewport id="viewport"></pf-viewport>
+
+            <!-- <pf-viewport id="viewport"></pf-viewport> -->
+
             <script data-fn="append" data-args="itemData">
                 this.addItem(itemData, true);
             </script>
+
             <script data-fn="prepend" data-args="itemData">
                 this.addItem(itemData, false);
             </script>
+
             <script data-fn="addItem" data-args="itemData, append">
                 var li = this.create(this.$.attr("data-item-tmpl"));
                 li.load(itemData);
                 if (append)
-                    li.putInto(this.viewport);
+                    li.putInto(this.viewport || this);
                 else
-                    li.prepend(this.viewport);
+                    li.prepend(this.viewport || this);
 
                 if (!this.items)
                     this.items = [];
@@ -33,6 +40,7 @@
 
                 this.$.attr("data-item-count", this.itemCount);
             </script>
+
             <script data-fn="removeItem" data-args="index">
                 this.items[index].removeSelf();
                 this.items.splice(index, 1);
@@ -40,12 +48,14 @@
 
                 this.$.attr("data-item-count", this.count);
             </script>
+
             <script data-fn="clear">
                 this.items = [];
                 this.itemCount = 0;
                 this.$.attr("data-item-count", 0);
-                this.viewport.empty();
+                (this.viewport || this).empty();
             </script>
+
             <script data-fn="load" data-args="listData">
                 this.clear();
                 this.$.attr("data-item-count", 0);
@@ -54,7 +64,13 @@
                     this.append(listData[x]);
                 }
             </script>
+
             <script data-fn="constructor">
+                if (this.$.attr("data-noviewport") === undefined) {
+                    this.viewport = this.create("BGTmpls::list::viewport");
+                    this.viewport.putInto(this);
+                }
+
                 this.itemID = 0;
                 this.$.attr("data-item-count", 0);
             </script>
