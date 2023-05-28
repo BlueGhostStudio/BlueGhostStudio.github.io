@@ -19,11 +19,11 @@
             loadModules([
                 "cms/cms.html"
             ], false).onEnd(() => {
-                var qsa = __queryStringArray__(location.href);
+                /*var qsa = __queryStringArray__(location.href);
                 if (qsa.g)
-                    CMS.RPCGRP = qsa.g;
+                    CMS.RPCGRP = qsa.g;*/
 
-                CMS.connect("wss://rpc.bgstudio.live", 8000).then(() => {
+                CMS.connect("wss://rpc.bgstudio.live", 8000).then(CMS.initial/*() => {
                     CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
                         console.log('error:', ret);
                     }).then(() => {
@@ -56,7 +56,7 @@
                             CMS.open(CMS.homePath);
                         }
                     });
-                });
+                }*/);
             });
         });
     </script>
