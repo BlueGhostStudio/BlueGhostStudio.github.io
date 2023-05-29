@@ -3,21 +3,21 @@
         window.contentGenerate = {
             "txt": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elem.text(content)
+                    elem.text(content || "");
                     //elem.$.trigger("contentGenerated");
                 });
             }, "html": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elem.$.html(content)
+                    elem.$.html(content || "");
                     //elem.$.trigger("contentGenerated");
                 });
             }, "md": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elem.$.html(marked.parse(content))
+                    elem.$.html(marked.parse(content || ""))
                     //elem.$.trigger("contentGenerated");
                 });
             }, "fra": (content, elem) => {
-                let package = compile($(content));
+                let package = compile($(content || ""));
                 return package.load().then((cmpObj) => {
                     elem.$.html(cmpObj.$.contents());
                     elem.$.trigger("componentLoaded", [cmpObj]);
@@ -29,7 +29,9 @@
                     summary = "";
 
                 return Promise.resolve().then(() => {
-                    if (/^link:/.test(content))
+                    if (!content)
+                        return Promise.reject();
+                    else if (/^link:/.test(content))
                         return Promise.resolve(content.substring(5));
                     else if (/^res:/.test(content))
                         return CMS.mediaUrl(content.substring(4));

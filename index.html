@@ -19,44 +19,7 @@
             loadModules([
                 "cms/cms.html"
             ], false).onEnd(() => {
-                /*var qsa = __queryStringArray__(location.href);
-                if (qsa.g)
-                    CMS.RPCGRP = qsa.g;*/
-
-                CMS.connect("wss://rpc.bgstudio.live", 8000).then(CMS.initial/*() => {
-                    CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
-                        console.log('error:', ret);
-                    }).then(() => {
-                        var defaultStyle = compile($('<cms-style></cms-style>'));
-                        $('head').append(defaultStyle.$);
-                        return defaultStyle.load('/site/style/default').then(null, (ret) => {
-                            console.log('no default style');
-                        });
-                    }).then(() => {
-                        return CMS.loadComponent('/site/config').then(() => {
-                            if (CMS.homePath != null) {
-                                return CMS.node(CMS.homePath).then((node) => {
-                                    CMS.homePath = node.id;
-                                }, (ret) => {
-                                    console.log('no exist home path');
-                                    CMS.homePath = null;
-                                });
-                            }
-                        }, (ret) => {
-                            console.log('no config');
-                        })
-                    }).then(() => {
-                        // var qsa = __queryStringArray__(location.href);
-                        if (qsa.id)
-                            CMS.open(qsa.id);
-                        else if (qsa.p)
-                            CMS.open(qsa.p);
-                        else {
-                            console.log("home path", CMS.homePath);
-                            CMS.open(CMS.homePath);
-                        }
-                    });
-                }*/);
+                CMS.connect("wss://rpc.bgstudio.live", 8000).then(CMS.initial);
             });
         });
     </script>
