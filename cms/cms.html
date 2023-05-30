@@ -58,6 +58,13 @@
         return (this.RPCGRP ? this.RPCGRP + "::" : "") + obj;
     </script>
 
+    <script data-fn="search" data-args="query">
+        return rpc.asyncCall(this.RPCOBJ("cms::main"), "search", query, 0x03)
+            .then((ret) => {
+                return Promise.resolve(ret);
+            });
+    </script>
+
     <script data-fn="list" data-args="pNode, query">
         return rpc.asyncCall(this.RPCOBJ("cms::main"), "list", pNode, 0x03, query)
             .then((ret) => {

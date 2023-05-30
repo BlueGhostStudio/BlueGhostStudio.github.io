@@ -116,6 +116,20 @@
             }
         </script>
 
+        <script data-fn="search" data-args="query">
+            if (this.queryType != undefined) {
+                if (query == undefined)
+                    query = {}
+
+                query["type"] = this.queryType;
+            }
+
+            this.listNode = -1;
+            return CMS.search(query).then((ret) => {
+                this.list_load(ret.list);
+            }, (ret) => { console.log("error", ret); });
+        </script>
+
         <script data-fn="constructor">
             this.list_constructor();
             this.listNode = -1;
