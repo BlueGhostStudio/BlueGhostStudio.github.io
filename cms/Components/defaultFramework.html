@@ -4,6 +4,8 @@
     </script>
 
     <pf-body data-ft="cms::default::framework" data-tagName="body">
+        <cms-style data-fn="style"></cms-style>
+
         <pf-page data-fn="page">
             <header data-fw="true">
                 <cms-img id="logo" src="/site/logo"></cms-img>
@@ -81,6 +83,9 @@
         <script data-fn="constructor">
             this.parentDirID = -1;
             this.currentDirID = -1;
+            this.style.load("/site/style/default").then(null, () => {
+                    this.style.$.replaceWith('<link rel="stylesheet" href="cms/Components/defaultFramework.css">');
+                });
         </script>
     </pf-body>
 

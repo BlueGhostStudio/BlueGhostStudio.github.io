@@ -186,8 +186,6 @@
                     return Promise.resolve(path);
             },(ret) => {
                 if (ret.errno == 0) {
-                    console.log('--------------------------currentSiteFramework--------------',
-                        this.currentSiteFramework);
                     if (this.currentSiteFramework != -1) {
                         this.currentSiteFramework = -1;
                         this.replaceBody('cms::default::framework');
