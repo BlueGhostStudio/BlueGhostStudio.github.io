@@ -3,39 +3,86 @@
         nextLoad();
     </script>
 
-    <pf-framework data-ft="cms::defautlHome::framework">
-        <script data-fn="load"></script>
-            return Promise.resolve().then(() => {
-                CMS.replaceBody('cms::defautlHome::body');
+    <pf-body data-ft="cms::default::framework" data-tagName="body">
+        <pf-page data-fn="page">
+            <header data-fw="true">
+                <cms-img id="logo" src="/site/logo"></cms-img>
+                <cms-site-title id="siteTitle"></cms-site-title>
+                <cms-nav id="mainNav" data-path="/"></cms-nav>
+            </header>
+
+            <cms-dir-nav id="secondaryNav"></cms-dir-nav>
+
+            <cms-switch-list id="nodeIndex"
+                      data-dir-ref="desc"
+                      data-grid-cellheight="5"
+                      data-grid-gap="0"
+                      data-grid-column-gap="20"></cms-switch-list>
+
+            <cms-node id="content" data-dir-ref="index"></cms-node>
+
+            <footer>BGMRPC - BGCMS - BGPF</footer>
+        </pf-page>
+
+        <script data-fn="openNode" data-args="path">
+            this.page.content.$.css("opacity", 0);
+            this.page.content.load(path).then(() => {
+                this.page.content.$.css("opacity", 1);
+                return Promise.resolve(this.page.content.node);
+            }).then((node) => {
+                this.node = node;
+
+                this.page.nodeIndex.switch(this.node.id == null || this.node.type == "D");
+
+                if (this.node.id == null) {
+                    this.page.$.attr('data-type', "H");
+                    return Promise.resolve(node);
+                } else if (this.node.type == 'D') {
+                    this.page.$.attr('data-type', "D");
+                    return Promise.resolve(node);
+                } else {
+                    this.page.$.attr('data-type', "C");
+                    return CMS.node(node.pid);
+                }
+            }, null).then((node) => {
+                if (this.currentDirID != node.id) {
+                    this.currentDirID = node.id;
+                    this.page.nodeIndex.$.css("opacity", 0);
+
+                    var pm = node.id == null
+                        ? this.page.nodeIndex.search({
+                            "limit": { "count": 25 }
+                        })
+                        : this.page.nodeIndex.load(this.currentDirID);
+
+                    pm.then(()=> {
+                        this.page.nodeIndex.$.css("opacity", 1);
+                    });
+                }
+
+                var pDir = node.pid || CMS.homePath;
+                if (this.parentDirID != pDir) {
+                    this.parentDirID = pDir;
+                    return Promise.resolve(this.parentDirID);
+                } else
+                    return Promise.resolve();
+            }).then((dirPath) => {
+                if (dirPath !== undefined) {
+                    this.page.secondaryNav.$.css("opacity", 0);
+                    return this.page.secondaryNav.load(dirPath);
+                } else
+                    return Promise.resolve();
+            }).then(() => {
+                this.page.secondaryNav.$.css("opacity", 1);
+                this.page.secondaryNav.activate(this.currentDirID);
             });
         </script>
 
-        <pf-body data-ft="cms::defaultHome::body">
-            <cms-style data-fn="pageStyle"></cms-style>
+        <script data-fn="constructor">
+            this.parentDirID = -1;
+            this.currentDirID = -1;
+        </script>
+    </pf-body>
 
-            <pf-page data-fri="true">
-                <header>
-                    <cms-img id="logo" src="/site/imgs/logo"></cms-img>
-                    <cms-site-title id="siteTitle"></cms-site-title>
-                </header>
-                <main data-fri="true">
-                    <cms-index data-node="/"
-                               class="home index"
-                               data-grid-gap="0"
-                               data-grid-cellheight="10"></cms-index>
-                </main>
-            </pf-page>
-
-            <script data-fn="openNode" data-args="path">
-                if (path === CMS.homePath || path === '/'
-                    || (path instanceof Object
-                        && path.id == null)) {
-                    this.pageStyle.load(CMS.homePath + '/site/style/page');
-                }
-            </script>
-
-            <footer></footer>
-        </pf-body>
-    </pf-framework>
 </pf-package>
 

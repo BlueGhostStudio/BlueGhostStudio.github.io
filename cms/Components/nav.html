@@ -50,4 +50,33 @@
             }
         </script>
     </nav>
+
+    <a data-ft="cms::dir::nav::item" href="javascript:;">
+        <script data-fn="load" data-args="node">
+            this.node = node;
+            this.text(node.title);
+        </script>
+        <script data-fe="click">
+            CMS.open(this.node.id);
+        </script>
+    </a>
+
+    <cms-list data-ft="cms::dir::nav"
+              data-noviewport
+              data-onlydir
+              data-item-tmpl="cms::dir::nav::item"
+              data-tagName="nav"
+              data-fra="cms-dir-nav">
+
+        <script data-fn="activate" data-args="id">
+            var actId = this.findIndex((item, id) => {
+                return item.node.id === id;
+            }, id);
+
+            this.$.find("a").removeClass("actived");
+
+            if (actId >=0)
+                this.items[actId].$.addClass("actived");
+        </script>
+    </cms-list>
 </pf-package>

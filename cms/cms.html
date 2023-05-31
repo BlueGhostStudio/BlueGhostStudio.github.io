@@ -33,7 +33,8 @@
             relPath + "Components/node.html",
             relPath + "Components/list.html",
             relPath + "Components/nav.html",
-            relPath + "Components/mis.html"
+            relPath + "Components/mis.html",
+            relPath + "Components/defaultFramework.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
             rpc.onRemoteSignal((ev, obj, sig, args) => {
@@ -47,12 +48,6 @@
 
         CMS.homePath = null;
     </script>
-
-    <pf-package>
-        <pf-body data-ft="defaultBodyTmpl" data-tagName="body">
-            <p>No site's framework</p>
-        </pf-body>
-    </pf-package>
 
     <script data-fn="RPCOBJ" data-args="obj">
         return (this.RPCGRP ? this.RPCGRP + "::" : "") + obj;
@@ -191,7 +186,12 @@
                     return Promise.resolve(path);
             },(ret) => {
                 if (ret.errno == 0) {
-                    this.replaceBody('defaultBodyTmpl');
+                    console.log('--------------------------currentSiteFramework--------------',
+                        this.currentSiteFramework);
+                    if (this.currentSiteFramework != -1) {
+                        this.currentSiteFramework = -1;
+                        this.replaceBody('cms::default::framework');
+                    }
                     return Promise.resolve(path);
                 } else
                     return Promise.reject(ret.error);

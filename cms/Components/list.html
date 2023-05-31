@@ -231,7 +231,7 @@
                     }
                 });
                 this.indexNodeStyle.load("site/style/indexListItem",
-                                                  this.node.id);
+                    this.node.id);
             }, (ret) => { this.$.attr("data-node-id", -2); });
         </script>
 
@@ -243,7 +243,41 @@
     <cms-list class="index" data-ft="cms::index"
                             data-dir-ref="desc"
                             data-fra="cms-index"
-                            data-item-tmpl="cms::index::node"></cms-index>
+                            data-item-tmpl="cms::index::node"></cms-list>
 
+    <cms-node data-ft="cms::switch::list::item"
+              data-fr="cms::list::node"
+              data-overloaded-prefix="cms_switch_list_item">
+        <script data-fn="constructor">
+            this.cms_list_node_constructor();
+
+            this.toNS("listRoot").LISTCONN.on("switch", () => {
+                var listRoot = this.toNS('listRoot');
+                this.summary = listRoot.summary;
+                this.dirRef = listRoot.dirRef;
+                this.load(this.node);
+            });
+        </script>
+    </cms-node>
+
+    <cms-list data-ft="cms::switch::list"
+              data-item-tmpl="cms::switch::list::item"
+              data-fra="cms-switch-list">
+        <script data-fn="switch" data-args="useDirRef">
+            if (this.useDirRef != useDirRef) {
+                this.useDirRef = useDirRef;
+                this.dirRef = this.useDirRef ? this.origDirRef : undefined;
+                this.summary = !this.useDirRef;
+
+                this.LISTCONN.emit("switch", []);
+            }
+        </script>
+
+        <script data-fn="constructor">
+            this.cms_list_constructor();
+            this.origDirRef = this.dirRef;
+            this.useDirRef = false;
+        </script>
+    </cms-list>
 </pf-package>
 
