@@ -1,12 +1,56 @@
-cms-resource > header {
-  font-size: 220%;
+@font-face {
+    font-family: "Cabin Sketch";
+    src: url("fonts/CabinSketch-Regular.ttf");
 }
-cms-resource > pf-content {
-  margin-top: 1em;
+
+@font-face {
+    font-family: "Cabin Sketch";
+    src: url("/fonts/CabinSketch-Bold.ttf");
+    font-weight:bold;
 }
-cms-resource > pf-content:empty {
-  display: none;
+
+@font-face {
+    font-family: "Raleway";
+    src: url("/fonts/Raleway-Regular.ttf");
 }
-cms-resource > pf-content a::after {
-  display: inline-block;content: "🔗";font-size: 75%;vertical-align: sub;
+
+@font-face {
+    font-family: "Raleway";
+    src: url("/fonts/Raleway-Italic.ttf");
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Raleway";
+    src: url("/fonts/Raleway-Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Raleway";
+    src: url("/fonts/Raleway-BoldItalic.ttf");
+    font-weight: bold;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Special Elite";
+    src: url("/fonts/SpecialElite.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "Cinzel";
+    src: url("/fonts/Cinzel-Regular.ttf");
+}
+
+@font-face {
+    font-family: "Cinzel";
+    src: url("/fonts/Cinzel-Bold.ttf");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "ZCOOL XiaoWei";
+    src: url("/fonts/ZCOOLXiaoWei-Regular.ttf");
 }
