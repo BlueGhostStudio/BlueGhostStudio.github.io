@@ -17,7 +17,7 @@
                     //elem.$.trigger("contentGenerated");
                 });
             }, "fra": (content, elem) => {
-                let package = compile($(content || ""));
+                let package = compile($(content || ""), elem);
                 return package.load().then((cmpObj) => {
                     elem.$.html(cmpObj.$.contents());
                     elem.$.trigger("componentLoaded", [cmpObj]);
