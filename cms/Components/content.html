@@ -24,7 +24,13 @@
 
                     return Promise.resolve(cmpObj);
                 });
-            }, "png": (content, elem, summary) => {
+            }, "elm": (content, elem) => {
+                let elemObj = compile($(content || ""), elem);
+                elem.$.html(elemObj.$.contents());
+                elem.$.trigger("componentLoaded", [elemObj]);
+
+                return Promise.resolve(elemObj);
+            },"png": (content, elem, summary) => {
                 if (summary == undefined)
                     summary = "";
 
@@ -96,7 +102,7 @@
              * 若内容是一个组件(cmp, pkg, fra),生成时只装载框架,
              * 当装载完后调用框架的load(若存在)加载实际内容
              */
-            if (["cmp", "pkg", "fra"].includes(contentType))
+            if (["cmp", "pkg", "fra", "elm"].includes(contentType))
                 this.onComponentLoaded(elem);
 
             return contentGenerate[contentType](content, elem, summary);
