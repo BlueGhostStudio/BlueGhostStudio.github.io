@@ -228,13 +228,13 @@
 
         CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
             console.log('error', ret);
-        }).then(() => {
+        })/*.then(() => {
             var defaultStyle = compile($('<cms-style></cms-style>'));
             $('head').append(defaultStyle.$);
             return defaultStyle.load('/site/style/default').then(null, (ret) => {
                 console.log('no default style');
             });
-        }).then(() => {
+        })*/.then(() => {
             return CMS.loadComponent('/site/config').then(() => {
                 if (CMS.homePath !== null) {
                     return CMS.node(CMS.homePath).then((node) => {
