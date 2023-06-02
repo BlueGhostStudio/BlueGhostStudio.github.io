@@ -141,8 +141,12 @@
             if (node instanceof Object) { // 如果参数'node'是node对象
                 this.node = node;
 
-                if (this.headerElem) // 若组件存在header元素,元素加载node的标题
-                    this.headerElem.text(this.node.title);
+                if (this.headerElem) { // 若组件存在header元素,元素加载node的标题
+                    if (this.node.id === null)
+                        this.headerElem.text(CMS.siteTitle || this.node.title);
+                    else
+                        this.headerElem.text(this.node.title);
+                }
 
                 /* 依据this.info或否生成内容 */
                 if (this.info) { // 组件要求的是info,则内容元素(若有)加载node的描述
