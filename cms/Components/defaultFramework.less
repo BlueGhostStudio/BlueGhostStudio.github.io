@@ -4,10 +4,12 @@
 
 body > pf-page {
     display: block;
-    margin: 0 auto;
     padding: 1em;
-    min-width: 1024px;
+    //min-width: 1024px;
     //max-width: 95%;
+
+    width: 764px;
+    margin: 1em auto;
 
     > header {
         display: grid;
@@ -63,14 +65,16 @@ body > pf-page {
         > nav#secondaryNav {
             display: flex;
             justify-content: center;
-            //margin: 1em auto;
+            //width: fit-content;
+            //margin: auto;
 
             font-family: "Cinzel";
             font-weight: bold;
 
             border: 1px solid var(--base-shade2);
-            border-left: none;
-            border-right: none;
+            border-radius: 1em;
+            box-shadow: 0 0 2px #0003;
+            background: radial-gradient(transparent, var(--base-shade3));
 
             > a {
                 display: block;
@@ -104,10 +108,7 @@ body > pf-page {
                 }
                 &[data-type="D"] {
                     padding: 1ex;
-                    // border: solid var(--base-shade1);
-                    // border-width: 1px 2px 2px 1px;
-                    background: var(--base-shade3);
-                    // border-radius: 10px;
+                    border: 1px dashed var(--base-shade2);
                 }
 
                 > header {
@@ -135,7 +136,7 @@ body > pf-page {
 
         > article#content {
             order: 2;
-            > header { display: none }
+            //> header { display: none }
         }
 
         > pf-list#nodeIndex {
@@ -148,23 +149,6 @@ body > pf-page {
     }
 
     &[data-type="D"] {
-        /*> pf-list#nodeIndex > pf-viewport {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(var(--cell-width), 1fr));
-            grid-row-gap: var(--grid-gap);
-            grid-column-gap: var(--grid-column-gap);
-            margin: 1em 0 2em;
-            > article {
-                grid-row: span var(--spanrow);
-                border-top: 1px dashed var(--base-shade2);
-
-                > header {
-                    margin: 0;
-                    font-size: var(--large-font-size);
-                }
-            }
-        }*/
-
         > article#content {
             display: none;
         }
