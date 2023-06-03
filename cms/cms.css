@@ -40,17 +40,39 @@
 }
 
 @font-face {
-    font-family: "Cinzel";
-    src: url("/fonts/Cinzel-Regular.ttf");
+    font-family: "Nanum Myeongjo";
+    src: url("/fonts/NanumMyeongjo-Regular.woff2");
 }
 
 @font-face {
-    font-family: "Cinzel";
-    src: url("/fonts/Cinzel-Bold.ttf");
+    font-family: "Nanum Myeongjo";
+    src: url("/fonts/NanumMyeongjo-ExtraBold.woff2");
     font-weight: bold;
 }
 
 @font-face {
-    font-family: "ZCOOL XiaoWei";
-    src: url("/fonts/ZCOOLXiaoWei-Regular.ttf");
+    font-family: "XiYuan";
+    src: url("/fonts/TXJLXiYuan.woff2");
 }
+
+@font-face {
+    font-family: "ChaoXiYuan";
+    src: url("/fonts/TXJLCHXiYuan.woff2");
+}
+
+@font-face {
+    font-family: "GuYin";
+    src: url("/fonts/QNHGDGuYin.woff2");
+}
+
+@font-face {
+    font-family: "Source Han Serif CN";
+    src: url("/fonts/SourceHanSerifCN-Regular.woff2");
+}
+
+@font-face {
+    font-family: "Source Han Serif CN";
+    src: url("/fonts/SourceHanSerifCN-Bold.woff2");
+    font-weight: bold;
+}
+
