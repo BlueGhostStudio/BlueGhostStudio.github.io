@@ -53,7 +53,8 @@
 
                     var pm = node.id == null
                         ? this.page.nodeIndex.search({
-                            "limit": { "count": 25 }
+                            "limit": { "count": 25 },
+                            "type": "F"
                         })
                         : this.page.nodeIndex.load(this.currentDirID);
 
