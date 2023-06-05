@@ -67,7 +67,6 @@
 
             <script data-fn="load" data-args="listData">
                 this.clear();
-                this.$.attr("data-item-count", 0);
 
                 for (var x in listData) {
                     this.append(listData[x]);
@@ -76,6 +75,7 @@
 
             <script data-fn="constructor">
                 this.items = [];
+
                 if (this.$.attr("data-noviewport") === undefined) {
                     this.viewport = this.create("BGTmpls::list::viewport");
                     this.viewport.putInto(this);
@@ -83,6 +83,18 @@
 
                 this.itemID = 0;
                 this.$.attr("data-item-count", 0);
+
+                var items = this.__data__.item;
+                if (items !== undefined) {
+                    for (var x in items) {
+                        if (items[x].type === "json")
+                            this.append(JSON.parse(items[x].text()));
+                        else if (items[x].type === "js")
+                            this.append(eval(items[x].text()));
+                        else
+                            this.append(items[x].text());
+                    }
+                }
             </script>
         </pf-list-tmpl>
     </pf-package>
@@ -97,6 +109,13 @@
             </script>
             <script data-fn="setContent" data-args="content">
                 this.content.html(content);
+            </script>
+
+            <script data-fn="constructor">
+                if (this.__data__.header !== undefined)
+                    this.setHeader(this.__data__.header[0].$.html());
+                if (this.__data__.content !== undefined)
+                    this.setContent(this.__data__.content[0].$.html());
             </script>
         </article>
     </pf-package>
@@ -136,7 +155,7 @@
                 var pages = this.__data__.page;
                 if (pages !== undefined) {
                     for (var x in pages) {
-                        var p = this.__data__.page[x];
+                        var p = pages[x];
                         var tab = this.create("BGTmpls::tabTmpl");
                         tab.setText(p.header.text());
                         tab.putInto(this.tabbar);
@@ -260,11 +279,30 @@
                 this.$.find("> pf-card").click(function(event) {
                     event.stopPropagation();
                 })
-                if (this.__text__) {
-                    var t = this.__text__ ? this.__text__.trim() : "";
-                    if (t.length > 0)
-                        this.header.text(t);
+
+                var header = this.__data__.header;
+                if (header !== undefined)
+                    this.header.text(header[0].text());
+
+                var buttons = this.__data__.button;
+                if (buttons !== undefined) {
+                    for (let x in buttons) {
+                        var btnData = buttons[x];
+                        var btn = this.create("BGTmpls::dlgBtnTmpl");
+                        btn.text(btnData.text());
+                        btn.$.attr("value", btnData.value);
+                        btn.putInto(this.dlgBtnsBox);
+                    }
                 }
+
+                var dlgBody = this.__data__.dlgBody;
+                if (dlgBody !== undefined) {
+                    this.dlgBody = dlgBody[0];
+                    this.dlgContent.$.append(this.dlgBody.$.contents());
+                    if (this.dlgBody.result instanceof Function)
+                        this.result = this.dlgBody.result;
+                }
+
                 this.dialog_constructor();
             </script>
         </pf-container>
