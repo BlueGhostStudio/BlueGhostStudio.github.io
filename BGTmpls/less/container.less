@@ -88,14 +88,14 @@ pf-container {
 }
 
 pf-viewport {
-    &:extend(pf-container all);
+    &:extend(pf-container/* all*/);
 }
 
 .card-shadow {
     box-shadow: 0 0 1px 1px var(--shadow), 0 3px 7px -1px var(--shadow);
-    &.large-shadow {
-        box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
-    }
+}
+.large-shadow {
+    box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
 }
 
 pf-card {
@@ -103,18 +103,22 @@ pf-card {
     color: var(--base-text);
     padding: 0;
     &:extend(.container-base);
-    &:extend(.container-margin all);
+    // &:extend(.container-margin all);
 
     &:not(.noshd) {
-        &:extend(.card-shadow all);
+        &:extend(.card-shadow, .large-shadow);
     }
     
     > header {
         margin: 0;
     }
     > pf-content, > .content {
-        &:extend(pf-content);
+        //&:extend(pf-content);
+        display: block;
+        margin: 0;
     }
+    &:extend(pf-card:not(.clean).normal-padding all);
+
     &.clean {
         > header, > pf-content, > .content { padding: 0 }
         .clean-card-content-margin-top(@c, @d) {

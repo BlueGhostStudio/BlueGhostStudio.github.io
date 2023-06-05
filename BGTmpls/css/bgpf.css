@@ -6,10 +6,7 @@ pf-text:not(.inline) {
 }
 pf-content,
 .content,
-article > pf-content,
-pf-card > pf-content,
-pf-card > .content,
-pf-card > article > pf-content {
+article > pf-content {
   display: block;
   /*&:first-child {
         margin-top: 0;
@@ -284,12 +281,15 @@ pf-card:not(.clean).accent > header {
   background-color: var(--base-shade3);
   color: var(--base-shade3-text);
 }
+pf-viewport {
+  /* all*/
+}
 .card-shadow,
 pf-card:not(.noshd) {
   box-shadow: 0 0 1px 1px var(--shadow), 0 3px 7px -1px var(--shadow);
 }
-.card-shadow.large-shadow,
-pf-card:not(.noshd).large-shadow {
+.large-shadow,
+pf-card:not(.noshd) {
   box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
 }
 pf-card {
@@ -300,48 +300,45 @@ pf-card {
 pf-card > header {
   margin: 0;
 }
+pf-card > pf-content,
+pf-card > .content {
+  display: block;
+  margin: 0;
+}
 pf-card.clean > header,
 pf-card.clean > pf-content,
-pf-card.clean > .content,
-pf-card.clean > article > pf-content {
+pf-card.clean > .content {
   padding: 0;
 }
 pf-card.clean > header {
   font-size: 120%;
 }
 pf-card.clean.xx-narrow-padding > pf-content,
-pf-card.clean.xx-narrow-padding > .content,
-pf-card.clean.xx-narrow-padding > article > pf-content {
+pf-card.clean.xx-narrow-padding > .content {
   margin-top: 0;
 }
 pf-card.clean.x-narrow-padding > pf-content,
-pf-card.clean.x-narrow-padding > .content,
-pf-card.clean.x-narrow-padding > article > pf-content {
+pf-card.clean.x-narrow-padding > .content {
   margin-top: var(--xx-small-dist);
 }
 pf-card.clean.narrow-padding > pf-content,
-pf-card.clean.narrow-padding > .content,
-pf-card.clean.narrow-padding > article > pf-content {
+pf-card.clean.narrow-padding > .content {
   margin-top: var(--x-small-dist);
 }
 pf-card.clean.normal-padding > pf-content,
-pf-card.clean.normal-padding > .content,
-pf-card.clean.normal-padding > article > pf-content {
+pf-card.clean.normal-padding > .content {
   margin-top: var(--small-dist);
 }
 pf-card.clean.wide-padding > pf-content,
-pf-card.clean.wide-padding > .content,
-pf-card.clean.wide-padding > article > pf-content {
+pf-card.clean.wide-padding > .content {
   margin-top: var(--normal-dist);
 }
 pf-card.clean.x-wide-padding > pf-content,
-pf-card.clean.x-wide-padding > .content,
-pf-card.clean.x-wide-padding > article > pf-content {
+pf-card.clean.x-wide-padding > .content {
   margin-top: var(--normal-dist);
 }
 pf-card.clean.xx-wide-padding > pf-content,
-pf-card.clean.xx-wide-padding > .content,
-pf-card.clean.xx-wide-padding > article > pf-content {
+pf-card.clean.xx-wide-padding > .content {
   margin-top: var(--normal-dist);
 }
 pf-card:not(.clean) {
@@ -366,18 +363,15 @@ pf-card:not(.clean).xx-narrow-padding > header.v-p-zero {
   padding: 0 calc(var(--xx-small-dist) * 1.5);
 }
 pf-card:not(.clean).xx-narrow-padding > pf-content,
-pf-card:not(.clean).xx-narrow-padding .content,
-pf-card:not(.clean).xx-narrow-padding > article > pf-content {
+pf-card:not(.clean).xx-narrow-padding .content {
   padding: var(--xx-small-dist) calc(var(--xx-small-dist) * 1.5);
 }
 pf-card:not(.clean).xx-narrow-padding > pf-content.h-p-zero,
-pf-card:not(.clean).xx-narrow-padding .content.h-p-zero,
-pf-card:not(.clean).xx-narrow-padding > article > pf-content.h-p-zero {
+pf-card:not(.clean).xx-narrow-padding .content.h-p-zero {
   padding: var(--xx-small-dist) 0;
 }
 pf-card:not(.clean).xx-narrow-padding > pf-content.v-p-zero,
-pf-card:not(.clean).xx-narrow-padding .content.v-p-zero,
-pf-card:not(.clean).xx-narrow-padding > article > pf-content.v-p-zero {
+pf-card:not(.clean).xx-narrow-padding .content.v-p-zero {
   padding: 0 calc(var(--xx-small-dist) * 1.5);
 }
 pf-card:not(.clean).x-narrow-padding > header {
@@ -390,18 +384,15 @@ pf-card:not(.clean).x-narrow-padding > header.v-p-zero {
   padding: 0 calc(var(--x-small-dist) * 1.5);
 }
 pf-card:not(.clean).x-narrow-padding > pf-content,
-pf-card:not(.clean).x-narrow-padding .content,
-pf-card:not(.clean).x-narrow-padding > article > pf-content {
+pf-card:not(.clean).x-narrow-padding .content {
   padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.5);
 }
 pf-card:not(.clean).x-narrow-padding > pf-content.h-p-zero,
-pf-card:not(.clean).x-narrow-padding .content.h-p-zero,
-pf-card:not(.clean).x-narrow-padding > article > pf-content.h-p-zero {
+pf-card:not(.clean).x-narrow-padding .content.h-p-zero {
   padding: var(--x-small-dist) 0;
 }
 pf-card:not(.clean).x-narrow-padding > pf-content.v-p-zero,
-pf-card:not(.clean).x-narrow-padding .content.v-p-zero,
-pf-card:not(.clean).x-narrow-padding > article > pf-content.v-p-zero {
+pf-card:not(.clean).x-narrow-padding .content.v-p-zero {
   padding: 0 calc(var(--x-small-dist) * 1.5);
 }
 pf-card:not(.clean).narrow-padding > header {
@@ -414,42 +405,45 @@ pf-card:not(.clean).narrow-padding > header.v-p-zero {
   padding: 0 calc(var(--small-dist) * 1.5);
 }
 pf-card:not(.clean).narrow-padding > pf-content,
-pf-card:not(.clean).narrow-padding .content,
-pf-card:not(.clean).narrow-padding > article > pf-content {
+pf-card:not(.clean).narrow-padding .content {
   padding: var(--small-dist) calc(var(--small-dist) * 1.5);
 }
 pf-card:not(.clean).narrow-padding > pf-content.h-p-zero,
-pf-card:not(.clean).narrow-padding .content.h-p-zero,
-pf-card:not(.clean).narrow-padding > article > pf-content.h-p-zero {
+pf-card:not(.clean).narrow-padding .content.h-p-zero {
   padding: var(--small-dist) 0;
 }
 pf-card:not(.clean).narrow-padding > pf-content.v-p-zero,
-pf-card:not(.clean).narrow-padding .content.v-p-zero,
-pf-card:not(.clean).narrow-padding > article > pf-content.v-p-zero {
+pf-card:not(.clean).narrow-padding .content.v-p-zero {
   padding: 0 calc(var(--small-dist) * 1.5);
 }
-pf-card:not(.clean).normal-padding > header {
+pf-card:not(.clean).normal-padding > header,
+pf-card > header {
   padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
 }
-pf-card:not(.clean).normal-padding > header.h-p-zero {
+pf-card:not(.clean).normal-padding > header.h-p-zero,
+pf-card > header.h-p-zero {
   padding: var(--normal-dist) 0;
 }
-pf-card:not(.clean).normal-padding > header.v-p-zero {
+pf-card:not(.clean).normal-padding > header.v-p-zero,
+pf-card > header.v-p-zero {
   padding: 0 calc(var(--normal-dist) * 1.5);
 }
 pf-card:not(.clean).normal-padding > pf-content,
 pf-card:not(.clean).normal-padding .content,
-pf-card:not(.clean).normal-padding > article > pf-content {
+pf-card > pf-content,
+pf-card .content {
   padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
 }
 pf-card:not(.clean).normal-padding > pf-content.h-p-zero,
 pf-card:not(.clean).normal-padding .content.h-p-zero,
-pf-card:not(.clean).normal-padding > article > pf-content.h-p-zero {
+pf-card > pf-content.h-p-zero,
+pf-card .content.h-p-zero {
   padding: var(--normal-dist) 0;
 }
 pf-card:not(.clean).normal-padding > pf-content.v-p-zero,
 pf-card:not(.clean).normal-padding .content.v-p-zero,
-pf-card:not(.clean).normal-padding > article > pf-content.v-p-zero {
+pf-card > pf-content.v-p-zero,
+pf-card .content.v-p-zero {
   padding: 0 calc(var(--normal-dist) * 1.5);
 }
 pf-card:not(.clean).wide-padding > header {
@@ -462,18 +456,15 @@ pf-card:not(.clean).wide-padding > header.v-p-zero {
   padding: 0 calc(var(--large-dist) * 1.5);
 }
 pf-card:not(.clean).wide-padding > pf-content,
-pf-card:not(.clean).wide-padding .content,
-pf-card:not(.clean).wide-padding > article > pf-content {
+pf-card:not(.clean).wide-padding .content {
   padding: var(--large-dist) calc(var(--large-dist) * 1.5);
 }
 pf-card:not(.clean).wide-padding > pf-content.h-p-zero,
-pf-card:not(.clean).wide-padding .content.h-p-zero,
-pf-card:not(.clean).wide-padding > article > pf-content.h-p-zero {
+pf-card:not(.clean).wide-padding .content.h-p-zero {
   padding: var(--large-dist) 0;
 }
 pf-card:not(.clean).wide-padding > pf-content.v-p-zero,
-pf-card:not(.clean).wide-padding .content.v-p-zero,
-pf-card:not(.clean).wide-padding > article > pf-content.v-p-zero {
+pf-card:not(.clean).wide-padding .content.v-p-zero {
   padding: 0 calc(var(--large-dist) * 1.5);
 }
 pf-card:not(.clean).x-wide-padding > header {
@@ -486,18 +477,15 @@ pf-card:not(.clean).x-wide-padding > header.v-p-zero {
   padding: 0 calc(var(--x-large-dist) * 1.5);
 }
 pf-card:not(.clean).x-wide-padding > pf-content,
-pf-card:not(.clean).x-wide-padding .content,
-pf-card:not(.clean).x-wide-padding > article > pf-content {
+pf-card:not(.clean).x-wide-padding .content {
   padding: var(--x-large-dist) calc(var(--x-large-dist) * 1.5);
 }
 pf-card:not(.clean).x-wide-padding > pf-content.h-p-zero,
-pf-card:not(.clean).x-wide-padding .content.h-p-zero,
-pf-card:not(.clean).x-wide-padding > article > pf-content.h-p-zero {
+pf-card:not(.clean).x-wide-padding .content.h-p-zero {
   padding: var(--x-large-dist) 0;
 }
 pf-card:not(.clean).x-wide-padding > pf-content.v-p-zero,
-pf-card:not(.clean).x-wide-padding .content.v-p-zero,
-pf-card:not(.clean).x-wide-padding > article > pf-content.v-p-zero {
+pf-card:not(.clean).x-wide-padding .content.v-p-zero {
   padding: 0 calc(var(--x-large-dist) * 1.5);
 }
 pf-card:not(.clean).xx-wide-padding > header {
@@ -510,18 +498,15 @@ pf-card:not(.clean).xx-wide-padding > header.v-p-zero {
   padding: 0 calc(var(--xx-large-dist) * 1.5);
 }
 pf-card:not(.clean).xx-wide-padding > pf-content,
-pf-card:not(.clean).xx-wide-padding .content,
-pf-card:not(.clean).xx-wide-padding > article > pf-content {
+pf-card:not(.clean).xx-wide-padding .content {
   padding: var(--xx-large-dist) calc(var(--xx-large-dist) * 1.5);
 }
 pf-card:not(.clean).xx-wide-padding > pf-content.h-p-zero,
-pf-card:not(.clean).xx-wide-padding .content.h-p-zero,
-pf-card:not(.clean).xx-wide-padding > article > pf-content.h-p-zero {
+pf-card:not(.clean).xx-wide-padding .content.h-p-zero {
   padding: var(--xx-large-dist) 0;
 }
 pf-card:not(.clean).xx-wide-padding > pf-content.v-p-zero,
-pf-card:not(.clean).xx-wide-padding .content.v-p-zero,
-pf-card:not(.clean).xx-wide-padding > article > pf-content.v-p-zero {
+pf-card:not(.clean).xx-wide-padding .content.v-p-zero {
   padding: 0 calc(var(--xx-large-dist) * 1.5);
 }
 @keyframes fadein-ani {
@@ -682,9 +667,7 @@ button:focus {
   border: none;
   outline: none;
 }
-pf-container.overlayer.dialog,
-pf-viewport.overlayer.dialog,
-pf-list.overlayer.dialog {
+pf-container.overlayer.dialog {
   position: fixed;
   top: 0;
   bottom: 0;
@@ -694,9 +677,7 @@ pf-list.overlayer.dialog {
   z-index: 10;
   animation: fadein-ani 0.25s;
 }
-pf-container.overlayer.dialog > pf-card,
-pf-viewport.overlayer.dialog > pf-card,
-pf-list.overlayer.dialog > pf-card {
+pf-container.overlayer.dialog > pf-card {
   position: fixed;
   top: 50%;
   left: 50%;
@@ -705,51 +686,31 @@ pf-list.overlayer.dialog > pf-card {
   grid-template-rows: auto 1fr auto;
   animation: zoomin-ani 0.25s;
 }
-pf-container.overlayer.dialog > pf-card > footer,
-pf-viewport.overlayer.dialog > pf-card > footer,
-pf-list.overlayer.dialog > pf-card > footer {
+pf-container.overlayer.dialog > pf-card > footer {
   display: grid;
   grid-auto-flow: column;
   grid-gap: 5px;
   justify-content: center;
   padding-top: 0;
 }
-pf-container.overlayer.dialog > pf-card > footer:empty,
-pf-viewport.overlayer.dialog > pf-card > footer:empty,
-pf-list.overlayer.dialog > pf-card > footer:empty {
+pf-container.overlayer.dialog > pf-card > footer:empty {
   display: none;
 }
 pf-container.overlayer.dialog.message > pf-card > pf-content#dlgContent,
 pf-container.overlayer.dialog.prompt > pf-card > pf-content#dlgContent,
-pf-container.overlayer.dialog.question > pf-card > pf-content#dlgContent,
-pf-container.overlayer.dialog.message > pf-card > article > pf-content#dlgContent,
-pf-container.overlayer.dialog.prompt > pf-card > article > pf-content#dlgContent,
-pf-container.overlayer.dialog.question > pf-card > article > pf-content#dlgContent,
-pf-viewport.overlayer.dialog.message > pf-card > pf-content#dlgContent,
-pf-viewport.overlayer.dialog.prompt > pf-card > pf-content#dlgContent,
-pf-viewport.overlayer.dialog.question > pf-card > pf-content#dlgContent,
-pf-list.overlayer.dialog.message > pf-card > pf-content#dlgContent,
-pf-list.overlayer.dialog.prompt > pf-card > pf-content#dlgContent,
-pf-list.overlayer.dialog.question > pf-card > pf-content#dlgContent {
+pf-container.overlayer.dialog.question > pf-card > pf-content#dlgContent {
   padding: var(--normal-dist);
 }
-pf-container.overlayer.dialog.prompt.textarea > pf-card,
-pf-viewport.overlayer.dialog.prompt.textarea > pf-card,
-pf-list.overlayer.dialog.prompt.textarea > pf-card {
+pf-container.overlayer.dialog.prompt.textarea > pf-card {
   min-width: 50%;
   min-height: 50%;
 }
-pf-container.overlayer.dialog.prompt.textarea > pf-card > pf-content#dlgContent textarea,
-pf-container.overlayer.dialog.prompt.textarea > pf-card > article > pf-content#dlgContent textarea,
-pf-viewport.overlayer.dialog.prompt.textarea > pf-card > pf-content#dlgContent textarea,
-pf-list.overlayer.dialog.prompt.textarea > pf-card > pf-content#dlgContent textarea {
+pf-container.overlayer.dialog.prompt.textarea > pf-card > pf-content#dlgContent textarea {
   width: 100%;
   height: 100%;
   resize: none;
 }
-pf-container.overlayer.dialog:not(.opened),
-pf-viewport.overlayer.dialog:not(.opened),
-pf-list.overlayer.dialog:not(.opened) {
+pf-container.overlayer.dialog:not(.opened) {
   display: none;
 }
 pf-space {
