@@ -133,6 +133,16 @@
                     this.onActivated(index);
             </script>
             <script data-fn="constructor">
+                var pages = this.__data__.page;
+                if (pages !== undefined) {
+                    for (var x in pages) {
+                        var p = this.__data__.page[x];
+                        var tab = this.create("BGTmpls::tabTmpl");
+                        tab.setText(p.header.text());
+                        tab.putInto(this.tabbar);
+                        p.content.putInto(this.viewport);
+                    }
+                }
                 this.tabbar.$.find("> pf-tab").each(function(i, e) {
                     $(e).attr("data-tab-index", i);
                 });
