@@ -36,7 +36,7 @@
 
                 this.page.nodeIndex.switch(this.node.id == null || this.node.type == "D");
 
-                if (this.node.id == null) {
+                if (this.node.id == CMS.homePath) {
                     this.page.$.attr('data-type', "H");
                     return Promise.resolve(node);
                 } else if (this.node.type == 'D') {
