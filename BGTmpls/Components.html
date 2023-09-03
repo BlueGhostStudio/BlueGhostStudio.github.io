@@ -26,11 +26,11 @@
             </script>
 
             <script data-fn="append" data-args="itemData">
-                this.addItem(itemData, true);
+                return this.addItem(itemData, true);
             </script>
 
             <script data-fn="prepend" data-args="itemData">
-                this.addItem(itemData, false);
+                return this.addItem(itemData, false);
             </script>
 
             <script data-fn="addItem" data-args="itemData, append">
@@ -48,6 +48,8 @@
                 this.itemCount = this.items.length;
 
                 this.$.attr("data-item-count", this.itemCount);
+
+                return li;
             </script>
 
             <script data-fn="removeItem" data-args="index">
