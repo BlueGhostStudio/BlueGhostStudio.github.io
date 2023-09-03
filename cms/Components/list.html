@@ -91,6 +91,11 @@
              data-fra="cms-list">
         <pf-connections id="LISTCONN" data-prepend></pf-connections>
 
+        <script data-fn="addItem" data-args="itemData, append">
+            console.log("---------,addItem");
+            return this.list_addItem(itemData, append);
+        </script>
+
         <script data-fn="load" data-args="path, query, forceCalcGridCellHeight">
             if (this.queryType != undefined) {
                 if (query == undefined)
