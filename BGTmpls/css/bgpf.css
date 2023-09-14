@@ -509,6 +509,18 @@ pf-card:not(.clean).xx-wide-padding > pf-content.v-p-zero,
 pf-card:not(.clean).xx-wide-padding .content.v-p-zero {
   padding: 0 calc(var(--xx-large-dist) * 1.5);
 }
+pf-container.flow-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: var(--grid-cell-height);
+  grid-auto-flow: row dense;
+  grid-column-gap: 1em;
+  grid-row-gap: var(--grid-row-gap);
+}
+pf-container.flow-grid > section {
+  border-top: 2px solid #ccc;
+  grid-row: span var(--spanrow);
+}
 @keyframes fadein-ani {
   from {
     opacity: 0;

@@ -17,33 +17,6 @@
         </script>
 
         <script data-fn="constructor">
-            var resizeObserver = new ResizeObserver((entries) => {
-                var listRoot = this.toNS("listRoot");
-                var gch = listRoot.gridCellHeight;
-                var gg = listRoot.gridGap;
-
-                var round = listRoot.$.attr("data-grid-round") === undefined
-                    ? Math.floor : Math.round;
-                for (var entry of entries) {
-                    /*var cbs =
-                        Array.isArray(entry.contentBoxSize)
-                            ? entry.contentBoxSize[0]
-                            : entry.contentBoxSize;
-                    this.$.css("--spanrow",
-                        Math.floor((cbs.blockSize + listRoot.gridGap)
-                            / (listRoot.gridCellHeight + listRoot.gridGap))
-                    );*/
-                    var e = this.$[0];
-                    var pt = Number($(e).css("padding-top").replace("px", ""));
-                    var pb = Number($(e).css("padding-bottom").replace("px", ""));
-                    var mt = Number($(e).css("margin-top").replace("px", ""));
-                    var mb = Number($(e).css("margin-bottom").replace("px", ""));
-                    var h = pt + pb + mt + mb + e.scrollHeight;
-                    this.$.css("--spanrow", round((h + gg) / (gch + gg)));
-                }
-            });
-            resizeObserver.observe(this.$[0]);
-
             /* 替换header原本的text()函数*/
             this.header.text = (text) => {
                 if (text !== undefined) {
@@ -89,11 +62,13 @@
              data-item-tmpl="cms::list::node"
              data-overloaded-prefix="cms_list"
              data-fra="cms-list">
+        <pf-extend data-fr="BGTmpls::flowGridObserver"></pf-extend>
         <pf-connections id="LISTCONN" data-prepend></pf-connections>
 
         <script data-fn="addItem" data-args="itemData, append">
-            console.log("---------,addItem");
-            return this.list_addItem(itemData, append);
+            var itemObj = this.list_addItem(itemData, append);
+            this.observe(itemObj);
+            return itemObj;
         </script>
 
         <script data-fn="load" data-args="path, query, forceCalcGridCellHeight">

@@ -417,4 +417,71 @@
             window.PFDialog = this;
         </script>
     </pf-package>
+
+    <pf-package name="flowGrid">
+        <pf-extend-tmpl data-ft="BGTmpls::flowGridObserver" data-overloaded-prefix="flowGridObserver">
+            <script data-fn="observe" data-args="elemObj">
+                this.resizeObserver.observe(elemObj.$[0]);
+            </script>
+
+            <script data-fn="constructor">
+                var gridCellHeight = Number(this.$.attr("data-cell-height") || 1);
+                var gridGap = Number(this.$.attr("data-row-gap") || 0);
+
+                this.$.css("--grid-row-gap", gridGap + 'px');
+                this.$.css("--grid-cell-height", gridCellHeight + 'px');
+
+                this.resizeObserver = new ResizeObserver((entries) => {
+                    for (var entry of entries) {
+                        var target = $(entry.target);
+                        target.css("align-self", "start");
+                        var contentHeight;
+                        if (entry.contentBoxSize?.length > 0)
+                            contentHeight = entry.contentBoxSize[0].blockSize;
+                        else
+                            contentHeight = entry.contentRect.height;
+
+                        var bt = Number(target.css("border-top-width").replace("px", ""));
+                        var bb = Number(target.css("border-bottom-width").replace("px", ""));
+                        var pt = Number(target.css("padding-top").replace("px", ""));
+                        var pb = Number(target.css("padding-bottom").replace("px", ""));
+                        var mt = Number(target.css("margin-top").replace("px", ""));
+                        var mb = Number(target.css("margin-bottom").replace("px", ""));
+                        var height = contentHeight + bt + bb + pt + pb + mt + mb;
+
+                        target.css("--spanrow",
+                            Math.ceil((height + gridGap) / (gridCellHeight + gridGap)));
+                        //target.css("box-sizing", "border-box");
+                        //target.css("min-height", contentHeight + "px");
+                        //target.css("align-self", "");
+                    }
+                });
+            </script>
+        </pf-extend-tmpl>
+
+        <pf-container class="flow-grid" data-ft="BGTmpls::flowGrid"
+                      data-overloaded-prefix="flowGrid"
+                      data-tagName="pf-container"
+                      data-fra="pf-flow-grid">
+            <pf-extend data-fr="BGTmpls::flowGridObserver"></pf-extend>
+
+            <script data-fn="addElem" data-args="elemObj">
+                elemObj.putInto(this);
+                this.observe(elemObj);
+            </script>
+
+            <script data-fn="constructor">
+                this.flowGridObserver_constructor();
+
+                var sections = this.__data__.section;
+                if (sections !== undefined) {
+                    for (item of sections) {
+                        var section = item.section
+                        this.observe(section);
+                        section.putInto(this);
+                    }
+                }
+            </script>
+        </pf-container>
+    </pf-package>
 </pf-package>
