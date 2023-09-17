@@ -5,7 +5,7 @@
 
     <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
         <script data-fn="load" data-args="node">
-            return this.cms_node_load(node).then(() => {
+            /*return this.cms_node_load(node).then(() => {
                 if (["jpg", "gif", "png"].includes(this.node.contentType)) {
                     var a = $('<a href="javascript:;"></a>');
                     a.click(() => {
@@ -13,7 +13,8 @@
                     });
                     this.contentElem.$.wrapInner(a);
                 }
-            });
+            });*/
+            return this.cms_node_load(node);
         </script>
 
         <script data-fn="constructor">

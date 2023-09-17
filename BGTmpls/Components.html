@@ -34,7 +34,8 @@
             </script>
 
             <script data-fn="addItem" data-args="itemData, append">
-                var li = this.create(this.$.attr("data-item-tmpl"));
+                //var li = this.create(this.$.attr("data-item-tmpl"));
+                var li = this.create(this.itemTmpl);
                 li.load(itemData);
                 if (append)
                     li.putInto(this.viewport || this);
@@ -82,6 +83,8 @@
                     this.viewport = this.create("BGTmpls::list::viewport");
                     this.viewport.putInto(this);
                 }
+
+                this.itemTmpl = this.$.attr("data-item-tmpl");
 
                 this.itemID = 0;
                 this.$.attr("data-item-count", 0);

@@ -8,25 +8,25 @@
                 });
             }, "html": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elem.$.html(content || "");
+                    elem.html(content || "");
                     //elem.$.trigger("contentGenerated");
                 });
             }, "md": (content, elem) => {
                 return Promise.resolve().then(() => {
-                    elem.$.html(marked.parse(content || ""))
+                    elem.html(marked.parse(content || ""))
                     //elem.$.trigger("contentGenerated");
                 });
             }, "fra": (content, elem) => {
                 let package = compile($(content || ""), elem);
                 return package.load().then((cmpObj) => {
-                    elem.$.html(cmpObj.$.contents());
+                    elem.html(cmpObj.$.contents());
                     elem.$.trigger("componentLoaded", [cmpObj]);
 
                     return Promise.resolve(cmpObj);
                 });
             }, "elm": (content, elem) => {
                 let elemObj = compile($(content || ""), elem);
-                elem.$.html(elemObj.$.contents());
+                elem.html(elemObj.$.contents());
                 elem.$.trigger("componentLoaded", [elemObj]);
 
                 return Promise.resolve(elemObj);
@@ -44,10 +44,10 @@
                     else
                         return Promise.reject();
                 }).then((href) => {
-                    elem.$.html('<img src="' + href + '" alt="' + summary + '">');
+                    elem.html('<img src="' + href + '" alt="' + summary + '">');
                     //elem.$.trigger("contentGenerated");
                 }, () => {
-                    elem.$.html('<img src="" alt="' + summary + '">');
+                    elem.html('<img src="" alt="' + summary + '">');
                 });
             }
         }
