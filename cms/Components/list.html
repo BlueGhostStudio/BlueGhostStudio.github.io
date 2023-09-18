@@ -4,19 +4,6 @@
     </script>
 
     <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
-        <script data-fn="load" data-args="node">
-            /*return this.cms_node_load(node).then(() => {
-                if (["jpg", "gif", "png"].includes(this.node.contentType)) {
-                    var a = $('<a href="javascript:;"></a>');
-                    a.click(() => {
-                        CMS.open(this.node.id);
-                    });
-                    this.contentElem.$.wrapInner(a);
-                }
-            });*/
-            return this.cms_node_load(node);
-        </script>
-
         <script data-fn="constructor">
             /* 替换header原本的text()函数*/
             this.header.text = (text) => {
@@ -58,15 +45,32 @@
         </script>
     </cms-node>
 
+    <a data-ft="cms::list::imgNode" href="javascript:;" data-overloaded-prefix="cms_list_imgNode">
+        <pf-extend data-fr="cms::node::loadContent"></pf-extend>
+
+        <script data-fn="constructor">
+            this.initial(undefined, this);
+            this.$.click(() => {
+                this.toNS("listRoot").LISTCONN.emit("click", [this.node, this]);
+            });
+        </script>
+    </a>
+
     <pf-list data-ft="cms::list"
              class="cms"
              data-item-tmpl="cms::list::node"
+             data-img-item-tmpl="cms::list::imgNode"
              data-overloaded-prefix="cms_list"
              data-fra="cms-list">
         <pf-extend data-fr="BGTmpls::flowGridObserver"></pf-extend>
         <pf-connections id="LISTCONN" data-prepend></pf-connections>
 
         <script data-fn="addItem" data-args="itemData, append">
+            if (["jpg", "png", "gif"].indexOf(itemData.contentType) >= 0)
+                this.itemTmpl = this.toNS("listRoot").$.attr("data-img-item-tmpl");
+            else
+                this.itemTmpl = this.defaultItemTmpl;
+
             var itemObj = this.list_addItem(itemData, append);
             this.observe(itemObj);
             return itemObj;
@@ -113,6 +117,7 @@
 
         <script data-fn="constructor">
             this.list_constructor();
+            this.defaultItemTmpl = this.itemTmpl;
             this.listNode = -1;
 
             var onlyFile = this.$.attr("data-onlyfile") != undefined;
@@ -124,7 +129,7 @@
             this.onlyTitle = this.$.attr("data-onlytitle") != undefined;
             this.dirRef = this.$.attr("data-dir-ref");
 
-            this.gridGap = Number(this.$.attr("data-grid-gap") || 10);
+            /*this.gridGap = Number(this.$.attr("data-grid-gap") || 10);
             this.$.css("--grid-gap", this.gridGap + 'px');
             this.gridColumnGap = Number(this.$.attr("data-grid-column-gap") || this.gridGap);
             this.$.css("--grid-column-gap", this.gridColumnGap + 'px');
@@ -133,7 +138,7 @@
             this.$.css("--cell-width", this.gridCellWidth + 'px');
 
             this.gridCellHeight = Number(this.$.attr("data-grid-cellheight") || 20);
-            this.$.css("--cell-height", this.gridCellHeight + 'px');
+            this.$.css("--cell-height", this.gridCellHeight + 'px');*/
 
             var node = this.$.attr("data-node");
             if (node != undefined)

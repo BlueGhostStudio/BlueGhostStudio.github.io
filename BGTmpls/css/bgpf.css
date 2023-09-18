@@ -93,6 +93,7 @@ a[href]:hover {
 .container-base,
 pf-container,
 pf-card,
+.card,
 pf-swipe.hor,
 pf-swipe:not(.ver),
 pf-swipe.hor > nav#tabbar > pf-tab,
@@ -256,13 +257,15 @@ pf-list.sep > pf-viewport > * {
 }
 .container-color-scheme.primary,
 .primary,
-pf-card:not(.clean).primary > header {
+pf-card:not(.clean).primary > header,
+.card:not(.clean).primary > header {
   background-color: var(--primary);
   color: var(--primary-text);
 }
 .container-color-scheme.accent,
 .accent,
-pf-card:not(.clean).accent > header {
+pf-card:not(.clean).accent > header,
+.card:not(.clean).accent > header {
   background-color: var(--accent);
   color: var(--accent-text);
 }
@@ -285,231 +288,331 @@ pf-viewport {
   /* all*/
 }
 .card-shadow,
-pf-card:not(.noshd) {
+pf-card:not(.noshd),
+.card:not(.noshd) {
   box-shadow: 0 0 1px 1px var(--shadow), 0 3px 7px -1px var(--shadow);
 }
 .large-shadow,
-pf-card:not(.noshd) {
+pf-card:not(.noshd).large-shadow,
+.card:not(.noshd).large-shadow {
   box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
 }
-pf-card {
+pf-card,
+.card {
   background-color: var(--base);
   color: var(--base-text);
   padding: 0;
 }
-pf-card > header {
+pf-card > header,
+.card > header {
   margin: 0;
 }
 pf-card > pf-content,
-pf-card > .content {
+.card > pf-content,
+pf-card > .content,
+.card > .content {
   display: block;
   margin: 0;
 }
 pf-card.clean > header,
+.card.clean > header,
 pf-card.clean > pf-content,
-pf-card.clean > .content {
+.card.clean > pf-content,
+pf-card.clean > .content,
+.card.clean > .content {
   padding: 0;
 }
-pf-card.clean > header {
+pf-card.clean > header,
+.card.clean > header {
   font-size: 120%;
 }
 pf-card.clean.xx-narrow-padding > pf-content,
-pf-card.clean.xx-narrow-padding > .content {
+.card.clean.xx-narrow-padding > pf-content,
+pf-card.clean.xx-narrow-padding > .content,
+.card.clean.xx-narrow-padding > .content {
   margin-top: 0;
 }
 pf-card.clean.x-narrow-padding > pf-content,
-pf-card.clean.x-narrow-padding > .content {
+.card.clean.x-narrow-padding > pf-content,
+pf-card.clean.x-narrow-padding > .content,
+.card.clean.x-narrow-padding > .content {
   margin-top: var(--xx-small-dist);
 }
 pf-card.clean.narrow-padding > pf-content,
-pf-card.clean.narrow-padding > .content {
+.card.clean.narrow-padding > pf-content,
+pf-card.clean.narrow-padding > .content,
+.card.clean.narrow-padding > .content {
   margin-top: var(--x-small-dist);
 }
 pf-card.clean.normal-padding > pf-content,
-pf-card.clean.normal-padding > .content {
+.card.clean.normal-padding > pf-content,
+pf-card.clean.normal-padding > .content,
+.card.clean.normal-padding > .content {
   margin-top: var(--small-dist);
 }
 pf-card.clean.wide-padding > pf-content,
-pf-card.clean.wide-padding > .content {
+.card.clean.wide-padding > pf-content,
+pf-card.clean.wide-padding > .content,
+.card.clean.wide-padding > .content {
   margin-top: var(--normal-dist);
 }
 pf-card.clean.x-wide-padding > pf-content,
-pf-card.clean.x-wide-padding > .content {
+.card.clean.x-wide-padding > pf-content,
+pf-card.clean.x-wide-padding > .content,
+.card.clean.x-wide-padding > .content {
   margin-top: var(--normal-dist);
 }
 pf-card.clean.xx-wide-padding > pf-content,
-pf-card.clean.xx-wide-padding > .content {
+.card.clean.xx-wide-padding > pf-content,
+pf-card.clean.xx-wide-padding > .content,
+.card.clean.xx-wide-padding > .content {
   margin-top: var(--normal-dist);
 }
-pf-card:not(.clean) {
+pf-card:not(.clean),
+.card:not(.clean) {
   padding: 0 !important;
   background-color: var(--base);
   color: var(--base-text);
 }
-pf-card:not(.clean) > header {
+pf-card:not(.clean) > header,
+.card:not(.clean) > header {
   background-color: var(--base-shade1);
   color: var(--base-shade1-text);
 }
-pf-card:not(.clean) > header {
+pf-card:not(.clean) > header,
+.card:not(.clean) > header {
   font-size: 100% !important;
 }
-pf-card:not(.clean).xx-narrow-padding > header {
+pf-card:not(.clean).xx-narrow-padding > header,
+.card:not(.clean).xx-narrow-padding > header {
   padding: var(--xx-small-dist) calc(var(--xx-small-dist) * 1.5);
 }
-pf-card:not(.clean).xx-narrow-padding > header.h-p-zero {
+pf-card:not(.clean).xx-narrow-padding > header.h-p-zero,
+.card:not(.clean).xx-narrow-padding > header.h-p-zero {
   padding: var(--xx-small-dist) 0;
 }
-pf-card:not(.clean).xx-narrow-padding > header.v-p-zero {
+pf-card:not(.clean).xx-narrow-padding > header.v-p-zero,
+.card:not(.clean).xx-narrow-padding > header.v-p-zero {
   padding: 0 calc(var(--xx-small-dist) * 1.5);
 }
 pf-card:not(.clean).xx-narrow-padding > pf-content,
-pf-card:not(.clean).xx-narrow-padding .content {
+.card:not(.clean).xx-narrow-padding > pf-content,
+pf-card:not(.clean).xx-narrow-padding .content,
+.card:not(.clean).xx-narrow-padding .content {
   padding: var(--xx-small-dist) calc(var(--xx-small-dist) * 1.5);
 }
 pf-card:not(.clean).xx-narrow-padding > pf-content.h-p-zero,
-pf-card:not(.clean).xx-narrow-padding .content.h-p-zero {
+.card:not(.clean).xx-narrow-padding > pf-content.h-p-zero,
+pf-card:not(.clean).xx-narrow-padding .content.h-p-zero,
+.card:not(.clean).xx-narrow-padding .content.h-p-zero {
   padding: var(--xx-small-dist) 0;
 }
 pf-card:not(.clean).xx-narrow-padding > pf-content.v-p-zero,
-pf-card:not(.clean).xx-narrow-padding .content.v-p-zero {
+.card:not(.clean).xx-narrow-padding > pf-content.v-p-zero,
+pf-card:not(.clean).xx-narrow-padding .content.v-p-zero,
+.card:not(.clean).xx-narrow-padding .content.v-p-zero {
   padding: 0 calc(var(--xx-small-dist) * 1.5);
 }
-pf-card:not(.clean).x-narrow-padding > header {
+pf-card:not(.clean).x-narrow-padding > header,
+.card:not(.clean).x-narrow-padding > header {
   padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.5);
 }
-pf-card:not(.clean).x-narrow-padding > header.h-p-zero {
+pf-card:not(.clean).x-narrow-padding > header.h-p-zero,
+.card:not(.clean).x-narrow-padding > header.h-p-zero {
   padding: var(--x-small-dist) 0;
 }
-pf-card:not(.clean).x-narrow-padding > header.v-p-zero {
+pf-card:not(.clean).x-narrow-padding > header.v-p-zero,
+.card:not(.clean).x-narrow-padding > header.v-p-zero {
   padding: 0 calc(var(--x-small-dist) * 1.5);
 }
 pf-card:not(.clean).x-narrow-padding > pf-content,
-pf-card:not(.clean).x-narrow-padding .content {
+.card:not(.clean).x-narrow-padding > pf-content,
+pf-card:not(.clean).x-narrow-padding .content,
+.card:not(.clean).x-narrow-padding .content {
   padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.5);
 }
 pf-card:not(.clean).x-narrow-padding > pf-content.h-p-zero,
-pf-card:not(.clean).x-narrow-padding .content.h-p-zero {
+.card:not(.clean).x-narrow-padding > pf-content.h-p-zero,
+pf-card:not(.clean).x-narrow-padding .content.h-p-zero,
+.card:not(.clean).x-narrow-padding .content.h-p-zero {
   padding: var(--x-small-dist) 0;
 }
 pf-card:not(.clean).x-narrow-padding > pf-content.v-p-zero,
-pf-card:not(.clean).x-narrow-padding .content.v-p-zero {
+.card:not(.clean).x-narrow-padding > pf-content.v-p-zero,
+pf-card:not(.clean).x-narrow-padding .content.v-p-zero,
+.card:not(.clean).x-narrow-padding .content.v-p-zero {
   padding: 0 calc(var(--x-small-dist) * 1.5);
 }
-pf-card:not(.clean).narrow-padding > header {
+pf-card:not(.clean).narrow-padding > header,
+.card:not(.clean).narrow-padding > header {
   padding: var(--small-dist) calc(var(--small-dist) * 1.5);
 }
-pf-card:not(.clean).narrow-padding > header.h-p-zero {
+pf-card:not(.clean).narrow-padding > header.h-p-zero,
+.card:not(.clean).narrow-padding > header.h-p-zero {
   padding: var(--small-dist) 0;
 }
-pf-card:not(.clean).narrow-padding > header.v-p-zero {
+pf-card:not(.clean).narrow-padding > header.v-p-zero,
+.card:not(.clean).narrow-padding > header.v-p-zero {
   padding: 0 calc(var(--small-dist) * 1.5);
 }
 pf-card:not(.clean).narrow-padding > pf-content,
-pf-card:not(.clean).narrow-padding .content {
+.card:not(.clean).narrow-padding > pf-content,
+pf-card:not(.clean).narrow-padding .content,
+.card:not(.clean).narrow-padding .content {
   padding: var(--small-dist) calc(var(--small-dist) * 1.5);
 }
 pf-card:not(.clean).narrow-padding > pf-content.h-p-zero,
-pf-card:not(.clean).narrow-padding .content.h-p-zero {
+.card:not(.clean).narrow-padding > pf-content.h-p-zero,
+pf-card:not(.clean).narrow-padding .content.h-p-zero,
+.card:not(.clean).narrow-padding .content.h-p-zero {
   padding: var(--small-dist) 0;
 }
 pf-card:not(.clean).narrow-padding > pf-content.v-p-zero,
-pf-card:not(.clean).narrow-padding .content.v-p-zero {
+.card:not(.clean).narrow-padding > pf-content.v-p-zero,
+pf-card:not(.clean).narrow-padding .content.v-p-zero,
+.card:not(.clean).narrow-padding .content.v-p-zero {
   padding: 0 calc(var(--small-dist) * 1.5);
 }
 pf-card:not(.clean).normal-padding > header,
-pf-card > header {
+.card:not(.clean).normal-padding > header,
+pf-card > header,
+.card > header {
   padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
 }
 pf-card:not(.clean).normal-padding > header.h-p-zero,
-pf-card > header.h-p-zero {
+.card:not(.clean).normal-padding > header.h-p-zero,
+pf-card > header.h-p-zero,
+.card > header.h-p-zero {
   padding: var(--normal-dist) 0;
 }
 pf-card:not(.clean).normal-padding > header.v-p-zero,
-pf-card > header.v-p-zero {
+.card:not(.clean).normal-padding > header.v-p-zero,
+pf-card > header.v-p-zero,
+.card > header.v-p-zero {
   padding: 0 calc(var(--normal-dist) * 1.5);
 }
 pf-card:not(.clean).normal-padding > pf-content,
+.card:not(.clean).normal-padding > pf-content,
 pf-card:not(.clean).normal-padding .content,
+.card:not(.clean).normal-padding .content,
 pf-card > pf-content,
-pf-card .content {
+pf-card .content,
+.card > pf-content,
+.card .content {
   padding: var(--normal-dist) calc(var(--normal-dist) * 1.5);
 }
 pf-card:not(.clean).normal-padding > pf-content.h-p-zero,
+.card:not(.clean).normal-padding > pf-content.h-p-zero,
 pf-card:not(.clean).normal-padding .content.h-p-zero,
+.card:not(.clean).normal-padding .content.h-p-zero,
 pf-card > pf-content.h-p-zero,
-pf-card .content.h-p-zero {
+pf-card .content.h-p-zero,
+.card > pf-content.h-p-zero,
+.card .content.h-p-zero {
   padding: var(--normal-dist) 0;
 }
 pf-card:not(.clean).normal-padding > pf-content.v-p-zero,
+.card:not(.clean).normal-padding > pf-content.v-p-zero,
 pf-card:not(.clean).normal-padding .content.v-p-zero,
+.card:not(.clean).normal-padding .content.v-p-zero,
 pf-card > pf-content.v-p-zero,
-pf-card .content.v-p-zero {
+pf-card .content.v-p-zero,
+.card > pf-content.v-p-zero,
+.card .content.v-p-zero {
   padding: 0 calc(var(--normal-dist) * 1.5);
 }
-pf-card:not(.clean).wide-padding > header {
+pf-card:not(.clean).wide-padding > header,
+.card:not(.clean).wide-padding > header {
   padding: var(--large-dist) calc(var(--large-dist) * 1.5);
 }
-pf-card:not(.clean).wide-padding > header.h-p-zero {
+pf-card:not(.clean).wide-padding > header.h-p-zero,
+.card:not(.clean).wide-padding > header.h-p-zero {
   padding: var(--large-dist) 0;
 }
-pf-card:not(.clean).wide-padding > header.v-p-zero {
+pf-card:not(.clean).wide-padding > header.v-p-zero,
+.card:not(.clean).wide-padding > header.v-p-zero {
   padding: 0 calc(var(--large-dist) * 1.5);
 }
 pf-card:not(.clean).wide-padding > pf-content,
-pf-card:not(.clean).wide-padding .content {
+.card:not(.clean).wide-padding > pf-content,
+pf-card:not(.clean).wide-padding .content,
+.card:not(.clean).wide-padding .content {
   padding: var(--large-dist) calc(var(--large-dist) * 1.5);
 }
 pf-card:not(.clean).wide-padding > pf-content.h-p-zero,
-pf-card:not(.clean).wide-padding .content.h-p-zero {
+.card:not(.clean).wide-padding > pf-content.h-p-zero,
+pf-card:not(.clean).wide-padding .content.h-p-zero,
+.card:not(.clean).wide-padding .content.h-p-zero {
   padding: var(--large-dist) 0;
 }
 pf-card:not(.clean).wide-padding > pf-content.v-p-zero,
-pf-card:not(.clean).wide-padding .content.v-p-zero {
+.card:not(.clean).wide-padding > pf-content.v-p-zero,
+pf-card:not(.clean).wide-padding .content.v-p-zero,
+.card:not(.clean).wide-padding .content.v-p-zero {
   padding: 0 calc(var(--large-dist) * 1.5);
 }
-pf-card:not(.clean).x-wide-padding > header {
+pf-card:not(.clean).x-wide-padding > header,
+.card:not(.clean).x-wide-padding > header {
   padding: var(--x-large-dist) calc(var(--x-large-dist) * 1.5);
 }
-pf-card:not(.clean).x-wide-padding > header.h-p-zero {
+pf-card:not(.clean).x-wide-padding > header.h-p-zero,
+.card:not(.clean).x-wide-padding > header.h-p-zero {
   padding: var(--x-large-dist) 0;
 }
-pf-card:not(.clean).x-wide-padding > header.v-p-zero {
+pf-card:not(.clean).x-wide-padding > header.v-p-zero,
+.card:not(.clean).x-wide-padding > header.v-p-zero {
   padding: 0 calc(var(--x-large-dist) * 1.5);
 }
 pf-card:not(.clean).x-wide-padding > pf-content,
-pf-card:not(.clean).x-wide-padding .content {
+.card:not(.clean).x-wide-padding > pf-content,
+pf-card:not(.clean).x-wide-padding .content,
+.card:not(.clean).x-wide-padding .content {
   padding: var(--x-large-dist) calc(var(--x-large-dist) * 1.5);
 }
 pf-card:not(.clean).x-wide-padding > pf-content.h-p-zero,
-pf-card:not(.clean).x-wide-padding .content.h-p-zero {
+.card:not(.clean).x-wide-padding > pf-content.h-p-zero,
+pf-card:not(.clean).x-wide-padding .content.h-p-zero,
+.card:not(.clean).x-wide-padding .content.h-p-zero {
   padding: var(--x-large-dist) 0;
 }
 pf-card:not(.clean).x-wide-padding > pf-content.v-p-zero,
-pf-card:not(.clean).x-wide-padding .content.v-p-zero {
+.card:not(.clean).x-wide-padding > pf-content.v-p-zero,
+pf-card:not(.clean).x-wide-padding .content.v-p-zero,
+.card:not(.clean).x-wide-padding .content.v-p-zero {
   padding: 0 calc(var(--x-large-dist) * 1.5);
 }
-pf-card:not(.clean).xx-wide-padding > header {
+pf-card:not(.clean).xx-wide-padding > header,
+.card:not(.clean).xx-wide-padding > header {
   padding: var(--xx-large-dist) calc(var(--xx-large-dist) * 1.5);
 }
-pf-card:not(.clean).xx-wide-padding > header.h-p-zero {
+pf-card:not(.clean).xx-wide-padding > header.h-p-zero,
+.card:not(.clean).xx-wide-padding > header.h-p-zero {
   padding: var(--xx-large-dist) 0;
 }
-pf-card:not(.clean).xx-wide-padding > header.v-p-zero {
+pf-card:not(.clean).xx-wide-padding > header.v-p-zero,
+.card:not(.clean).xx-wide-padding > header.v-p-zero {
   padding: 0 calc(var(--xx-large-dist) * 1.5);
 }
 pf-card:not(.clean).xx-wide-padding > pf-content,
-pf-card:not(.clean).xx-wide-padding .content {
+.card:not(.clean).xx-wide-padding > pf-content,
+pf-card:not(.clean).xx-wide-padding .content,
+.card:not(.clean).xx-wide-padding .content {
   padding: var(--xx-large-dist) calc(var(--xx-large-dist) * 1.5);
 }
 pf-card:not(.clean).xx-wide-padding > pf-content.h-p-zero,
-pf-card:not(.clean).xx-wide-padding .content.h-p-zero {
+.card:not(.clean).xx-wide-padding > pf-content.h-p-zero,
+pf-card:not(.clean).xx-wide-padding .content.h-p-zero,
+.card:not(.clean).xx-wide-padding .content.h-p-zero {
   padding: var(--xx-large-dist) 0;
 }
 pf-card:not(.clean).xx-wide-padding > pf-content.v-p-zero,
-pf-card:not(.clean).xx-wide-padding .content.v-p-zero {
+.card:not(.clean).xx-wide-padding > pf-content.v-p-zero,
+pf-card:not(.clean).xx-wide-padding .content.v-p-zero,
+.card:not(.clean).xx-wide-padding .content.v-p-zero {
   padding: 0 calc(var(--xx-large-dist) * 1.5);
 }
-pf-container.flow-grid {
+pf-container.flow-grid,
+pf-list.flow-grid > pf-viewport {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   grid-auto-rows: var(--grid-cell-height);
@@ -517,9 +620,15 @@ pf-container.flow-grid {
   grid-column-gap: 1em;
   grid-row-gap: var(--grid-row-gap);
 }
-pf-container.flow-grid > section {
-  border-top: 2px solid #ccc;
+pf-container.flow-grid > *,
+pf-list.flow-grid > pf-viewport > * {
   grid-row: span var(--spanrow);
+  margin-bottom: 1em;
+  overflow-x: auto;
+}
+pf-container.flow-grid img,
+pf-list.flow-grid > pf-viewport img {
+  max-width: 100%;
 }
 @keyframes fadein-ani {
   from {

@@ -98,7 +98,7 @@ pf-viewport {
     box-shadow: 0 0 2px 2px var(--shadow), 0 3px 14px -1px var(--shadow);
 }
 
-pf-card {
+pf-card, .card {
     background-color: var(--base);
     color: var(--base-text);
     padding: 0;
@@ -106,7 +106,8 @@ pf-card {
     // &:extend(.container-margin all);
 
     &:not(.noshd) {
-        &:extend(.card-shadow, .large-shadow);
+        &:extend(.card-shadow);
+        &.large-shadow:extend(.large-shadow) {}
     }
     
     > header {
@@ -168,7 +169,8 @@ pf-card {
     .card-padding(xx-wide-padding, var(--xx-large-dist));
 }
 
-pf-container.flow-grid {
+pf-container.flow-grid,
+pf-list.flow-grid > pf-viewport {
     display: grid;
     grid-template-columns: repeat(3,1fr);
     grid-auto-rows: var(--grid-cell-height);
@@ -176,8 +178,11 @@ pf-container.flow-grid {
     grid-column-gap: 1em;
     grid-row-gap: var(--grid-row-gap);
 
-    > section {
-        border-top: 2px solid #ccc;
+    > * {
         grid-row: span var(--spanrow);
+        margin-bottom: 1em;
+        overflow-x: auto;
     }
+
+    img { max-width: 100% }
 }

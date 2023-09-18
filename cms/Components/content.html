@@ -147,6 +147,14 @@
             if (node instanceof Object) { // 如果参数'node'是node对象
                 this.node = node;
 
+                // 设置组件node的类型(D,F,R)和内容类型(html,md,cmp,etc...)
+                if (this.node.type === "R" && this.node.contentType === "ref")
+                    this.$.attr("data-type", "R" + this.node.extData);
+                else
+                    this.$.attr("data-type", node.type);
+
+                this.$.attr("data-content", node.contentType);
+
                 if (this.headerElem) { // 若组件存在header元素,元素加载node的标题
                     if (this.node.id === null)
                         this.headerElem.text(CMS.siteTitle || this.node.title);
@@ -160,10 +168,6 @@
                         ? this.generate(this.contentElem, "md", this.node.summary)
                         : Promise.resolve();
                 } else {
-                    // 设置组件node的类型(D,F,R)和内容类型(html,md,cmp,etc...)
-                    this.$.attr("data-type", node.type);
-                    this.$.attr("data-content", node.contentType);
-
                     /* 如果存在contentElem */
                     if (this.contentElem) {
                         return Promise.resolve().then(() => {

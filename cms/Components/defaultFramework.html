@@ -16,10 +16,7 @@
             <cms-dir-nav id="secondaryNav"></cms-dir-nav>
 
             <cms-switch-list id="nodeIndex"
-                      data-dir-ref="desc"
-                      data-grid-cellheight="5"
-                      data-grid-gap="0"
-                      data-grid-column-gap="20"></cms-switch-list>
+                      data-dir-ref="desc"></cms-switch-list>
 
             <cms-node id="content" data-dir-ref="index"></cms-node>
 
@@ -38,12 +35,15 @@
 
                 if (this.node.id == CMS.homePath) {
                     this.page.$.attr('data-type', "H");
-                    return Promise.resolve(node);
+                    this.page.nodeIndex.$.addClass("flow-grid");
+                    return Promise.resolve(CMS.rootNode);
                 } else if (this.node.type == 'D') {
                     this.page.$.attr('data-type', "D");
+                    this.page.nodeIndex.$.addClass("flow-grid");
                     return Promise.resolve(node);
                 } else {
                     this.page.$.attr('data-type', "C");
+                    this.page.nodeIndex.$.removeClass("flow-grid");
                     return CMS.node(node.pid);
                 }
             }, null).then((node) => {
@@ -63,7 +63,7 @@
                     });
                 }
 
-                var pDir = node.pid || CMS.homePath;
+                var pDir = node.pid;
                 if (this.parentDirID != pDir) {
                     this.parentDirID = pDir;
                     return Promise.resolve(this.parentDirID);
