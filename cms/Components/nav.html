@@ -79,4 +79,33 @@
                 this.items[actId].$.addClass("actived");
         </script>
     </cms-list>
+
+    <a data-ft="cms::path::item" href="javascript:;">
+        <script data-fn="load" data-args="itemData">
+            this.text(itemData.title);
+            this.$.click(() => {
+                CMS.open(itemData.id);
+            });
+        </script>
+    </a>
+
+    <pf-list data-ft="cms::path"
+                    data-item-tmpl="cms::path::item"
+                   data-tagName="nav"
+                   data-noviewport
+                   data-fra="cms-path">
+        <script data-fn="load" data-args="node">
+            CMS.nodePath(node).then((ret) => {
+                var items = [];
+                for(var x in ret.ids) {
+                    items.push({
+                        id: ret.ids[x],
+                        title: ret.titles[x]
+                    });
+                }
+
+                this.list_load(items);
+            });
+        </script>
+    </pf-list>
 </pf-package>

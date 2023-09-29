@@ -13,6 +13,7 @@
                 <cms-nav id="mainNav" data-path="/"></cms-nav>
             </header>
 
+            <cms-path id="path"></cms-path>
             <cms-dir-nav id="secondaryNav"></cms-dir-nav>
 
             <cms-switch-list id="nodeIndex"
@@ -47,6 +48,8 @@
                     return CMS.node(node.pid);
                 }
             }, null).then((node) => {
+                this.page.path.load(node.id);
+
                 if (this.currentDirID != node.id) {
                     this.currentDirID = node.id;
                     this.page.nodeIndex.$.css("opacity", 0);
