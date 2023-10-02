@@ -13,6 +13,11 @@
                 this.onConnected();
         }).bind(this);
 
+        this.__rpc__.onDisconnected = (function () {
+            if (this.onDisconnected)
+                this.onDisconnected();
+        }).bind(this);
+
         this.__rpc__.onCalling = (function (obj, method, args, mID) {
             if (this.onCalling)
                 this.onCalling(obj, method, args, mID);
@@ -36,8 +41,14 @@
     </script>
 
     <script data-fn="connect" data-args="url, port">
-        this.__rpc__.url = url;
-        this.__rpc__.port = port;
+        if (url !== undefined)
+            this.__rpc__.url = url;
+        if (port !== undefined)
+            this.__rpc__.port = port;
         this.__rpc__.connectToHost();
+    </script>
+
+    <script data-fn="state">
+        return this.__rpc__.ws ? this.__rpc__.ws.readyState : -1;
     </script>
 </pf-RPC>

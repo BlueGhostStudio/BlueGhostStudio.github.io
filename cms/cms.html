@@ -41,6 +41,15 @@
                 if (obj == this.RPCOBJ("cms::main"))
                     CMSCONN.emit(sig, args);
             });
+
+            rpc.onDisconnected = () => {
+                console.log("--------------------------disconnected", rpc.state());
+                rpc.connect();
+            }
+            rpc.onCalling = () => {
+                console.log("--------------------------calling", rpc.state());
+            }
+
             nextLoad();
         });
         $("head").append('<link type="text/css" rel="stylesheet" href="'
@@ -254,9 +263,5 @@
                 CMS.open(CMS.homePath);
         });
     </script>
-    <!-- <script data-fn="constructor">
-        this.currentSiteFramework = null;
-        this.rootNode = null;
-    </script> -->
 
 </pf-package>
