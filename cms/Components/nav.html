@@ -82,7 +82,10 @@
 
     <a data-ft="cms::path::item" href="javascript:;">
         <script data-fn="load" data-args="itemData">
-            this.text(itemData.title);
+            if (itemData.id === null)
+                this.html('<i class="fa-solid fa-house"></i>');
+            else
+                this.text(itemData.title);
             this.$.click(() => {
                 CMS.open(itemData.id);
             });
