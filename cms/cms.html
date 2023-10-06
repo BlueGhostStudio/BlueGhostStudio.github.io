@@ -37,18 +37,40 @@
             relPath + "Components/defaultFramework.html"
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
-            rpc.onRemoteSignal((ev, obj, sig, args) => {
+
+            RPCCONN.on("remoteSignal", (args) => {
+                if (args[0] == this.RPCOBJ("cms::main"))
+                    CMSCONN.emit(args[1], args[2]);
+            });
+            /*rpc.onRemoteSignal((ev, obj, sig, args) => {
                 if (obj == this.RPCOBJ("cms::main"))
                     CMSCONN.emit(sig, args);
             });
 
             rpc.onDisconnected = () => {
-                console.log("--------------------------disconnected", rpc.state());
+                if (this.pingTimeoutID !== undefined)
+                    clearTimeout(this.pingTimeoutID);
+                if (this.pingIntervalID !== undefined)
+                    clearTimeout(this.pingIntervalID);
+                console.log("---------- onDisconnected ------------");
                 rpc.connect();
             }
-            rpc.onCalling = () => {
-                console.log("--------------------------calling", rpc.state());
-            }
+
+            rpc.onConnected = () => {
+                if (this.pingTimeoutID !== undefined)
+                    clearTimeout(this.pingTimeoutID);
+                if (this.pingIntervalID !== undefined)
+                    clearTimeout(this.pingIntervalID);
+
+                rpc.asyncCall(this.RPCOBJ("cms::main"), "join").then(() => {
+                    this.ping();
+                    CMSCONN.emit("connected");
+                });
+            }*/
+
+            RPCCONN.on("connected", () => {
+                rpc.asyncCall(this.RPCOBJ("cms::main"), "join");
+            });
 
             nextLoad();
         });
@@ -221,13 +243,18 @@
     <script data-fn="connect" data-args="ip, port, path">
         rpc.connect(ip, port);
         return new Promise(resolve => {
+            RPCCONN.on("connected", () => {
+                resolve();
+            });
+        });
+        /*return new Promise(resolve => {
             rpc.onConnected = () => {
                 rpc.asyncCall(this.RPCOBJ("cms::main"), "join")
                     .then(() => {
                         resolve();
                     });
             }
-        });
+        });*/
     </script>
 
     <script data-fn="initial">

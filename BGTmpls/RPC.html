@@ -2,13 +2,66 @@
     <script data-fn="load" data-args="relPath, nextLoad">
         window.rpc = this;
         this.initRPC();
+        compile($('<pf-connections id="RPCCONN" data-global></pf-connections>'));
         nextLoad();
+    </script>
+
+    <script data-fn="enablePingpong">
+        RPCCONN.on("connected", () => {
+            if (this.pingTimeoutID !== undefined)
+                clearTimeout(this.pingTimeoutID);
+            if (this.pingIntervalID !== undefined)
+                clearTimeout(this.pingIntervalID);
+
+            this.ping();
+        });
+        RPCCONN.on("disconnected", () => {
+            if (this.pingTimeoutID !== undefined)
+                clearTimeout(this.pingTimeoutID);
+            if (this.pingIntervalID !== undefined)
+                clearTimeout(this.pingIntervalID);
+            rpc.connect();
+        });
+    </script>
+
+    <script data-fn="ping">
+        this.pingTimeoutID = setTimeout(() => {
+            rpc.connect();
+        }, 2000);
+        rpc.asyncCall("fake", "ping").then(null, () => {
+            clearTimeout(this.pingTimeoutID);
+            RPCCONN.emit("pong");
+            this.pingIntervalID = setTimeout(() => {
+                RPCCONN.emit("ping");
+                this.ping();
+            }, 2000);
+        });
     </script>
 
     <script data-fn="initRPC">
         this.__rpc__ = new RPC();
 
-        this.__rpc__.onConnected = (function () {
+        this.__rpc__.onConnected = () => {
+            RPCCONN.emit("connected");
+        }
+
+        this.__rpc__.onDisconnected = () => {
+            RPCCONN.emit("disconnected");
+        }
+
+        this.__rpc__.onCalling = (obj, method, args, mID) => {
+            RPCCONN.emit("calling", [obj, method, args, mID]);
+        }
+
+        this.__rpc__.onReturn = (mID) => {
+            RPCCONN.emit("return", [mID]);
+        }
+
+        this.__rpc__.onRemoteSignal = (obj, sig, args) => {
+            RPCCONN.emit("remoteSignal", [obj, sig, args]);
+        }
+        /*this.__rpc__.onConnected = (function () {
+            console.log("---- this.__rpc__.onConnected ----", this.onConnected);
             if (this.onConnected)
                 this.onConnected();
         }).bind(this);
@@ -30,7 +83,7 @@
 
         this.__rpc__.onRemoteSignal = (function (obj, sig, args) {
             this.$.trigger("remoteSignal", [obj, sig, args]);
-        }).bind(this);
+        }).bind(this);*/
 
         this.call = this.__rpc__.call.bind(this.__rpc__);
         this.asyncCall = this.__rpc__.asyncCall.bind(this.__rpc__);
@@ -46,6 +99,10 @@
         if (port !== undefined)
             this.__rpc__.port = port;
         this.__rpc__.connectToHost();
+    </script>
+
+    <script data-fn="close">
+        this.__rpc__.close();
     </script>
 
     <script data-fn="state">

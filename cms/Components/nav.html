@@ -6,18 +6,18 @@
     <a data-ft="cms::nav::item" href="javascript:;">
         <script data-fn="load" data-args="item, node">
             this.text(item.title);
-                if ("url" in item) {
-                    //this.$.attr("href", item.url);
-                    this.$.click(() => {
-                        CMS.open(item.url.replace(/\?(p|id)=/, ''));
-                    });
-                } else if ("path" in item) {
-                    CMS.backtrackNode(node, item.path)
-                        .then((ret) => {
-                            //this.$.attr("href", "?id=" + ret.target.id);
-                            this.$.click(() => CMS.open(ret.target.id) );
-                        }, () => this.$.hide() );
-                }
+            if ("url" in item) {
+                //this.$.attr("href", item.url);
+                this.$.click(() => {
+                    CMS.open(item.url.replace(/\?(p|id)=/, ''));
+                });
+            } else if ("path" in item) {
+                CMS.backtrackNode(node, item.path)
+                    .then((ret) => {
+                        //this.$.attr("href", "?id=" + ret.target.id);
+                        this.$.click(() => CMS.open(ret.target.id) );
+                    }, () => this.$.hide() );
+            }
         </script>
     </a>
 
@@ -98,7 +98,7 @@
                    data-noviewport
                    data-fra="cms-path">
         <script data-fn="load" data-args="node">
-            CMS.nodePath(node).then((ret) => {
+            return CMS.nodePath(node).then((ret) => {
                 var items = [];
                 for(var x in ret.ids) {
                     items.push({

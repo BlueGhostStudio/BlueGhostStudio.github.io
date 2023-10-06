@@ -20,6 +20,7 @@
             loadModules([
                 "cms/cms.html"
             ], false).onEnd(() => {
+                rpc.enablePingpong();
                 CMS.connect("wss://rpc.bgstudio.live", 8000).then(CMS.initial);
             });
         });

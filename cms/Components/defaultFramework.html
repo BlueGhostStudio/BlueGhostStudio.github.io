@@ -3,8 +3,10 @@
         nextLoad();
     </script>
 
-    <pf-body data-ft="cms::default::framework" data-tagName="body">
+    <pf-body data-ft="cms::default::framework" data-connected data-tagName="body">
         <cms-style data-fn="style"></cms-style>
+
+        <div id="pingpong" data-fi="true"></div>
 
         <pf-page data-fn="page">
             <header data-fw="true">
@@ -27,7 +29,13 @@
         </pf-page>
 
         <script data-fn="openNode" data-args="path">
+            $(document).scrollTop(0);
+
             this.page.content.$.css("opacity", 0);
+            this.page.nodeIndex.$.css("opacity", 0);
+            this.page.path.$.css("opacity", 0);
+            this.page.secondaryNav.$.css("opacity", 0);
+
             this.page.content.load(path).then(() => {
                 this.page.content.$.css("opacity", 1);
                 return Promise.resolve(this.page.content.node);
@@ -50,11 +58,8 @@
                     return CMS.node(node.pid);
                 }
             }, null).then((node) => {
-                this.page.path.load(node.id);
-
                 if (this.currentDirID != node.id) {
                     this.currentDirID = node.id;
-                    this.page.nodeIndex.$.css("opacity", 0);
 
                     var pm = node.id == null
                         ? this.page.nodeIndex.search({
@@ -66,6 +71,13 @@
                     pm.then(()=> {
                         this.page.nodeIndex.$.css("opacity", 1);
                     });
+
+                    this.page.path.load(node.id).then(() => {
+                        this.page.path.$.css("opacity", 1);
+                    });
+                } else {
+                    this.page.nodeIndex.$.css("opacity", 1);
+                    this.page.path.$.css("opacity", 1);
                 }
 
                 var pDir = node.pid;
@@ -76,7 +88,6 @@
                     return Promise.resolve();
             }).then((dirPath) => {
                 if (dirPath !== undefined) {
-                    this.page.secondaryNav.$.css("opacity", 0);
                     return this.page.secondaryNav.load(dirPath);
                 } else
                     return Promise.resolve();
@@ -92,6 +103,19 @@
             this.style.load("/site/style/default").then(null, () => {
                     this.style.$.replaceWith('<link rel="stylesheet" href="cms/Components/defaultFramework.css">');
                 });
+
+            RPCCONN.on("ping", () => {
+                this.$.attr("data-pingpong", 0);
+            });
+            RPCCONN.on("pong", () => {
+                this.$.attr("data-pingpong", 1);
+            });
+            RPCCONN.on("connected", () => {
+                this.$.attr("data-connected", "");
+            });
+            RPCCONN.on("disconnected", () => {
+                this.$.removeAttr("data-connected");
+            });
         </script>
     </pf-body>
 
