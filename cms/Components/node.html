@@ -15,13 +15,16 @@
             return CMS.renderStyle(path, basePath, this.options)
                 .then((ret) => {
                     if (requestUpdate || this.id != ret.id) {
+                        this.$.empty();
                         this.id = ret.id;
                         this.text(ret.css);
                     }
                 }, (ret) => {
-                    if (basePath == CMS.rootNode.id)
+                    if (basePath == CMS.rootNode.id) {
+                        this.id = undefined;
+                        this.$.empty();
                         return Promise.reject(ret);
-                    else
+                    } else
                         return this.load(path);
                 });
         </script>
@@ -29,7 +32,11 @@
         <script data-fn="backtrackLoad" data-args="path, basePath">
             return CMS.backtrackNode(basePath, path).then((ret) => {
                 return this.load(ret.target.id);
-            })
+            }, (ret) => {
+                this.id = undefined;
+                this.$.empty();
+                return Promise.reject(ret);
+            });
         </script>
 
         <script data-fn="setOptions" data-args="opt">

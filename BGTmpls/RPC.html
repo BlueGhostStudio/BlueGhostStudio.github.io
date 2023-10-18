@@ -60,30 +60,6 @@
         this.__rpc__.onRemoteSignal = (obj, sig, args) => {
             RPCCONN.emit("remoteSignal", [obj, sig, args]);
         }
-        /*this.__rpc__.onConnected = (function () {
-            console.log("---- this.__rpc__.onConnected ----", this.onConnected);
-            if (this.onConnected)
-                this.onConnected();
-        }).bind(this);
-
-        this.__rpc__.onDisconnected = (function () {
-            if (this.onDisconnected)
-                this.onDisconnected();
-        }).bind(this);
-
-        this.__rpc__.onCalling = (function (obj, method, args, mID) {
-            if (this.onCalling)
-                this.onCalling(obj, method, args, mID);
-        }).bind(this);
-
-        this.__rpc__.onReturn = (function (mID) {
-            if (this.onReturn)
-                this.onReturn(mID);
-        }).bind(this);
-
-        this.__rpc__.onRemoteSignal = (function (obj, sig, args) {
-            this.$.trigger("remoteSignal", [obj, sig, args]);
-        }).bind(this);*/
 
         this.call = this.__rpc__.call.bind(this.__rpc__);
         this.asyncCall = this.__rpc__.asyncCall.bind(this.__rpc__);

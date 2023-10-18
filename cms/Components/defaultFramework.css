@@ -81,7 +81,7 @@ body > pf-page[data-type="D"] > header {
   align-items: end;
   justify-content: center;
   align-content: center;
-  height: 192px;
+  padding: 50px 0;
   font-weight: normal;
 }
 body > pf-page[data-type="H"] > header > img#logo,
@@ -199,7 +199,7 @@ body > pf-page[data-type="H"] > pf-list#nodeIndex {
 }
 body > pf-page[data-type="H"] > pf-list#nodeIndex::before {
   display: block;
-  margin-bottom: 1px;
+  margin-bottom: 1ex;
   content: "Latest Posts";
   font-family: "Raleway", "XiYuan", "sans-serif";
   font-variant-caps: petite-caps;

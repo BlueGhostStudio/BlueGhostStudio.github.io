@@ -4,7 +4,7 @@
         window.__body__ = compile($('body'));
 
         this.currentSiteFramework = null;
-        this.rootNode = {
+        this.rootNode = this.fraRootNode = {
             pid: null,
             id: null,
             title: '/',
@@ -38,10 +38,19 @@
         ], false).onEnd(() => {
             compile($('<pf-connections id="CMSCONN" data-global></pf-connections>'));
 
+            var qsa = __queryStringArray__(location.href);
+            if (qsa.g)
+                CMS.RPCGRP = qsa.g;
+
+            RPCCONN.on("connected", () => {
+                rpc.asyncCall(this.RPCOBJ("cms::main"), "join");
+            });
+
             RPCCONN.on("remoteSignal", (args) => {
                 if (args[0] == this.RPCOBJ("cms::main"))
                     CMSCONN.emit(args[1], args[2]);
             });
+
             /*rpc.onRemoteSignal((ev, obj, sig, args) => {
                 if (obj == this.RPCOBJ("cms::main"))
                     CMSCONN.emit(sig, args);
@@ -67,10 +76,6 @@
                     CMSCONN.emit("connected");
                 });
             }*/
-
-            RPCCONN.on("connected", () => {
-                rpc.asyncCall(this.RPCOBJ("cms::main"), "join");
-            });
 
             nextLoad();
         });
@@ -208,7 +213,7 @@
                 var tID = ret.target.id;
                 if (this.currentSiteFramework != tID) {
                     this.currentSiteFramework = tID;
-                    this.rootNode = ret.node;
+                    this.fraRootNode = ret.node;
 
                     return this.loadComponent(tID).then(() => {
                         return Promise.resolve(path);
@@ -219,6 +224,7 @@
                 if (ret.errno == 0) {
                     if (this.currentSiteFramework != -1) {
                         this.currentSiteFramework = -1;
+                        this.fraRootNode = CMS.rootNode;
                         this.replaceBody('cms::default::framework');
                     }
                     return Promise.resolve(path);
@@ -247,30 +253,14 @@
                 resolve();
             });
         });
-        /*return new Promise(resolve => {
-            rpc.onConnected = () => {
-                rpc.asyncCall(this.RPCOBJ("cms::main"), "join")
-                    .then(() => {
-                        resolve();
-                    });
-            }
-        });*/
     </script>
 
     <script data-fn="initial">
         var qsa = __queryStringArray__(location.href);
-        if (qsa.g)
-            CMS.RPCGRP = qsa.g;
 
         CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
             console.log('error', ret);
-        })/*.then(() => {
-            var defaultStyle = compile($('<cms-style></cms-style>'));
-            $('head').append(defaultStyle.$);
-            return defaultStyle.load('/site/style/default').then(null, (ret) => {
-                console.log('no default style');
-            });
-        })*/.then(() => {
+        }).then(() => {
             return CMS.loadComponent('/site/config').then(() => {
                 if (CMS.homePath !== null) {
                     return CMS.node(CMS.homePath).then((node) => {

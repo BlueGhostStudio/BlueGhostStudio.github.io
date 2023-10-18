@@ -105,7 +105,12 @@
             if (["cmp", "pkg", "fra", "elm"].includes(contentType))
                 this.onComponentLoaded(elem);
 
-            return contentGenerate[contentType](content, elem, summary);
+            if (this.__content__)
+                this.__content__.removeSelf();
+
+            return contentGenerate[contentType](content, elem, summary).then((elemObj) => {
+                    this.__content__ = elemObj;
+                });
         </script>
 
         <script data-fn="loadRefContent" data-args="path">
