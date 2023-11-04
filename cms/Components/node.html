@@ -53,7 +53,7 @@
             CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.id)
                     this.load(this.id, undefined, true);
-            });
+            }, this);
         </script>
     </cms-style-tmpl> <!-- style end -->
 

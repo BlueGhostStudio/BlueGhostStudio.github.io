@@ -258,9 +258,9 @@
                         this.load(args[0], true);
                 }
             }
-            CMSCONN.on("contentUpdated", contentUpdated);
-            CMSCONN.on("summaryUpdated", contentUpdated);
-            CMSCONN.on("titleUpdated", contentUpdated);
+            CMSCONN.on("contentUpdated", contentUpdated, this);
+            CMSCONN.on("summaryUpdated", contentUpdated, this);
+            CMSCONN.on("titleUpdated", contentUpdated, this);
             /*CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.refContentID)
                     this.loadRefContent(this.refContentID);

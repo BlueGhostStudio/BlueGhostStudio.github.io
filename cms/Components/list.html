@@ -159,19 +159,19 @@
             CMSCONN.on("nodeCreated", (args) => {
                 var newNode = args[0].node;
                 if (newNode.pid == this.listNode
-                    && (this.queryType == newNode.type
+                    && (this.queryType == undefined
                         || this.queryType == newNode.type
                         || (this.queryType == 'F' && newNode.type == 'R'))) {
                     this.append(newNode);
                 }
-            });
+            }, this);
 
             CMSCONN.on("nodeRemoved", (args) => {
                 var rmID = args[0];
                 var rmIndex = this.findIndex(fiCB, rmID);//findIndex(rmID);
                 if (rmIndex >= 0)
                     this.removeItem(rmIndex);
-            });
+            }, this);
 
             CMSCONN.on("nodeMoved", (args) => {
                 var rmID = args[0].id;
@@ -188,7 +188,7 @@
                         || (this.queryType == 'F' && movedNode.type == 'R'))
                         this.append(movedNode);
                 }
-            });
+            }, this);
 
             CMSCONN.on("nodeCopied", (args) => {
                 var newNode = args[0].node;
@@ -197,7 +197,7 @@
                         || this.queryType == newNode.type
                         || (this.queryType == 'F' && newNode.type == 'R')))
                     this.append(newNode);
-            });
+            }, this);
 
             this.LISTCONN.on("click", (args) => {
                 CMS.open(args[0].id);

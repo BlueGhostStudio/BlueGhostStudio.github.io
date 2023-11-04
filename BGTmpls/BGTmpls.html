@@ -64,9 +64,14 @@
                 this.$.trigger(sig, [args]);
             </script>
 
-            <script data-fn="on" data-args="event, cb">
+            <script data-fn="on" data-args="event, cb, receiver">
                 this.$.on(event, (e, args)=>{
-                    cb(args);
+                    if (typeof receiver == 'object'
+                        && 'destroy' in receiver
+                        && receiver.destroy)
+                        $(this).off(event);
+                    else
+                        cb(args);
                 });
             </script>
 
