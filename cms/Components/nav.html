@@ -107,7 +107,8 @@
                     });
                 }
 
-                this.list_load(items);
+                //this.list_load(items);
+                this.superTmpl("BGTmpls::list").load.call(this, items);
             });
         </script>
     </pf-list>

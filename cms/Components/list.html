@@ -35,7 +35,8 @@
                 }
             }
 
-            this.cms_node_constructor();
+            // this.cms_node_constructor();
+            this.superTmpl("cms::node").constructor.call(this);
 
             var listRoot = this.toNS("listRoot");
             this.summary = true;
@@ -71,7 +72,8 @@
             else
                 this.itemTmpl = this.defaultItemTmpl;
 
-            var itemObj = this.list_addItem(itemData, append);
+            // var itemObj = this.list_addItem(itemData, append);
+            var itemObj = this.superTmpl("BGTmpls::list").addItem.call(this, itemData, append);
             this.observe(itemObj);
             return itemObj;
         </script>
@@ -96,7 +98,8 @@
                 this.listNode = -1;
                 return CMS.list(path, query).then((ret) => {
                     this.listNode = ret.id;
-                    this.list_load(ret.list);
+                    //this.list_load(ret.list);
+                    this.superTmpl("BGTmpls::list").load.call(this, ret.list);
                 }, (ret) => { console.log("error", ret); });
             }
         </script>
@@ -111,12 +114,14 @@
 
             this.listNode = -1;
             return CMS.search(query).then((ret) => {
-                this.list_load(ret.list);
+                //this.list_load(ret.list);
+                this.superTmpl("BGTmpls::list").load.call(this, ret.list);
             }, (ret) => { console.log("error", ret); });
         </script>
 
         <script data-fn="constructor">
-            this.list_constructor();
+            //this.list_constructor();
+            this.superTmpl("BGTmpls::list").constructor.call(this);
             this.defaultItemTmpl = this.itemTmpl;
             this.listNode = -1;
 
@@ -209,7 +214,8 @@
         <cms-style data-fn="indexNodeStyle" data-prepend></cms-style>
 
         <script data-fn="load" data-args="item">
-            return this.cms_list_node_load(item).then(() => {
+            //return this.cms_list_node_load(item).then(() => {
+            return this.superTmpl("cms::list::node").load.call(this, item).then(() => {
                 this.$.attr("data-node-id", this.node.id);
                 this.indexNodeStyle.setOptions({
                     modifyVars: {
@@ -222,7 +228,8 @@
         </script>
 
         <script data-fn="constructor">
-            this.cms_list_node_constructor();
+            //this.cms_list_node_constructor();
+            this.superTmpl("cms::list::node").constructor.call(this);
         </script>
     </cms-index-node>
 
@@ -235,7 +242,8 @@
               data-fr="cms::list::node"
               data-overloaded-prefix="cms_switch_list_item">
         <script data-fn="constructor">
-            this.cms_list_node_constructor();
+            // this.cms_list_node_constructor();
+            this.superTmpl("cms::list::node").constructor.call(this);
 
             this.toNS("listRoot").LISTCONN.on("switch", () => {
                 var listRoot = this.toNS('listRoot');
@@ -260,7 +268,8 @@
         </script>
 
         <script data-fn="constructor">
-            this.cms_list_constructor();
+            //this.cms_list_constructor();
+            this.superTmpl("cms::list").constructor.call(this);
             this.origDirRef = this.dirRef;
             this.useDirRef = false;
         </script>
