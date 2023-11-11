@@ -6,6 +6,7 @@
     <pf-body data-ft="cms::default::framework" data-connected data-tagName="body">
         <cms-style data-fn="style_framework"></cms-style>
         <cms-style data-fn="style_page"></cms-style>
+        <cms-style data-fn="style_colorScheme"></cms-style>
 
         <div id="pingpong" data-fi="true"></div>
 
@@ -21,8 +22,8 @@
                 <cms-dir-nav id="secondaryNav"></cms-dir-nav>
             </div>
 
-            <cms-switch-list id="nodeIndex"
-                      data-dir-ref="desc"></cms-switch-list>
+            <cms-index id="nodeIndex"
+                       data-dir-ref="desc"></cms-index>
 
             <cms-node id="content" data-dir-ref="index"></cms-node>
 
@@ -40,12 +41,13 @@
             this.page.content.load(path).then(() => {
                 this.style_framework.backtrackLoad("site/style/framework", path);
                 this.style_page.backtrackLoad("site/style/page", path);
+                this.style_colorScheme.backtrackLoad("site/style/colorScheme", path);
                 this.page.content.$.css("opacity", 1);
                 return Promise.resolve(this.page.content.node);
             }).then((node) => {
                 this.node = node;
 
-                this.page.nodeIndex.switch(this.node.id == null || this.node.type == "D");
+                //this.page.nodeIndex.switch(this.node.id == null || this.node.type == "D");
 
                 if (this.node.id == CMS.homePath) {
                     this.page.$.attr('data-type', "H");
@@ -67,7 +69,7 @@
                     var pm = node.id == CMS.rootNode.id
                         ? this.page.nodeIndex.search({
                             "limit": { "count": 25 },
-                            "type": "F"
+                             "type": "F"
                         })
                         : this.page.nodeIndex.load(this.currentDirID);
 

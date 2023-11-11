@@ -212,6 +212,7 @@
 
     <cms-index-node data-ft="cms::index::node" data-fr="cms::list::node">
         <cms-style data-fn="indexNodeStyle" data-prepend></cms-style>
+        <cms-style data-fn="colorScheme" data-prepend></cms-style>
 
         <script data-fn="load" data-args="item">
             //return this.cms_list_node_load(item).then(() => {
@@ -219,10 +220,18 @@
                 this.$.attr("data-node-id", this.node.id);
                 this.indexNodeStyle.setOptions({
                     modifyVars: {
-                        '@indexNode': '~\'article[data-node-id="' + this.node.id + '"]\''
+                        '@indexNode': '"' + this.node.id + '"'
                     }
                 });
                 this.indexNodeStyle.load("site/style/indexListItem",
+                    this.node.id);
+
+                this.colorScheme.setOptions({
+                    modifyVars: {
+                        '@indexNode': '"' + this.node.id + '"'
+                    }
+                });
+                this.colorScheme.load("site/style/colorScheme",
                     this.node.id);
             }, (ret) => { this.$.attr("data-node-id", -2); });
         </script>
