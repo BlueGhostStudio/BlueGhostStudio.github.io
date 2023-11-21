@@ -76,3 +76,12 @@
     font-weight: bold;
 }
 
+div.cms_img_div {
+    width: 64px;
+    height: 64px;
+    background-image: var(--bg-img-src);
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: contain;
+}
+

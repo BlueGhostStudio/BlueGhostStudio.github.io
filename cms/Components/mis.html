@@ -3,19 +3,19 @@
         nextLoad();
     </script>
 
-    <cms-img-tmpl data-ft="cms::img" data-fra="cms-img" data-tagName="img">
-        <script data-fn="constructor">
-            return CMS.node(this.$.attr("src"))
+    <pf-extend-tmpl data-ft="cms::img::src">
+        <script data-fn="getSrc" data-args="src">
+            return CMS.node(src)
                         .then((ret) => {
                             if (ret.type === 'R'
                                 && ['png', 'jpg', 'gif'].includes(ret.contentType)) {
                                 var content = ret.content;
                                 if (/^link:/.test(content))
-                                    this.$.attr("src", content.substring(5));
+                                    return Promise.resolve(content.substring(5));
                                 else
                                     return CMS.mediaUrl(content.substring(4))
                                         .then((ret) => {
-                                            this.$.attr("src", ret);
+                                            return Promise.resolve(ret);
                                         }, (ret) => {
                                             console.log("error", ret);
                                             return Promise.reject();
@@ -26,7 +26,25 @@
                             return Promise.reject();
                         });
         </script>
+    </pf-extend-tmpl>
+
+    <cms-img-tmpl data-ft="cms::img" data-fra="cms-img" data-tagName="img">
+        <pf-extend data-fr="cms::img::src"></pf-extend>
+        <script data-fn="constructor">
+            return this.getSrc(this.$.attr("src")).then((ret) => {
+                this.$.attr("src", ret);
+            });
+        </script>
     </cms-img-tmpl>
+
+    <div data-ft="cms::img::div" class="cms_img_div" data-fra="cms-img-div" data-tagName="div">
+        <pf-extend data-fr="cms::img::src"></pf-extend>
+        <script data-fn="constructor">
+            return this.getSrc(this.$.attr("data-src")).then((ret) => {
+                this.$.css("--bg-img-src", 'url("' + ret + '")');
+            });
+        </script>
+    </div>
 
     <pf-text data-ft="cms::siteTitle"
              data-fra="cms-site-title"
