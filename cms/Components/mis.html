@@ -5,44 +5,60 @@
 
     <pf-extend-tmpl data-ft="cms::img::src">
         <script data-fn="getSrc" data-args="src">
-            return CMS.node(src)
-                        .then((ret) => {
-                            if (ret.type === 'R'
-                                && ['png', 'jpg', 'gif'].includes(ret.contentType)) {
-                                var content = ret.content;
-                                if (/^link:/.test(content))
-                                    return Promise.resolve(content.substring(5));
-                                else
-                                    return CMS.mediaUrl(content.substring(4))
-                                        .then((ret) => {
-                                            return Promise.resolve(ret);
-                                        }, (ret) => {
-                                            console.log("error", ret);
-                                            return Promise.reject();
-                                        });
-                            }
-                        }, (ret) => {
-                            console.log("error", ret);
-                            return Promise.reject();
-                        });
+            var backtrack = this.$.attr("data-backtrack") !== undefined;
+            var pm;
+            if (backtrack)
+                pm = CMS.backtrackNode(undefined, src).then((ret) => {
+                    return CMS.node(ret.target.id);
+                });
+            else
+                pm = CMS.node(src);
+
+            return pm.then((ret) => {
+                if (ret.type === 'R'
+                    && ['png', 'jpg', 'gif'].includes(ret.contentType)) {
+                    var content = ret.content;
+                    if (/^link:/.test(content))
+                        return Promise.resolve(content.substring(5));
+                    else
+                        return CMS.mediaUrl(content.substring(4))
+                            .then((ret) => {
+                                return Promise.resolve(ret);
+                            }, (ret) => {
+                                console.log("error", ret);
+                                return Promise.reject();
+                            });
+                }
+            }, (ret) => {
+                console.log("error", ret);
+                return Promise.reject();
+            });
         </script>
     </pf-extend-tmpl>
 
     <cms-img-tmpl data-ft="cms::img" data-fra="cms-img" data-tagName="img">
         <pf-extend data-fr="cms::img::src"></pf-extend>
         <script data-fn="constructor">
-            return this.getSrc(this.$.attr("src")).then((ret) => {
-                this.$.attr("src", ret);
-            });
+            this.src = this.$.attr("src");
+
+            CMSCONN.on("currentNodeChanged", () => {
+                this.getSrc(this.src).then((ret) => {
+                    this.$.attr("src", ret);
+                });
+            }, this);
         </script>
     </cms-img-tmpl>
 
     <div data-ft="cms::img::div" class="cms_img_div" data-fra="cms-img-div" data-tagName="div">
         <pf-extend data-fr="cms::img::src"></pf-extend>
         <script data-fn="constructor">
-            return this.getSrc(this.$.attr("data-src")).then((ret) => {
-                this.$.css("--bg-img-src", 'url("' + ret + '")');
-            });
+            this.src = this.$.attr("data-src");
+
+            CMSCONN.on("currentNodeChanged", () => {
+                this.getSrc(this.src).then((ret) => {
+                    this.$.css("--bg-img-src", 'url("' + ret + '")');
+                });
+            }, this);
         </script>
     </div>
 

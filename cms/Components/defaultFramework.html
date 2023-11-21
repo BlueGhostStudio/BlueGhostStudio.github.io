@@ -3,30 +3,114 @@
         nextLoad();
     </script>
 
-    <pf-body data-ft="cms::default::framework" data-connected data-tagName="body">
-        <cms-style data-fn="style_framework"></cms-style>
-        <cms-style data-fn="style_page"></cms-style>
-        <cms-style data-fn="style_colorScheme"></cms-style>
-
-        <div id="pingpong" data-fi="true"></div>
+    <pf-body data-ft="cms::default::framework" data-connected data-fns="body::root" data-tagName="body">
+        <cms-style data-fn="style_framework" data-backtrack data-style="site/style/framework">
+            <script data-fn="backtrackLoad" data-args="path, basePath">
+                this.superTmpl("cms::style").backtrackLoad.call(this, path, basePath).then(() => {
+                    return Promise.resolve();
+                }, () => {
+                    return Promise.resolve();
+                }).then(() => {
+                    this.toNS("body::root").$.addClass("style_framework_actived");
+                });
+            </script>
+        </cms-style>
+        <cms-style data-fn="style_page" data-backtrack data-style="site/style/page">
+            <script data-fn="backtrackLoad" data-args="path, basePath">
+                this.superTmpl("cms::style").backtrackLoad.call(this, path, basePath).then(() => {
+                    return Promise.resolve();
+                }, () => {
+                    return Promise.resolve();
+                }).then(() => {
+                    this.toNS("body::root").$.addClass("style_page_actived");
+                });
+            </script>
+        </cms-style>
+        <cms-style data-fn="style_colorScheme" data-backtrack data-style="site/style/colorScheme">
+            <script data-fn="backtrackLoad" data-args="path, basePath">
+                this.superTmpl("cms::style").backtrackLoad.call(this, path, basePath).then(() => {
+                    return Promise.resolve();
+                }, () => {
+                    return Promise.resolve();
+                }).then(() => {
+                    this.toNS("body::root").$.addClass("style_colorscheme_actived");
+                });
+            </script>
+        </cms-style>
 
         <pf-page data-fn="page">
             <header data-fw="true">
                 <!-- <cms-img id="logo" src="/site/logo"></cms-img> -->
-                <cms-img-div id="logo" data-src="/site/logo"></cms-img-div>
+                <cms-img-div id="logo" data-src="site/logo" data-backtrack></cms-img-div>
                 <cms-site-title id="siteTitle"></cms-site-title>
                 <cms-nav id="mainNav" data-path="/"></cms-nav>
             </header>
 
             <div id="navWrap" data-fw="true">
-                <cms-path id="path"></cms-path>
-                <cms-dir-nav id="secondaryNav"></cms-dir-nav>
+                <cms-path id="path">
+                    <script data-fn="constructor">
+                        this.superTmpl("cms::path").constructor.call(this);
+
+                        CMSCONN.on("currentNodeChanged", () => {
+                            this.$.css("display", "none");
+                            this.load(this.toNS("body::root").currentDirID).then(() => {
+                                this.$.css("display", "");
+                            });
+                        }, this);
+                    </script>
+                </cms-path>
+                <cms-dir-nav id="secondaryNav">
+                    <script data-fn="constructor">
+                        this.superTmpl("cms::dir::nav").constructor.call(this);
+
+                        CMSCONN.on("currentNodeChanged", () => {
+                            var bodyRoot = this.toNS("body::root");
+                            
+                            var pDirID = bodyRoot.parentDirID;
+                            if (this.listNode != pDirID) {
+                                this.$.css("display", "none");
+                                this.load(pDirID).then(() => {
+                                    this.activate(bodyRoot.currentDirID);
+                                    this.$.css("display", "");
+                                });
+                            } else
+                                this.activate(bodyRoot.currentDirID);
+                        }, this);
+                    </script>
+                </cms-dir-nav>
             </div>
 
             <cms-index id="nodeIndex"
-                       data-dir-ref="desc"></cms-index>
+                       data-dir-ref="desc">
+                <script data-fn="constructor">
+                    this.superTmpl("cms::index").constructor.call(this);
 
-            <cms-node id="content" data-dir-ref="index"></cms-node>
+                    CMSCONN.on("currentNodeChanged", (dirNode) => {
+                        this.$.css("display", "none");
+                        (dirNode.id === CMS.rootNode.id
+                            ? this.search({
+                                "limit": { "count": 25 },
+                                "type": "F"
+                            })
+                            : this.load(this.toNS("body::root").currentDirID)).then(() => {
+                                this.$.css("display", "");
+                            });
+                    });
+                </script>
+            </cms-index>
+
+            <cms-node id="content" data-dir-ref="index">
+                <script data-fn="constructor">
+                    this.superTmpl("cms::node").constructor.call(this);
+
+                    CMSCONN.on("currentNodeChanged", () => {
+                        this.$.css("display", "none");
+                        this.load(CMS.currentNode).then(() => {
+                            this.$.css("display", "");
+                        });
+                    }, this);
+                </script>
+            </cms-node>
 
             <footer>BGMRPC - BGCMS - BGPF</footer>
         </pf-page>
@@ -34,73 +118,33 @@
         <script data-fn="openNode" data-args="path">
             $(document).scrollTop(0);
 
-            this.page.content.$.css("opacity", 0);
-            this.page.nodeIndex.$.css("opacity", 0);
-            this.page.path.$.css("opacity", 0);
-            this.page.secondaryNav.$.css("opacity", 0);
-
-            this.page.content.load(path).then(() => {
-                this.style_framework.backtrackLoad("site/style/framework", path);
-                this.style_page.backtrackLoad("site/style/page", path);
-                this.style_colorScheme.backtrackLoad("site/style/colorScheme", path);
-                this.page.content.$.css("opacity", 1);
-                return Promise.resolve(this.page.content.node);
-            }).then((node) => {
-                this.node = node;
-
-                //this.page.nodeIndex.switch(this.node.id == null || this.node.type == "D");
-
-                if (this.node.id == CMS.homePath) {
-                    this.page.$.attr('data-type', "H");
+            this.$.removeClass("style_framework_actived");
+            this.$.removeClass("style_page_actived");
+            this.$.removeClass("style_colorscheme_actived");
+            CMS.node(path).then((node) => {
+                CMS.currentNode = node;
+                if (CMS.currentNode.id == CMS.homePath) {
+                    this.page.$.attr('data-type', 'H');
                     this.page.nodeIndex.$.addClass("flow-grid");
                     return Promise.resolve(CMS.rootNode);
-                } else if (this.node.type == 'D') {
+                } else if (CMS.currentNode.type == 'D') {
                     this.page.$.attr('data-type', "D");
                     this.page.nodeIndex.$.addClass("flow-grid");
-                    return Promise.resolve(node);
+                    return Promise.resolve(CMS.currentNode);
                 } else {
                     this.page.$.attr('data-type', "C");
                     this.page.nodeIndex.$.removeClass("flow-grid");
-                    return CMS.node(node.pid);
+                    return CMS.node(CMS.currentNode.pid);
                 }
-            }, null).then((node) => {
-                if (this.currentDirID != node.id) {
+            }).then((node) => {
+                if (this.currentDirID != node.id)
                     this.currentDirID = node.id;
+                if (this.parentDirID != node.pid)
+                    this.parentDirID = node.pid;
 
-                    var pm = node.id == CMS.rootNode.id
-                        ? this.page.nodeIndex.search({
-                            "limit": { "count": 25 },
-                             "type": "F"
-                        })
-                        : this.page.nodeIndex.load(this.currentDirID);
-
-                    pm.then(()=> {
-                        this.page.nodeIndex.$.css("opacity", 1);
-                    });
-
-                    this.page.path.load(node.id).then(() => {
-                        this.page.path.$.css("opacity", 1);
-                    });
-                } else {
-                    this.page.nodeIndex.$.css("opacity", 1);
-                    this.page.path.$.css("opacity", 1);
-                }
-
-                var pDir = node.pid;
-                if (this.parentDirID != pDir) {
-                    this.parentDirID = pDir;
-                    return Promise.resolve(this.parentDirID);
-                } else
-                    return Promise.resolve();
-            }).then((dirPath) => {
-                if (dirPath !== undefined) {
-                    return this.page.secondaryNav.load(dirPath);
-                } else
-                    return Promise.resolve();
-            }).then(() => {
-                this.page.secondaryNav.$.css("opacity", 1);
-                this.page.secondaryNav.activate(this.currentDirID);
+                CMSCONN.emit("currentNodeChanged", node);
             });
+
         </script>
 
         <script data-fn="constructor">
@@ -110,12 +154,6 @@
                     this.style.$.replaceWith('<link rel="stylesheet" href="cms/Components/defaultFramework.css">');
                 });*/
 
-            RPCCONN.on("ping", () => {
-                this.$.attr("data-pingpong", 0);
-            });
-            RPCCONN.on("pong", () => {
-                this.$.attr("data-pingpong", 1);
-            });
             RPCCONN.on("connected", () => {
                 this.$.attr("data-connected", "");
             });

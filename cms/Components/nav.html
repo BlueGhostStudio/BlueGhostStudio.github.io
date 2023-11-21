@@ -93,10 +93,10 @@
     </a>
 
     <pf-list data-ft="cms::path"
-                    data-item-tmpl="cms::path::item"
-                   data-tagName="nav"
-                   data-noviewport
-                   data-fra="cms-path">
+             data-item-tmpl="cms::path::item"
+             data-tagName="nav"
+             data-noviewport
+             data-fra="cms-path">
         <script data-fn="load" data-args="node">
             return CMS.nodePath(node).then((ret) => {
                 var items = [];
@@ -113,3 +113,4 @@
         </script>
     </pf-list>
 </pf-package>
+

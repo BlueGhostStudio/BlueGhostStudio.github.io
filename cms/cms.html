@@ -10,6 +10,7 @@
             title: '/',
             type: 'D'
         }
+        this.currentNode = this.rootNode;
 
         __PF_BASE_CLASS__.prototype.html = function (h) {
             if (h !== undefined) {
@@ -104,6 +105,9 @@
     </script>
 
     <script data-fn="nodeInfo" data-args="node, pNode">
+        if (!isNaN(node))
+            node = Number(node);
+
         return (pNode !== undefined
             ? rpc.asyncCall(this.RPCOBJ("cms::main"), "refNodeInfo", pNode, node)
             : rpc.asyncCall(this.RPCOBJ("cms::main"), "refNodeInfo", node))
@@ -111,7 +115,7 @@
                 if (ret.ok)
                     return Promise.resolve(ret.node);
                 else
-                    return Promise.reject(false);
+                    return Promise.reject(ret.error);
             });
     </script>
 
@@ -161,7 +165,9 @@
     </script>
 
     <script data-fn="backtrackNode" data-args="node, target, stop">
-        if (!isNaN(node))
+        if (node !== undefined || node !== null)
+            node = this.currentNode.id;
+        else if (!isNaN(node))
             node = Number(node);
 
         return rpc.asyncCall(this.RPCOBJ("cms::web"),  "backtrackNode", node, target, stop)
@@ -237,7 +243,7 @@
         if (path == '/'|| path == null || (path instanceof Object && path.id == null))
             path = CMS.homePath;
 
-        CMSCONN.emit("openNode", []);
+        //CMSCONN.emit("openNode", []);
         return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__)
                     __body__.openNode(ret);

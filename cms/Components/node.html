@@ -45,14 +45,17 @@
         
         <script data-fn="constructor">
             this.options = {};
-            var backtrack = this.$.attr("data-backtrack") != undefined;
-            var sPath = this.$.attr("data-style");
-            if (sPath.length > 0)
-                backtrack ? this.backtrackLoad(sPath) : this.load(sPath);
+            this.backtrack = this.$.attr("data-backtrack") != undefined;
+            this.sPath = this.$.attr("data-style");
+            if (this.sPath.length > 0)
+                this.backtrack ? this.backtrackLoad(this.sPath) : this.load(this.sPath);
 
             CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.id)
                     this.load(this.id, undefined, true);
+            }, this);
+            CMSCONN.on("currentNodeChanged", () => {
+                this.backtrack ? this.backtrackLoad(this.sPath) : this.load(this.sPath);
             }, this);
         </script>
     </cms-style-tmpl> <!-- style end -->
