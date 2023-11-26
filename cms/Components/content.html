@@ -105,8 +105,8 @@
             if (["cmp", "pkg", "fra", "elm"].includes(contentType))
                 this.onComponentLoaded(elem);
 
-            if (this.__content__)
-                this.__content__.removeSelf();
+            /*if (this.__content__)
+                this.__content__.removeSelf();*/
 
             return contentGenerate[contentType](content, elem, summary).then((elemObj) => {
                     this.__content__ = elemObj;
@@ -137,9 +137,9 @@
 
         <script data-fn="clear">
             if (this.headerElem)
-                this.headerElem.$.empty();
+                this.headerElem.empty();
             if (this.contentElem)
-                this.contentElem.$.empty();
+                this.contentElem.empty();
             this.node = undefined;
         </script>
 

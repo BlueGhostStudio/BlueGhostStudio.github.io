@@ -34,24 +34,44 @@
                 return Promise.reject();
             });
         </script>
+
+        <script data-fn="constructor">
+            var src = this.$.attr("data-src");
+
+            if (src && src.length > 0)
+                this.load(src);
+        </script>
     </pf-extend-tmpl>
 
     <cms-img-tmpl data-ft="cms::img" data-fra="cms-img" data-tagName="img">
         <pf-extend data-fr="cms::img::src"></pf-extend>
-        <script data-fn="constructor">
-            this.src = this.$.attr("src");
+
+        <script data-fn="load" data-args="src">
+            return this.getSrc(src).then((ret) => {
+                this.$.attr("src", ret);
+            });
+        </script>
+
+        <!-- <script data-fn="constructor">
+            var src = this.$.attr("src");
 
             CMSCONN.on("currentNodeChanged", () => {
                 this.getSrc(this.src).then((ret) => {
                     this.$.attr("src", ret);
                 });
             }, this);
-        </script>
+        </script> -->
     </cms-img-tmpl>
 
     <div data-ft="cms::img::div" class="cms_img_div" data-fra="cms-img-div" data-tagName="div">
         <pf-extend data-fr="cms::img::src"></pf-extend>
-        <script data-fn="constructor">
+
+        <script data-fn="load" data-args="src">
+            return this.getSrc(src).then((ret) => {
+                this.$.css("--bg-img-src", `url("${ret}")`);
+            });
+        </script>
+        <!-- <script data-fn="constructor">
             this.src = this.$.attr("data-src");
 
             CMSCONN.on("currentNodeChanged", () => {
@@ -59,7 +79,7 @@
                     this.$.css("--bg-img-src", 'url("' + ret + '")');
                 });
             }, this);
-        </script>
+        </script> -->
     </div>
 
     <pf-text data-ft="cms::siteTitle"

@@ -4,113 +4,26 @@
     </script>
 
     <pf-body data-ft="cms::default::framework" data-connected data-fns="body::root" data-tagName="body">
-        <cms-style data-fn="style_framework" data-backtrack data-style="site/style/framework">
-            <script data-fn="backtrackLoad" data-args="path, basePath">
-                this.superTmpl("cms::style").backtrackLoad.call(this, path, basePath).then(() => {
-                    return Promise.resolve();
-                }, () => {
-                    return Promise.resolve();
-                }).then(() => {
-                    this.toNS("body::root").$.addClass("style_framework_actived");
-                });
-            </script>
-        </cms-style>
-        <cms-style data-fn="style_page" data-backtrack data-style="site/style/page">
-            <script data-fn="backtrackLoad" data-args="path, basePath">
-                this.superTmpl("cms::style").backtrackLoad.call(this, path, basePath).then(() => {
-                    return Promise.resolve();
-                }, () => {
-                    return Promise.resolve();
-                }).then(() => {
-                    this.toNS("body::root").$.addClass("style_page_actived");
-                });
-            </script>
-        </cms-style>
-        <cms-style data-fn="style_colorScheme" data-backtrack data-style="site/style/colorScheme">
-            <script data-fn="backtrackLoad" data-args="path, basePath">
-                this.superTmpl("cms::style").backtrackLoad.call(this, path, basePath).then(() => {
-                    return Promise.resolve();
-                }, () => {
-                    return Promise.resolve();
-                }).then(() => {
-                    this.toNS("body::root").$.addClass("style_colorscheme_actived");
-                });
-            </script>
-        </cms-style>
+        <cms-style data-fn="style_framework" data-backtrack></cms-style>
+        <cms-style data-fn="style_page" data-backtrack></cms-style>
+        <cms-style data-fn="style_colorScheme" data-backtrack></cms-style>
 
         <pf-page data-fn="page">
             <header data-fw="true">
                 <!-- <cms-img id="logo" src="/site/logo"></cms-img> -->
-                <cms-img-div id="logo" data-src="site/logo" data-backtrack></cms-img-div>
+                <cms-img-div id="logo" data-backtrack></cms-img-div>
                 <cms-site-title id="siteTitle"></cms-site-title>
                 <cms-nav id="mainNav" data-path="/"></cms-nav>
             </header>
 
             <div id="navWrap" data-fw="true">
-                <cms-path id="path">
-                    <script data-fn="constructor">
-                        this.superTmpl("cms::path").constructor.call(this);
-
-                        CMSCONN.on("currentNodeChanged", () => {
-                            this.$.css("display", "none");
-                            this.load(this.toNS("body::root").currentDirID).then(() => {
-                                this.$.css("display", "");
-                            });
-                        }, this);
-                    </script>
-                </cms-path>
-                <cms-dir-nav id="secondaryNav">
-                    <script data-fn="constructor">
-                        this.superTmpl("cms::dir::nav").constructor.call(this);
-
-                        CMSCONN.on("currentNodeChanged", () => {
-                            var bodyRoot = this.toNS("body::root");
-                            
-                            var pDirID = bodyRoot.parentDirID;
-                            if (this.listNode != pDirID) {
-                                this.$.css("display", "none");
-                                this.load(pDirID).then(() => {
-                                    this.activate(bodyRoot.currentDirID);
-                                    this.$.css("display", "");
-                                });
-                            } else
-                                this.activate(bodyRoot.currentDirID);
-                        }, this);
-                    </script>
-                </cms-dir-nav>
+                <cms-path id="path"></cms-path>
+                <cms-dir-nav id="secondaryNav"></cms-dir-nav>
             </div>
 
-            <cms-index id="nodeIndex"
-                       data-dir-ref="desc">
-                <script data-fn="constructor">
-                    this.superTmpl("cms::index").constructor.call(this);
+            <cms-index id="nodeIndex" data-dir-ref="desc"></cms-index>
 
-                    CMSCONN.on("currentNodeChanged", (dirNode) => {
-                        this.$.css("display", "none");
-                        (dirNode.id === CMS.rootNode.id
-                            ? this.search({
-                                "limit": { "count": 25 },
-                                "type": "F"
-                            })
-                            : this.load(this.toNS("body::root").currentDirID)).then(() => {
-                                this.$.css("display", "");
-                            });
-                    });
-                </script>
-            </cms-index>
-
-            <cms-node id="content" data-dir-ref="index">
-                <script data-fn="constructor">
-                    this.superTmpl("cms::node").constructor.call(this);
-
-                    CMSCONN.on("currentNodeChanged", () => {
-                        this.$.css("display", "none");
-                        this.load(CMS.currentNode).then(() => {
-                            this.$.css("display", "");
-                        });
-                    }, this);
-                </script>
-            </cms-node>
+            <cms-node id="content" data-dir-ref="index"></cms-node>
 
             <footer>BGMRPC - BGCMS - BGPF</footer>
         </pf-page>
@@ -160,6 +73,71 @@
             RPCCONN.on("disconnected", () => {
                 this.$.removeAttr("data-connected");
             });
+
+
+            var waitLoadStyle = (styleObj, sPath, actived) => {
+                CMSCONN.on("currentNodeChanged", () => {
+                    styleObj.backtrackLoad(sPath).then(() => {
+                        return Promise.resolve();
+                    }, () => {
+                        return Promise.resolve();
+                    }).then(() => {
+                        this.$.addClass(actived);
+                        CMSCONN.emit("styleLoaded", actived);
+                    });
+                }, styleObj);
+            }
+
+            waitLoadStyle(this.style_framework, "site/style/framework", "style_framework_actived");
+            waitLoadStyle(this.style_page, "site/style/page", "style_page_actived");
+            waitLoadStyle(this.style_colorScheme, "site/style/colorScheme", "style_colorscheme_actived");
+
+            CMSCONN.on("currentNodeChanged", () => {
+                this.page.logo.load("site/logo").then(() => {
+                    CMSCONN.emit("logoLoaded");
+                });
+            }, this.page.logo);
+
+            CMSCONN.on("currentNodeChanged", () => {
+                this.page.path.$.css("display", "none");
+                this.page.path.load(this.currentDirID).then(() => {
+                    this.page.path.$.css("display", "");
+                    CMSCONN.emit("pathLoaded");
+                });
+            }, this.page.path);
+
+            CMSCONN.on("currentNodeChanged", () => {
+                if (this.page.secondaryNav.listNode != this.parentDirID) {
+                    this.page.secondaryNav.$.css("display", "none");
+                    this.page.secondaryNav.load(this.parentDirID).then(() => {
+                        this.page.secondaryNav.activate(this.currentDirID);
+                        this.page.secondaryNav.$.css("display", "");
+                        CMSCONN.emit("secondaryNavLoaded");
+                    });
+                } else
+                    this.page.secondaryNav.activate(this.currentDirID);
+            }, this.page.secondaryNav);
+
+            CMSCONN.on("currentNodeChanged", (dirNode) => {
+                this.page.nodeIndex.$.css("display", "none");
+                (dirNode.id === CMS.rootNode.id
+                    ? this.page.nodeIndex.search({
+                        "limit": { "count": 25 },
+                        "type": "F"
+                    })
+                    : this.page.nodeIndex.load(this.currentDirID)).then(() => {
+                        this.page.nodeIndex.$.css("display", "");
+                        CMSCONN.emit("nodeIndexLoaded");
+                    });
+            }, this.page.nodeIndex);
+
+            CMSCONN.on("currentNodeChanged", () => {
+                this.page.content.$.css("display", "none");
+                this.page.content.load(CMS.currentNode).then(() => {
+                    this.page.content.$.css("display", "");
+                    CMSCONN.emit("contentLoaded");
+                });
+            }, this.page.content);
         </script>
     </pf-body>
 
