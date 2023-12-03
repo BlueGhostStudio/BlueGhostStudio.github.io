@@ -4,25 +4,56 @@
     </script>
 
     <pf-package data-fn="list">
-        <pf-list-item-tmpl data-ft="BGTmpls::listItem" data-tagName="pf-list-item">
+        <pf-list-item-tmpl data-ft="BGTmpls::list::item" data-tagname="pf-list-item">
             <script data-fn="load" data-args="itemData">
                 this.text(itemData);
             </script>
         </pf-list-item-tmpl>
 
-        <pf-viewport data-ft="BGTmpls::list::viewport"></pf-viewport>
+        <pf-list-tmpl data-ft="BGTmpls::list" data-fns="listRoot" data-fra="pf-list" data-tagname="pf-list">
+            <pf-data data-fn="opt" data-object>
+                <pf-data data-fn="noviewport" data-js><script>
+                    return this.$.attr("data-noviewport") !== undefined;
+                </script></pf-data>
+                <pf-data data-fn="itemTmpl" data-js><script>
+                    return this.$.attr("data-item-tmpl") || "BGTmpls::list::item";
+                </script></pf-data>
+            </pf-data>
+            <pf-data data-fn="viewport" data-js><script>
+                if (this.__DATA__.opt.noviewport)
+                    return this;
+                else {
+                    var vp = compile($("<pf-viewport></pf-viewport>"),
+                        this, "/site/components.pkg");
+                    vp.putInto(this);
 
-        <pf-list-tmpl data-ft="BGTmpls::list"
-                      data-item-tmpl="BGTmpls::listItem"
-                      data-fns="listRoot"
-                      data-fra="pf-list"
-                      data-tagName="pf-list"
-                      data-overloaded-prefix="list">
+                    return vp;
+                }
+            </script></pf-data>
+            <pf-data data-fn="items" data-array></pf-data>
+            <pf-data data-fn="itemCount" data-number>0</pf-data>
 
             <script data-fn="findIndex" data-args="callback, data">
-                return this.items.findIndex((item) => {
+                return this.__DATA__.items.findIndex((item) => {
                     return callback(item, data);
                 });
+            </script>
+
+            <script data-fn="addItem" data-args="itemData, append">
+                var li = this.__DATA__.viewport.create(this.__DATA__.opt.itemTmpl);
+                li.load(itemData);
+
+                if (append)
+                    li.putInto(this.__DATA__.viewport);
+                else
+                    li.prepend(this.__DATA__.viewport);
+
+                this.__DATA__.items.push(li);
+                this.__DATA__.itemCount = this.__DATA__.items.length;
+
+                this.$.attr("data-item-count", this.__DATA__.itemCount);
+
+                return li;
             </script>
 
             <script data-fn="append" data-args="itemData">
@@ -33,72 +64,32 @@
                 return this.addItem(itemData, false);
             </script>
 
-            <script data-fn="addItem" data-args="itemData, append">
-                //var li = this.create(this.$.attr("data-item-tmpl"));
-                var li = this.create(this.itemTmpl);
-                li.load(itemData);
-                if (append)
-                    li.putInto(this.viewport || this);
-                else
-                    li.prepend(this.viewport || this);
-
-                if (!this.items)
-                    this.items = [];
-
-                this.items.push(li);
-                this.itemCount = this.items.length;
-
-                this.$.attr("data-item-count", this.itemCount);
-
-                return li;
-            </script>
-
             <script data-fn="removeItem" data-args="index">
-                this.items[index].removeSelf();
-                this.items.splice(index, 1);
-                this.itemCount = this.items.length;
+                this.__DATA__.items[index].removeSelf();
+                this.__DATA__.items.splice(index, 1);
+                this.__DATA__.itemCount = this.__DATA__.items.length;
 
-                this.$.attr("data-item-count", this.count);
-            </script>
-
-            <script data-fn="clear">
-                this.items = [];
-                this.itemCount = 0;
-                this.$.attr("data-item-count", 0);
-                (this.viewport || this).empty();
+                this.$.attr("data-item-count", this.__DATA__.itemCount);
             </script>
 
             <script data-fn="load" data-args="listData">
                 this.clear();
 
-                for (var x in listData) {
+                for (let x in listData)
                     this.append(listData[x]);
-                }
+            </script>
+
+            <script data-fn="clear">
+                this.__DATA__.items = [];
+                this.__DATA__.itemCount = 0;
+                this.$.attr("data-item-count", 0);
+                this.__DATA__.viewport.empty();
             </script>
 
             <script data-fn="constructor">
-                this.items = [];
-
-                if (this.$.attr("data-noviewport") === undefined) {
-                    this.viewport = this.create("BGTmpls::list::viewport");
-                    this.viewport.putInto(this);
-                }
-
-                this.itemTmpl = this.$.attr("data-item-tmpl");
-
-                this.itemID = 0;
-                this.$.attr("data-item-count", 0);
-
-                var items = this.__data__.item;
-                if (items !== undefined) {
-                    for (var x in items) {
-                        if (items[x].type === "json")
-                            this.append(JSON.parse(items[x].text()));
-                        else if (items[x].type === "js")
-                            this.append(eval(items[x].text()));
-                        else
-                            this.append(items[x].text());
-                    }
+                if (this.__DATA__.listData) {
+                    for (let x in this.__DATA__.listData)
+                        this.append(this.__DATA__.listData[x]);
                 }
             </script>
         </pf-list-tmpl>
@@ -117,10 +108,14 @@
             </script>
 
             <script data-fn="constructor">
-                if (this.__data__.header !== undefined)
-                    this.setHeader(this.__data__.header[0].$.html());
-                if (this.__data__.content !== undefined)
-                    this.setContent(this.__data__.content[0].$.html());
+                /*if (this.__DATA__.header !== undefined)
+                    this.setHeader(this.__DATA__.header[0].$.html());
+                if (this.__DATA__.content !== undefined)
+                    this.setContent(this.__DATA__.content[0].$.html());*/
+                if (this.__DATA__.header !== undefined)
+                    this.setHeader(this.__DATA__.header);
+                if (this.__DATA__.content !== undefined)
+                    this.setContent(this.__DATA__.content);
             </script>
         </article>
     </pf-package>
@@ -133,7 +128,7 @@
                 this.span.text(text);
             </script>
             <script data-fn="constructor">
-                this.span.text(this.__text__);
+                this.span.text(this.__TEXT__);
                 this.span.$.click((function() {
                     this.toNS("swipeRoot").swipe(Number(this.$.attr("data-tab-index")));
                 }).bind(this));
@@ -157,12 +152,12 @@
                     this.onActivated(index);
             </script>
             <script data-fn="constructor">
-                var pages = this.__data__.page;
+                var pages = this.__DATA__.pages;
                 if (pages !== undefined) {
                     for (var x in pages) {
                         var p = pages[x];
                         var tab = this.create("BGTmpls::tabTmpl");
-                        tab.setText(p.header.text());
+                        tab.setText(p.label);
                         tab.putInto(this.tabbar);
                         p.content.putInto(this.viewport);
                     }
@@ -216,8 +211,8 @@
 
         <button data-ft="BGTmpls::buttonTmpl" data-fra="pf-button" data-overloaded-prefix="button" data-tagName="button">
             <script data-fn="constructor">
-                if (this.__text__) {
-                    var t = this.__text__.trim();
+                if (this.__TEXT__) {
+                    var t = this.__TEXT__.trim();
                     if (t.length > 0)
                         this.text(t);
                 }
@@ -226,11 +221,20 @@
     </pf-package>
 
     <pf-package name="dialog">
-        <button data-ft="BGTmpls::dlgBtnTmpl" data-fr="BGTmpls::buttonTmpl" data-fra="pf-dlg-button" data-tagName="button">
+        <button data-ft="BGTmpls::dlgBtnTmpl"
+                data-fr="BGTmpls::buttonTmpl"
+                data-fra="pf-dlg-button"
+                data-tagName="button">
+
+            <pf-data data-fn="value" data-number>-1</pf-data>
             <script data-fn="constructor">
                 //this.button_constructor();
                 this.superTmpl("BGTmpls::buttonTmpl").constructor.call(this);
-                this.toNS("dlgRoot").addButton(this);
+                var dlgRoot = this.toNS("dlgRoot");
+                this.$.click(() => {
+                    dlgRoot.close(this.__DATA__.value);
+                });
+                // this.toNS("dlgRoot").addButton(this);
             </script>
         </button>
 
@@ -240,19 +244,32 @@
             </script>
             <script data-fn="open">
                 this.$.addClass("opened");
-                return new Promise((function(resolve) {
+                /*return new Promise((function(resolve) {
                     this.$.on("close", (function(e, v) {
                         this.$.removeClass("opened");
                         resolve(this.result(v));
                     }).bind(this));
-                }).bind(this));
+                }).bind(this));*/
+                return new Promise((resolve) => {
+                    this.$.on("close", (e, v) => {
+                        this.$.removeClass("opened");
+                        resolve(this.result(v));
+                    });
+                });
             </script>
             <script data-fn="close" data-args="v">
                 if (v === undefined)
                     v = -1;
                 this.$.trigger("close", [v]);
             </script>
-            <script data-fn="addButton" data-args="btn">
+
+            <script data-fn="constructor">
+                this.$.click(() => {
+                    if (!this.__DATA__.opt.modal)
+                        this.close();
+                });
+            </script>
+            <!--<script data-fn="addButton" data-args="btn">
                 this.dlgButtons.push(btn);
             </script>
             <script data-fn="preconstructor">
@@ -270,12 +287,25 @@
                     if (this.$.attr("data-modal") == "false")
                         this.close();
                 });
-            </script>
+            </script>-->
         </pf-extend-tmpl>
 
-        <pf-container class="overlayer dialog" data-ft="BGTmpls::dialogTmpl" data-fns="dlgRoot"
-            data-modal="true" data-fra="pf-dialog" data-tagName="pf-container">
+        <pf-container class="overlayer dialog"
+                      data-ft="BGTmpls::dialogTmpl"
+                      data-fns="dlgRoot"
+                      data-fra="pf-dialog" data-tagName="pf-container">
             <pf-extend data-fr="BGTmpls::dialogDefine"></pf-extend>
+
+            <pf-data data-fn="opt" data-object data-b-modal="true"></pf-data>
+            <pf-data data-fn="header" data-str>No Title</pf-data>
+            <pf-data data-fn="dlgBody">
+                <p>Hello BG-PF.js</p>
+            </pf-data>
+            <pf-data data-fn="buttons" data-array>
+                <pf-data data-object data-s-text="Ok" data-n-value="1"></pf-data>
+                <pf-data data-object data-s-text="Cancel" data-n-value="-1"></pf-data>
+            </pf-data>
+
             <pf-card data-fw="true">
                 <header id="header" class="x-narrow-padding"></header>
                 <pf-content id="dlgContent"></pf-content>
@@ -286,11 +316,20 @@
                     event.stopPropagation();
                 })
 
-                var header = this.__data__.header;
+                /*var header = this.__DATA__.header;
                 if (header !== undefined)
-                    this.header.text(header[0].text());
+                    this.header.text(header[0].text());*/
+                this.header.text(this.__DATA__.header);
 
-                var buttons = this.__data__.button;
+                for (let x in this.__DATA__.buttons) {
+                    var btnData = this.__DATA__.buttons[x];
+                    var btn = this.create("BGTmpls::dlgBtnTmpl");
+                    btn.text(btnData.text);
+                    btn.__DATA__.value = btnData.value;
+                    btn.putInto(this.dlgBtnsBox);
+                }
+
+                /*var buttons = this.__DATA__.button;
                 if (buttons !== undefined) {
                     for (let x in buttons) {
                         var btnData = buttons[x];
@@ -299,33 +338,70 @@
                         btn.$.attr("value", btnData.value);
                         btn.putInto(this.dlgBtnsBox);
                     }
-                }
+                }*/
 
-                var dlgBody = this.__data__.dlgBody;
+                //this.dlgContent.$.append(this.__DATA__.dlgBody.$.contents());
+                this.__DATA__.dlgBody.putInto(this.dlgContent, "dlgBody");
+                if (this.__DATA__.dlgBody.result instanceof Function)
+                    this.result = this.__DATA__.dlgBody.result;
+
+                /*var dlgBody = this.__DATA__.dlgBody;
                 if (dlgBody !== undefined) {
                     this.dlgBody = dlgBody[0];
                     this.dlgContent.$.append(this.dlgBody.$.contents());
                     if (this.dlgBody.result instanceof Function)
                         this.result = this.dlgBody.result;
-                }
+                }*/
+            </script>
 
-                this.dialog_constructor();
+            <script data-fn="destructor">
+                this.__DATA__.dlgBody.removeSelf();
             </script>
         </pf-container>
 
-        <pf-container class="message" data-fr="BGTmpls::dialogTmpl" data-ft="BGTmpls::messageBoxTmpl" data-fra="pf-message">
-            <pf-text id="message" data-putInto="dlgContent"></pf-text>
+        <pf-container class="message" data-fr="BGTmpls::dialogTmpl"
+                                      data-ft="BGTmpls::messageBoxTmpl"
+                                      data-fra="pf-message">
+            <pf-data data-fn="dlgBody" data-cmp>
+                <pf-text></pf-text>
+            </pf-data>
+            <pf-data data-fn="buttons" data-array>
+                <pf-data data-object data-s-text="Close" data-n-value="0"></pf-data>
+            </pf-data>
+
+            <script data-fn="open" data-args="title, message">
+                this.header.text(title);
+                this.__DATA__.dlgBody.text(message);
+            </script>
+            <!--<pf-text id="message" data-putInto="dlgContent"></pf-text>
             <pf-dlg-button value="0" data-putInto="dlgBtnsBox">Close</pf-dlg-button>
             <script data-fn="open" data-args="title, message">
                 this.header.text(title);
                 this.message.text(message);
                 // return this.dialog_open();
                 return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
-            </script>
+            </script>-->
         </pf-container>
 
-        <pf-container class="question" data-fr="BGTmpls::dialogTmpl" data-ft="BGTmpls::questionTmpl" data-fra="pf-question">
-            <pf-text id="message" data-putInto="dlgContent"></pf-text>
+        <pf-container class="question"
+                      data-fr="BGTmpls::dialogTmpl"
+                      data-ft="BGTmpls::questionTmpl"
+                      data-fra="pf-question">
+            <pf-data data-fn="dlgBody" data-cmp>
+                <pf-text></pf-text>
+            </pf-data>
+            <pf-data data-fn="buttons" data-array>
+                <pf-data data-object data-s-text="Yes" data-n-value="1"></pf-data>
+                <pf-data data-object data-s-text="No" data-n-value="0"></pf-data>
+                <pf-data data-object data-s-text="Cancel" data-n-value="-1"></pf-data>
+            </pf-data>
+
+            <script data-fn="open" data-args="title, message">
+                this.header.text(title);
+                this.__DATA__.dlgBody.text(message);
+                return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
+            </script>
+            <!--<pf-text id="message" data-putInto="dlgContent"></pf-text>
             <pf-dlg-button value="1" data-putInto="dlgBtnsBox">Yes</pf-dlg-button>
             <pf-dlg-button value="0" data-putInto="dlgBtnsBox">No</pf-dlg-button>
             <pf-dlg-button value="-1" data-putInto="dlgBtnsBox">Cancel</pf-dlg-button>
@@ -334,11 +410,28 @@
                 this.message.text(message);
                 // return this.dialog_open();
                 return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
-            </script>
+            </script>-->
         </pf-container>
 
         <pf-container class="prompt" data-fr="BGTmpls::dialogTmpl" data-ft="BGTmpls::promptTmpl" data-fra="pf-prompt">
-            <pf-text-input id="prompt" data-putInto="dlgContent"></pf-text-input>
+            <pf-data data-fn="dlgBody" data-cmp>
+                <pf-text-input></pf-text-input>
+            </pf-data>
+
+            <script data-fn="result" data-args="v">
+                if (v === 1)
+                    return this.__DATA__.dlgBody.value();
+                else
+                    return v;
+            </script>
+
+            <script data-fn="open" data-args="title, placeholder, value">
+                this.header.text(title);
+                this.__DATA__.dlgBody.$.attr("placeholder", placeholder);
+                this.__DATA__.dlgBody.setValue(value);
+                return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
+            </script>
+            <!--<pf-text-input id="prompt" data-putInto="dlgContent"></pf-text-input>
             <pf-dlg-button value="1" data-putInto="dlgBtnsBox">Ok</pf-dlg-button>
             <pf-dlg-button value="-1" data-putInto="dlgBtnsBox">Cancel</pf-dlg-button>
             <script data-fn="result" data-args="v">
@@ -353,11 +446,32 @@
                 this.prompt.setValue(value);
                 // return this.dialog_open();
                 return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
-            </script>
+            </script>-->
         </pf-container>
 
-        <pf-container class="prompt textarea" data-fr="BGTmpls::dialogTmpl" data-ft="BGTmpls::promptTextareaTmpl" data-fra="pf-prompt-text-area">
-            <pf-textarea id="prompt" data-putInto="dlgContent"></pf-textarea>
+        <pf-container class="prompt textarea"
+                      data-fr="BGTmpls::dialogTmpl"
+                      data-ft="BGTmpls::promptTextareaTmpl"
+                      data-fra="pf-prompt-text-area">
+            <pf-data data-fn="dlgBody" data-cmp>
+                <pf-textarea></pf-textarea>
+            </pf-data>
+
+            <script data-fn="result" data-args="v">
+                if (v === 1)
+                    return this.__DATA__.dlgBody.value();
+                else
+                    return v;
+            </script>
+
+            <script data-fn="open" data-args="title, placeholder, value">
+                this.header.text(title);
+                this.__DATA__.dlgBody.$.attr("placeholder", placeholder);
+                this.__DATA__.dlgBody.setValue(value);
+
+                return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
+            </script>
+            <!--<pf-textarea id="prompt" data-putInto="dlgContent"></pf-textarea>
             <pf-dlg-button value="1" data-putInto="dlgBtnsBox">Ok</pf-dlg-button>
             <pf-dlg-button value="-1" data-putInto="dlgBtnsBox">Cancel</pf-dlg-button>
             <script data-fn="result" data-args="v">
@@ -372,7 +486,7 @@
                 this.prompt.setValue(value);
                 // return this.dialog_open();
                 return this.superTmpl("BGTmpls::dialogTmpl").open.call(this);
-            </script>
+            </script>-->
         </pf-container>
 
         <script data-fn="message" data-args="title, message">
@@ -428,16 +542,27 @@
 
     <pf-package name="flowGrid">
         <pf-extend-tmpl data-ft="BGTmpls::flowGridObserver" data-overloaded-prefix="flowGridObserver">
+            <pf-data data-fn="opt" data-object>
+                <pf-data data-fn="gridCellHeight" data-js><script>
+                        return Number(this.$.attr("data-cell-height") || 1);
+                </script></pf-data>
+                <pf-data data-fn="gridGap" data-js><script>
+                        return Number(this.$.attr("data-row-gap") || 0);
+                </script></pf-data>
+            </pf-data>
+
             <script data-fn="observe" data-args="elemObj">
                 this.resizeObserver.observe(elemObj.$[0]);
             </script>
 
             <script data-fn="constructor">
-                var gridCellHeight = Number(this.$.attr("data-cell-height") || 1);
+                /*var gridCellHeight = Number(this.$.attr("data-cell-height") || 1);
                 var gridGap = Number(this.$.attr("data-row-gap") || 0);
 
                 this.$.css("--grid-row-gap", gridGap + 'px');
-                this.$.css("--grid-cell-height", gridCellHeight + 'px');
+                this.$.css("--grid-cell-height", gridCellHeight + 'px');*/
+                this.$.css("--grid-row-gap", this.__DATA__.opt.gridGap + "px");
+                this.$.css("--grid-cell-height", this.__DATA__.opt.gridCellHeight + "px");
 
                 this.resizeObserver = new ResizeObserver((entries) => {
                     for (var entry of entries) {
@@ -458,7 +583,8 @@
                         var height = contentHeight + bt + bb + pt + pb + mt + mb;
 
                         target.css("--spanrow",
-                            Math.ceil((height + gridGap) / (gridCellHeight + gridGap)));
+                            Math.ceil((height + this.__DATA__.opt.gridGap) /
+                            (this.__DATA__.gridCellHeight + this.__DATA__.opt.gridGap)));
                         //target.css("box-sizing", "border-box");
                         //target.css("min-height", contentHeight + "px");
                         //target.css("align-self", "");
@@ -479,9 +605,9 @@
             </script>
 
             <script data-fn="constructor">
-                this.flowGridObserver_constructor();
+                //this.flowGridObserver_constructor();
 
-                var sections = this.__data__.section;
+                var sections = this.__DATA__.section;
                 if (sections !== undefined) {
                     for (item of sections) {
                         var section = item.section
