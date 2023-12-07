@@ -52,12 +52,14 @@
     </nav>
 
     <a data-ft="cms::dir::nav::item" href="javascript:;">
+        <pf-data data-fn="node"></pf-data>
+
         <script data-fn="load" data-args="node">
-            this.node = node;
+            this.__DATA__.node = node;
             this.text(node.title);
         </script>
         <script data-fe="click">
-            CMS.open(this.node.id);
+            CMS.open(this.__DATA__.node.id);
         </script>
     </a>
 
@@ -70,13 +72,13 @@
 
         <script data-fn="activate" data-args="id">
             var actId = this.findIndex((item, id) => {
-                return item.node.id === id;
+                return item.__DATA__.node.id === id;
             }, id);
 
             this.$.find("a").removeClass("actived");
 
             if (actId >=0)
-                this.items[actId].$.addClass("actived");
+                this.__DATA__.items[actId].$.addClass("actived");
         </script>
     </cms-list>
 

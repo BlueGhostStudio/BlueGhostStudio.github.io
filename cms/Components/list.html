@@ -4,31 +4,41 @@
     </script>
 
     <cms-node data-ft="cms::list::node" data-overloaded-prefix="cms_list_node">
+        <pf-data data-fn="LC::opt" data-object data-modified>
+            <pf-data data-fn="summary" data-bool>true</pf-data>
+        </pf-data>
+        <pf-data data-fn="opt" data-object data-modified>
+            <pf-data data-fn="noTitle" data-bool>false</pf-data>
+        </pf-data>
         <script data-fn="constructor">
+            var listRoot = this.toNS("listRoot");
+            this.__DATA__.opt.noContent = listRoot.__DATA__.opt.onlyTitle;
+            this.__DATA__["LC::opt"].dirRef = listRoot.__DATA__.opt.dirRef;
+
             /* 替换header原本的text()函数*/
             this.header.text = (text) => {
                 if (text !== undefined) {
                     var a = $('<a href="javascript:;">' + text + '</a>');
                     this.header.$.html(a);
                     a.click(() => {
-                        this.toNS("listRoot").LISTCONN.emit("click", [this.node, this]);
+                        this.toNS("listRoot").LISTCONN.emit("click", [this.__DATA__.node, this]);
                     });
                 }
 
                 return this.header.$.text();
             }
 
-            if (!this.noContent) {
+            if (!this.__DATA__.opt.noContent) {
                 this.content.html = (html) => {
-                    if (this.node.type == "R"
+                    if (this.__DATA__.node.type == "R"
                         && [
                             "jpg", "png", "gif"
-                        ].indexOf(this.node.contentType) >= 0) {
+                        ].indexOf(this.__DATA__.node.contentType) >= 0) {
                         var a = $('<a href="javascript:;">' + html + '</a>');
                         this.content.$.html(a);
                         a.click(() => {
                             this.toNS("listRoot").LISTCONN.emit("click",
-                                [this.node, this]);
+                                [this.__DATA__.node, this]);
                         });
                     } else
                         this.content.$.html(html);
@@ -37,12 +47,6 @@
 
             // this.cms_node_constructor();
             this.superTmpl("cms::node").constructor.call(this);
-
-            var listRoot = this.toNS("listRoot");
-            this.summary = true;
-            this.noContent = listRoot.onlyTitle;
-            this.noTitle = false;
-            this.dirRef = listRoot.dirRef;
         </script>
     </cms-node>
 
@@ -52,7 +56,7 @@
         <script data-fn="constructor">
             this.initial(undefined, this);
             this.$.click(() => {
-                this.toNS("listRoot").LISTCONN.emit("click", [this.node, this]);
+                this.toNS("listRoot").LISTCONN.emit("click", [this.__DATA__.node, this]);
             });
         </script>
     </a>
@@ -60,113 +64,100 @@
     <pf-list data-ft="cms::list"
              class="cms"
              data-item-tmpl="cms::list::node"
-             data-img-item-tmpl="cms::list::imgNode"
              data-overloaded-prefix="cms_list"
              data-fra="cms-list">
         <pf-extend data-fr="BGTmpls::flowGridObserver"></pf-extend>
         <pf-connections id="LISTCONN" data-prepend></pf-connections>
 
-        <script data-fn="addItem" data-args="itemData, append">
-            if (["jpg", "png", "gif"].indexOf(itemData.contentType) >= 0)
-                this.itemTmpl = this.toNS("listRoot").$.attr("data-img-item-tmpl");
-            else
-                this.itemTmpl = this.defaultItemTmpl;
+        <pf-data data-fn="opt" data-object data-modified>
+            <pf-data data-fn="defaultItemTmpl" data-js><script>
+                    return this.__DATA__.opt.itemTmpl;
+            </script></pf-data>
+            <pf-data data-fn="imgItemTmpl" data-js><script>
+                    return this.$.attr("data-img-item-tmpl") || "cms::list::imgNode";
+            </script></pf-data>
+            <pf-data data-fn="queryType" data-js><script>
+                    var onlyFile = this.$.attr("data-onlyfile") !== undefined;
+                    var onlyDir = this.$.attr("data-onlydir") !== undefined;
+                    return onlyFile !== onlyDir ? (onlyFile ? "F" : "D") : undefined;
+            </script></pf-data>
+            <pf-data data-fn="onlyTitle" data-js><script>
+                    return this.$.attr("data-onlytitle") !== undefined;
+            </script></pf-data>
+            <pf-data data-fn="dirRef" data-js><script>
+                    return this.$.attr("data-dir-ref");
+            </script></pf-data>
+        </pf-data>
 
-            // var itemObj = this.list_addItem(itemData, append);
+        <pf-data data-fn="listNode" data-number>-1</pf-data>
+
+        <script data-fn="addItem" data-args="itemData, append">
+            if (["jpg", "png", "gif"].includes(itemData.contentType))
+                this.__DATA__.opt.itemTmpl = this.__DATA__.opt.imgItemTmpl;
+            else
+                this.__DATA__.opt.itemTmpl = this.__DATA__.opt.defaultItemTmpl;
+
             var itemObj = this.superTmpl("BGTmpls::list").addItem.call(this, itemData, append);
             this.observe(itemObj);
             return itemObj;
         </script>
 
         <script data-fn="load" data-args="path, query, forceCalcGridCellHeight">
-            if (this.queryType != undefined) {
+            if (this.__DATA__.opt.queryType != undefined) {
                 if (query == undefined)
                     query = {}
 
-                query["type"] = this.queryType;
+                query["type"] = this.__DATA__.opt.queryType;
             }
 
-            if (this.listNode == path) {
-                if (forceCalcGridCellHeight) {
-                    for (var x in this.items) {
-                        if (this.items[x].content)
-                            this.items[x].content.$.trigger("contentGenerated");
+            if (this.__DATA__.listNode == path) {
+                /*if (forceCalcGridCellHeight) {
+                    for (var x in this.__DATA__.items) {
+                        if (this.__DATA__.items[x].content)
+                            this.__DATA__.items[x].content.$.trigger("contentGenerated");
                     }
-                }
+                }*/
                 return Promise.resolve();
             } else {
-                this.listNode = -1;
+                this.__DATA__.listNode = -1;
                 return CMS.list(path, query).then((ret) => {
-                    this.listNode = ret.id;
-                    //this.list_load(ret.list);
+                    this.__DATA__.listNode = ret.id;
                     this.superTmpl("BGTmpls::list").load.call(this, ret.list);
                 }, (ret) => { console.log("error", ret); });
             }
         </script>
 
         <script data-fn="search" data-args="query">
-            if (this.queryType != undefined) {
+            if (this.__DATA__.opt.queryType != undefined) {
                 if (query == undefined)
                     query = {}
 
-                query["type"] = this.queryType;
+                query["type"] = this.__DATA__.opt.queryType;
             }
 
-            this.listNode = -1;
+            this.__DATA__.listNode = -1;
             return CMS.search(query).then((ret) => {
-                //this.list_load(ret.list);
                 this.superTmpl("BGTmpls::list").load.call(this, ret.list);
             }, (ret) => { console.log("error", ret); });
         </script>
 
         <script data-fn="constructor">
-            //this.list_constructor();
             this.superTmpl("BGTmpls::list").constructor.call(this);
-            this.defaultItemTmpl = this.itemTmpl;
-            this.listNode = -1;
-
-            var onlyFile = this.$.attr("data-onlyfile") != undefined;
-            var onlyDir = this.$.attr("data-onlydir") != undefined;
-            this.queryType = onlyFile != onlyDir
-                ? (onlyFile ? "F" : "D")
-                : undefined;
-
-            this.onlyTitle = this.$.attr("data-onlytitle") != undefined;
-            this.dirRef = this.$.attr("data-dir-ref");
-
-            /*this.gridGap = Number(this.$.attr("data-grid-gap") || 10);
-            this.$.css("--grid-gap", this.gridGap + 'px');
-            this.gridColumnGap = Number(this.$.attr("data-grid-column-gap") || this.gridGap);
-            this.$.css("--grid-column-gap", this.gridColumnGap + 'px');
-
-            this.gridCellWidth = Number(this.$.attr("data-grid-cellwidth") || 300);
-            this.$.css("--cell-width", this.gridCellWidth + 'px');
-
-            this.gridCellHeight = Number(this.$.attr("data-grid-cellheight") || 20);
-            this.$.css("--cell-height", this.gridCellHeight + 'px');*/
 
             var node = this.$.attr("data-node");
             if (node != undefined)
                 this.load(node);
 
-            /*var findIndex = (id) => {
-                return this.items.findIndex((item) => {
-                    if (item.node.id == id)
-                        return true;
-                    else
-                        return false;
-                });
-            }*/
             var fiCB = (item, id) => {
                 return item.node.id == id;
             }
 
             CMSCONN.on("nodeCreated", (args) => {
                 var newNode = args[0].node;
-                if (newNode.pid == this.listNode
-                    && (this.queryType == undefined
-                        || this.queryType == newNode.type
-                        || (this.queryType == 'F' && newNode.type == 'R'))) {
+                if (newNode.pid == this.__DATA__.listNode
+                    && (this.__DATA__.opt.queryType == undefined
+                        || this.__DATA__.opt.queryType == newNode.type
+                        || (this.__DATA__.opt.queryType == 'F' && newNode.type == 'R'))) {
                     this.append(newNode);
                 }
             }, this);
@@ -186,21 +177,21 @@
                 if (rmIndex >= 0)
                     this.removeItem(rmIndex);
 
-                if (args[1] == this.listNode) {
+                if (args[1] == this.__DATA__.listNode) {
                     var moveNode = args[0].node;
-                    if (this.queryType == undefined
-                        || this.queryType == movedNode.type
-                        || (this.queryType == 'F' && movedNode.type == 'R'))
+                    if (this.__DATA__.opt.queryType == undefined
+                        || this.__DATA__.opt.queryType == movedNode.type
+                        || (this.__DATA__.opt.queryType == 'F' && movedNode.type == 'R'))
                         this.append(movedNode);
                 }
             }, this);
 
             CMSCONN.on("nodeCopied", (args) => {
                 var newNode = args[0].node;
-                if (newNode.pid == this.listNode
-                    && (this.queryType == undefined
-                        || this.queryType == newNode.type
-                        || (this.queryType == 'F' && newNode.type == 'R')))
+                if (newNode.pid == this.__DATA__.listNode
+                    && (this.__DATA__.opt.queryType == undefined
+                        || this.__DATA__.opt.queryType == newNode.type
+                        || (this.__DATA__.opt.queryType == 'F' && newNode.type == 'R')))
                     this.append(newNode);
             }, this);
 
@@ -215,29 +206,27 @@
         <cms-style data-fn="colorScheme" data-prepend></cms-style>
 
         <script data-fn="load" data-args="item">
-            //return this.cms_list_node_load(item).then(() => {
             return this.superTmpl("cms::list::node").load.call(this, item).then(() => {
-                this.$.attr("data-node-id", this.node.id);
+                this.$.attr("data-node-id", this.__DATA__.node.id);
                 this.indexNodeStyle.setOptions({
                     modifyVars: {
-                        '@indexNode': '"' + this.node.id + '"'
+                        '@indexNode': '"' + this.__DATA__.node.id + '"'
                     }
                 });
                 this.indexNodeStyle.load("site/style/indexListItem",
-                    this.node.id);
+                    this.__DATA__.node.id);
 
                 this.colorScheme.setOptions({
                     modifyVars: {
-                        '@indexNode': '"' + this.node.id + '"'
+                        '@indexNode': '"' + this.__DATA__.node.id + '"'
                     }
                 });
                 this.colorScheme.load("site/style/colorScheme",
-                    this.node.id);
+                    this.__DATA__.node.id);
             }, (ret) => { this.$.attr("data-node-id", -2); });
         </script>
 
         <script data-fn="constructor">
-            //this.cms_list_node_constructor();
             this.superTmpl("cms::list::node").constructor.call(this);
         </script>
     </cms-index-node>
@@ -251,14 +240,13 @@
               data-fr="cms::list::node"
               data-overloaded-prefix="cms_switch_list_item">
         <script data-fn="constructor">
-            // this.cms_list_node_constructor();
             this.superTmpl("cms::list::node").constructor.call(this);
 
             this.toNS("listRoot").LISTCONN.on("switch", () => {
                 var listRoot = this.toNS('listRoot');
-                this.summary = listRoot.summary;
-                this.dirRef = listRoot.dirRef;
-                this.load(this.node);
+                this.__DATA__["LC::opt"].summary = listRoot.__DATA__.opt.summary;
+                this.__DATA__["LC::opt"].dirRef = listRoot.__DATA__.opt.dirRef;
+                this.load(this.__DATA__.node);
             });
         </script>
     </cms-node>
@@ -266,21 +254,24 @@
     <cms-list data-ft="cms::switch::list"
               data-item-tmpl="cms::switch::list::item"
               data-fra="cms-switch-list">
+        <pf-data data-fn="opt" data-object data-modified>
+            <pf-data data-fn="origDirRef" data-js><script>
+                    return this.__DATA__.opt.dirRef;
+            </script></pf-data>
+            <pf-data data-fn="useDirRef" data-bool>false</pf-data>
+        </pf-data>
         <script data-fn="switch" data-args="useDirRef">
-            if (this.useDirRef != useDirRef) {
-                this.useDirRef = useDirRef;
-                this.dirRef = this.useDirRef ? this.origDirRef : undefined;
-                this.summary = !this.useDirRef;
+            if (this.__DATA__.opt.useDirRef != useDirRef) {
+                this.__DATA__.opt.useDirRef = useDirRef;
+                this.__DATA__.opt.dirRef = this.__DATA__.opt.useDirRef ? this.__DATA__.opt.origDirRef : undefined;
+                this.__DATA__.opt.summary = !this.__DATA__.opt.useDirRef;
 
                 this.LISTCONN.emit("switch", []);
             }
         </script>
 
         <script data-fn="constructor">
-            //this.cms_list_constructor();
             this.superTmpl("cms::list").constructor.call(this);
-            this.origDirRef = this.dirRef;
-            this.useDirRef = false;
         </script>
     </cms-list>
 </pf-package>

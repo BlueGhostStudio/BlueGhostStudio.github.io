@@ -542,7 +542,7 @@
 
     <pf-package name="flowGrid">
         <pf-extend-tmpl data-ft="BGTmpls::flowGridObserver" data-overloaded-prefix="flowGridObserver">
-            <pf-data data-fn="opt" data-object>
+            <pf-data data-fn="FG::opt" data-object>
                 <pf-data data-fn="gridCellHeight" data-js><script>
                         return Number(this.$.attr("data-cell-height") || 1);
                 </script></pf-data>
@@ -561,8 +561,16 @@
 
                 this.$.css("--grid-row-gap", gridGap + 'px');
                 this.$.css("--grid-cell-height", gridCellHeight + 'px');*/
-                this.$.css("--grid-row-gap", this.__DATA__.opt.gridGap + "px");
-                this.$.css("--grid-cell-height", this.__DATA__.opt.gridCellHeight + "px");
+
+                /*var gridGap = this.__DATA__.opt.gridGap;
+                var gridCellHeight = this.__DATA__.gridCellHeight;*/
+                //this.$.css("--grid-row-gap", this.__DATA__["FG::opt"].gridGap + "px");
+                //this.$.css("--grid-cell-height", this.__DATA__["FG::opt"].gridCellHeight + "px");
+
+                var gridGap = this.__DATA__["FG::opt"].gridGap;
+                var gridCellHeight = this.__DATA__["FG::opt"].gridCellHeight;
+                this.$.css("--grid-row-gap", gridGap);
+                this.$.css("__grid-cell-height", gridCellHeight);
 
                 this.resizeObserver = new ResizeObserver((entries) => {
                     for (var entry of entries) {
@@ -582,12 +590,12 @@
                         var mb = Number(target.css("margin-bottom").replace("px", ""));
                         var height = contentHeight + bt + bb + pt + pb + mt + mb;
 
+                        /*target.css("--spanrow",
+                            Math.ceil((height + this.__DATA__["FG::opt"].gridGap) /
+                            (this.__DATA__["FG::opt"].gridCellHeight +
+                            this.__DATA__["FG::opt"].gridGap)));*/
                         target.css("--spanrow",
-                            Math.ceil((height + this.__DATA__.opt.gridGap) /
-                            (this.__DATA__.gridCellHeight + this.__DATA__.opt.gridGap)));
-                        //target.css("box-sizing", "border-box");
-                        //target.css("min-height", contentHeight + "px");
-                        //target.css("align-self", "");
+                            Math.ceil((height + gridGap) / (gridCellHeight + gridGap)));
                     }
                 });
             </script>

@@ -8,20 +8,31 @@
                     data-style
                     data-fra="cms-style"
                     data-tagName="style">
+        <pf-data data-fn="opt" data-object>
+            <pf-data data-fn="less_options" data-object></pf-data>
+            <pf-data data-fn="backtrack" data-js><script>
+                    return this.$.attr("data-backtrack") !== undefined;
+            </script></pf-data>
+        </pf-data>
+        <pf-data data-fn="stylePath" data-js><script>
+                return this.$.attr("data-style");
+        </script></pf-data>
+        <pf-data data-fn="id"></pf-data>
+
         <script data-fn="load" data-args="path, basePath, requestUpdate">
             if (basePath == undefined)
                 basePath = CMS.rootNode.id;
 
-            return CMS.renderStyle(path, basePath, this.options)
+            return CMS.renderStyle(path, basePath, this.__DATA__.opt.less_options)
                 .then((ret) => {
-                    if (requestUpdate || this.id != ret.id) {
+                    if (requestUpdate || this.__DATA__.id != ret.id) {
                         this.$.empty();
-                        this.id = ret.id;
+                        this.__DATA__.id = ret.id;
                         this.text(ret.css);
                     }
                 }, (ret) => {
                     if (basePath == CMS.rootNode.id) {
-                        this.id = undefined;
+                        this.__DATA__.id = undefined;
                         this.$.empty();
                         return Promise.reject(ret);
                     } else
@@ -33,29 +44,29 @@
             return CMS.backtrackNode(basePath, path).then((ret) => {
                 return this.load(ret.target.id);
             }, (ret) => {
-                this.id = undefined;
+                this.__DATA__.id = undefined;
                 this.$.empty();
                 return Promise.reject(ret);
             });
         </script>
 
         <script data-fn="setOptions" data-args="opt">
-            this.options = opt;
+            this.__DATA__.opt.less_options = opt;
         </script>
         
         <script data-fn="constructor">
-            this.options = {};
-            this.backtrack = this.$.attr("data-backtrack") != undefined;
-            this.sPath = this.$.attr("data-style");
-            if (this.sPath.length > 0)
-                this.backtrack ? this.backtrackLoad(this.sPath) : this.load(this.sPath);
+            this.__DATA__.opt.backtrack = this.$.attr("data-backtrack") != undefined;
+            if (this.__DATA__.stylePath.length > 0)
+                this.__DATA__.opt.backtrack ? this.backtrackLoad(this.__DATA__.stylePath) :
+                this.load(this.__DATA__.stylePath);
 
             CMSCONN.on("contentUpdated", (args) => {
-                if (args[0] == this.id)
-                    this.load(this.id, undefined, true);
+                if (args[0] == this.__DATA__.id)
+                    this.load(this.__DATA__.id, undefined, true);
             }, this);
             /*CMSCONN.on("currentNodeChanged", () => {
-                this.backtrack ? this.backtrackLoad(this.sPath) : this.load(this.sPath);
+                this.__DATA__.opt.backtrack ? this.backtrackLoad(this.__DATA__.stylePath) :
+                this.load(this.__DATA__.stylePath);
             }, this);*/
         </script>
     </cms-style-tmpl> <!-- style end -->
@@ -66,13 +77,11 @@
             data-tagName="header">
         <pf-extend data-fr="cms::node::loadContent"></pf-extend>
 
+        <pf-data data-fn="LC::opt" data-object data-b-summary="true"
+                                               data-b-info="false" data-modified></pf-data>
+
         <script data-fn="constructor">
-            this.initial(this, // headerElem
-                         undefined, // contentElem
-                         true, // info
-                         undefined, // dirRef
-                         false // summary
-                        );
+            this.initial(this, undefined);
         </script>
     </header>
 
@@ -82,14 +91,14 @@
                 data-tagName="pf-content">
         <pf-extend data-fr="cms::node::loadContent"></pf-extend>
 
+        <pf-data data-fn="LC::opt" data-object data-modified>
+            <pf-data data-fn="info" data-js><script>
+                    return this.__DATA__["LC::opt"].summary;
+            </script></pf-data>
+        </pf-data>
+
         <script data-fn="constructor">
-            var summary = this.$.attr("data-summary") != undefined;
-            this.initial(undefined, // headerElem
-                         this, // contentElem
-                         summary, // info
-                         this.$.attr("data-dir-ref"), // dirRef
-                         summary // summary
-                        );
+            this.initial(undefined, this);
         </script>
     </pf-content>
 
@@ -99,13 +108,11 @@
                 data-tagName="pf-content">
         <pf-extend data-fr="cms::node::loadContent"></pf-extend>
 
+        <pf-data data-fn="LC::opt" data-object data-b-summary="true"
+                                           data-b-info="true" data-modified></pf-data>
+
         <script data-fn="constructor">
-            this.initial(undefined, // headerElem
-                         this, // contentElem
-                         true, // info
-                         this.$.attr("data-dir-ref"), // dirRef
-                         true // summary
-                        );
+            this.initial(undefined, this);
         </script>
     </pf-content>
 
@@ -115,27 +122,34 @@
                 data-fra="cms-node">
         <pf-extend data-fr="cms::node::loadContent"></pf-extend>
 
+        <pf-data data-fn="LC::opt" data-object data-modified>
+            <pf-data data-fn="info" data-js><script>
+                    return this.__DATA__["LC::opt"].summary;
+            </script></pf-data>
+        </pf-data>
+
+        <pf-data data-fn="opt" data-object data-modified>
+            <pf-data data-fn="noTitle" data-js><script>
+                    return this.$.attr("data-notitle") !== undefined;
+            </script></pf-data>
+            <pf-data data-fn="noContent" data-js><script>
+                    return this.$.attr("data-nocontent") !== undefined;
+            </script></pf-data>
+        </pf-data>
+        <pf-data data-fn="nodeData" data-js><script>
+                return this.$.attr("data-node");
+        </script></pf-data>
+
         <script data-fn="constructor">
-            var summary = this.$.attr("data-summary") != undefined;
-
-            var noTitle = this.$.attr("data-notitle") != undefined;
-            if (this.noTitle)
+            this.initial(this.__DATA__.opt.noTitle ? undefined : this.header,
+                         this.__DATA__.opt.noContent ? undefined : this.content);
+            if (this.__DATA__.opt.noTitle)
                 this.header.removeSelf();
-
-            var noContent = this.$.attr("data-nocontent") != undefined;
-            if (this.noContent)
+            if (this.__DATA__.opt.noContent)
                 this.content.removeSelf();
 
-            this.initial(noTitle ? undefined : this.header, // headerElem
-                         noContent ? undefined : this.content, // contentElem
-                         summary, // info
-                         this.$.attr("data-dir-ref"), // dirRef
-                         summary // summary
-                        );
-
-            var __node__ = this.$.attr("data-node");
-            if (__node__ != undefined)
-                this.load(__node__);
+            if (this.__DATA__.nodeData != undefined)
+                this.load(this.__DATA__.nodeData);
         </script>
     </pf-article>
 
