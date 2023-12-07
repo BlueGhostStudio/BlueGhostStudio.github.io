@@ -93,26 +93,22 @@
             waitLoadStyle(this.style_colorScheme, "site/style/colorScheme", "style_colorscheme_actived");
 
             CMSCONN.on("currentNodeChanged", () => {
-                this.page.logo.load("site/logo").then(() => {
-                    CMSCONN.emit("logoLoaded");
-                });
+                this.page.logo.load("site/logo");
             }, this.page.logo);
 
             CMSCONN.on("currentNodeChanged", () => {
                 this.page.path.$.css("display", "none");
                 this.page.path.load(this.currentDirID).then(() => {
                     this.page.path.$.css("display", "");
-                    CMSCONN.emit("pathLoaded");
                 });
             }, this.page.path);
 
             CMSCONN.on("currentNodeChanged", () => {
-                if (this.page.secondaryNav.listNode != this.parentDirID) {
+                if (this.page.secondaryNav.__DATA__.listNode != this.parentDirID) {
                     this.page.secondaryNav.$.css("display", "none");
                     this.page.secondaryNav.load(this.parentDirID).then(() => {
                         this.page.secondaryNav.activate(this.currentDirID);
                         this.page.secondaryNav.$.css("display", "");
-                        CMSCONN.emit("secondaryNavLoaded");
                     });
                 } else
                     this.page.secondaryNav.activate(this.currentDirID);
@@ -127,7 +123,6 @@
                     })
                     : this.page.nodeIndex.load(this.currentDirID)).then(() => {
                         this.page.nodeIndex.$.css("display", "");
-                        CMSCONN.emit("nodeIndexLoaded");
                     });
             }, this.page.nodeIndex);
 
@@ -135,7 +130,6 @@
                 this.page.content.$.css("display", "none");
                 this.page.content.load(CMS.currentNode).then(() => {
                     this.page.content.$.css("display", "");
-                    CMSCONN.emit("contentLoaded");
                 });
             }, this.page.content);
         </script>
