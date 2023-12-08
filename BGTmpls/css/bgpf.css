@@ -744,47 +744,68 @@ pf-swipe.ver > pf-viewport {
 pf-swipe.ver > pf-viewport > *:not(.activated) {
   display: none;
 }
-button {
-  display: block;
+button,
+div.pf-btn,
+input[type="button"] {
+  display: inline-block;
   border: none;
   font-size: unset;
   font-weight: bold;
+  margin: 3px 2px;
 }
-button:not(.flat) {
+button:not(.flat),
+div.pf-btn:not(.flat),
+input[type="button"]:not(.flat) {
   padding: var(--x-small-dist) calc(var(--x-small-dist) * 1.75);
   border-radius: 5px;
   background-color: var(--btn-bg);
   color: var(--btn-fg);
   box-shadow: 0 0 0px 1px var(--btn-bg), 0 0 1px 1px var(--btn-fg) inset;
 }
-button:not(.flat).default {
+button:not(.flat).default,
+div.pf-btn:not(.flat).default,
+input[type="button"]:not(.flat).default {
   --btn-bg: var(--accent);
   --btn-fg: var(--accent-text);
 }
-button:not(.flat):active {
+button:not(.flat):active,
+div.pf-btn:not(.flat):active,
+input[type="button"]:not(.flat):active {
   box-shadow: 0 0 1px var(--btn-bg);
   background-color: var(--btn-active);
   color: var(--btn-active-text);
 }
-button.flat {
+button.flat,
+div.pf-btn.flat,
+input[type="button"].flat {
   padding: 5px;
   border-radius: 5px;
   background-color: transparent;
   color: unset;
 }
-button.flat:hover {
+button.flat:hover,
+div.pf-btn.flat:hover,
+input[type="button"].flat:hover {
   background-color: var(--accent);
   color: var(--accent-text);
 }
-button.flat:active {
+button.flat:active,
+div.pf-btn.flat:active,
+input[type="button"].flat:active {
   background-color: var(--btn-active);
   color: var(--btn-active-text);
 }
-button.flat > i.fas {
+button.flat > i.fas,
+div.pf-btn.flat > i.fas,
+input[type="button"].flat > i.fas {
   display: block;
 }
 button:active,
-button:focus {
+div.pf-btn:active,
+input[type="button"]:active,
+button:focus,
+div.pf-btn:focus,
+input[type="button"]:focus {
   border: none;
   outline: none;
 }

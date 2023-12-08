@@ -111,11 +111,13 @@ pf-swipe.ver {
     }
 }
 
-button {
-    display: block;
+button, div.pf-btn, input[type="button"] {
+    display: inline-block;
     border: none;
     font-size: unset;
     font-weight: bold;
+    margin: 3px 2px;
+
     &:not(.flat) {
         padding: var(--x-small-dist) ~"calc(var(--x-small-dist) * 1.75)";
         border-radius: 5px;
