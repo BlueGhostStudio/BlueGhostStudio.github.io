@@ -59,20 +59,50 @@
         window.__body__ = compile($('body'));
     </script> -->
     <pf-package name="connections">
+        <pf-connections-receiver-tmpl
+                data-ft="BGTmpls::connections::receiver"
+                type="hidden"
+                data-tagName="input">
+            <pf-data data-fn="connections"></pf-data>
+            <pf-data data-fn="event"></pf-data>
+            <pf-data data-fn="callback"></pf-data>
+
+            <script data-fn="constructor" data-args="args">
+                this.__DATA__.connections = args[0];
+                this.__DATA__.event = args[1];
+                this.__DATA__.callback = args[2];
+            </script>
+            <script data-fn="destructor">
+                if (this.__DATA__.connections && this.__DATA__.event && this.__DATA__.callback)
+                    this.__DATA__.connections.$.off(this.__DATA__.event, this.__DATA__.callback);
+            </script>
+        </pf-connections-receiver-tmpl>
+
         <pf-connections-tmpl data-ft="BGTmpls::connections" type="hidden" data-fra="pf-connections" data-tagName="input">
             <script data-fn="emit" data-args="sig, args">
                 this.$.trigger(sig, [args]);
             </script>
 
             <script data-fn="on" data-args="event, cb, receiver">
-                this.$.on(event, (e, args)=>{
+                /*this.$.on(event, (e, args)=>{
                     if (typeof receiver == 'object'
                         && 'destroy' in receiver
                         && receiver.destroy)
                         $(this).off(event);
                     else
                         cb(args);
-                });
+                });*/
+                function eventCallback(e, args) {
+                    cb(args);
+                }
+                this.$.on(event, eventCallback);
+
+                if (receiver instanceof __PF_BASE_CLASS__) {
+                    var CR = newObject("BGTmpls::connections::receiver", null, "connections",
+                        [this, event, eventCallback]);
+                    receiver.__DATA__.connections = CR;
+                    receiver.__autoCleanup__.push(CR);
+                }
             </script>
 
             <script data-fn="constructor">
