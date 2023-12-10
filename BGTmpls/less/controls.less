@@ -72,15 +72,15 @@ pf-swipe:not(.ver) {
 
 pf-swipe.ver {
     display: grid;
-    grid-template-columns: auto 1fr;
+    // grid-template-columns: auto 1fr;
     > nav {
-        border-right: 2px solid;
+        // border-right: 2px solid;
         /*background-color: var(--base);
         color: var(--base-text);*/
         > pf-tab {
             position: relative;
             display: block;
-            margin-right: 1em;
+            /*margin-right: 1em;*/
 
             &:not(:first-child) {
                 border-top: 1px dashed;
@@ -104,9 +104,39 @@ pf-swipe.ver {
     > pf-viewport {
         /*background-color: var(--base);
         color: var(--base-text);*/
-        padding-left: 1em;
+        // padding-left: 1em;
         > *:not(.activated) {
             display: none;
+        }
+    }
+
+    &:not(.right) {
+        grid-template-columns: auto 1fr;
+
+        > nav {
+            border-right: 2px solid;
+            > pf-tab {
+                margin-right: 1em;
+            }
+        }
+        > pf-viewport {
+            padding-left: 1em;
+        }
+    }
+
+    &.right {
+        grid-template-columns: 1fr auto;
+
+        > nav {
+            order: 2;
+            border-left: 2px solid;
+            > pf-tab {
+                margin-left: 1em;
+            }
+        }
+        > pf-viewport {
+            order: 1;
+            padding-right: 1em;
         }
     }
 }

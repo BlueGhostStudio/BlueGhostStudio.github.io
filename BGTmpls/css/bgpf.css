@@ -707,17 +707,15 @@ pf-swipe:not(.ver) > pf-viewport > *:not(.activated) {
 }
 pf-swipe.ver {
   display: grid;
-  grid-template-columns: auto 1fr;
 }
 pf-swipe.ver > nav {
-  border-right: 2px solid;
   /*background-color: var(--base);
         color: var(--base-text);*/
 }
 pf-swipe.ver > nav > pf-tab {
   position: relative;
   display: block;
-  margin-right: 1em;
+  /*margin-right: 1em;*/
 }
 pf-swipe.ver > nav > pf-tab:not(:first-child) {
   border-top: 1px dashed;
@@ -739,10 +737,35 @@ pf-swipe.ver > nav > pf-tab.activated > span {
 pf-swipe.ver > pf-viewport {
   /*background-color: var(--base);
         color: var(--base-text);*/
-  padding-left: 1em;
 }
 pf-swipe.ver > pf-viewport > *:not(.activated) {
   display: none;
+}
+pf-swipe.ver:not(.right) {
+  grid-template-columns: auto 1fr;
+}
+pf-swipe.ver:not(.right) > nav {
+  border-right: 2px solid;
+}
+pf-swipe.ver:not(.right) > nav > pf-tab {
+  margin-right: 1em;
+}
+pf-swipe.ver:not(.right) > pf-viewport {
+  padding-left: 1em;
+}
+pf-swipe.ver.right {
+  grid-template-columns: 1fr auto;
+}
+pf-swipe.ver.right > nav {
+  order: 2;
+  border-left: 2px solid;
+}
+pf-swipe.ver.right > nav > pf-tab {
+  margin-left: 1em;
+}
+pf-swipe.ver.right > pf-viewport {
+  order: 1;
+  padding-right: 1em;
 }
 button,
 div.pf-btn,

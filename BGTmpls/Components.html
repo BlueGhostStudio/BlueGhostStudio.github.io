@@ -130,7 +130,7 @@
             <script data-fn="constructor">
                 this.span.text(this.__TEXT__);
                 this.span.$.click((function() {
-                    this.toNS("swipeRoot").swipe(Number(this.$.attr("data-tab-index")));
+                    this.__DATA__.control.swipe(this.__DATA__.tabIndex);
                 }).bind(this));
             </script>
         </pf-tab-tmpl>
@@ -139,14 +139,16 @@
             <pf-viewport id="viewport"></pf-viewport>
 
 
-            <script data-fn="activateWidget" data-args="obj, index">
-                obj.$.children().removeClass("activated");
-                obj.$.find("> [data-tab-index=" + index + "]").addClass("activated");
+            <script data-fn="activateWidget" data-args="index">
+                this.tabbar.$.children().removeClass("activated");
+                this.viewport.$.children().removeClass("activated");
+
+                this.__DATA__.pages[index].tab.$.addClass("activated");
+                this.__DATA__.pages[index].content.$.addClass("activated");
             </script>
 
             <script data-fn="swipe" data-args="index">
-                this.activateWidget(this.tabbar, index);
-                this.activateWidget(this.viewport, index);
+                this.activateWidget(index);
 
                 if (this.onActivated)
                     this.onActivated(index);
@@ -156,18 +158,23 @@
                 if (pages !== undefined) {
                     for (var x in pages) {
                         var p = pages[x];
-                        var tab = this.create("BGTmpls::tabTmpl");
-                        tab.setText(p.label);
-                        tab.putInto(this.tabbar);
+
+                        p.tab = newObject("BGTmpls::tabTmpl", null);
+                        p.tab.setText(p.label);
+                        p.tab.putInto(this.tabbar);
+                        p.tab.__DATA__.control = this;
+                        p.tab.__DATA__.tabIndex = x;
+                        this.__autoCleanup__.push(p.tab);
+
                         p.content.putInto(this.viewport);
                     }
                 }
-                this.tabbar.$.find("> pf-tab").each(function(i, e) {
+                /*this.tabbar.$.find("> pf-tab").each(function(i, e) {
                     $(e).attr("data-tab-index", i);
                 });
                 this.viewport.$.children().each(function(i, e) {
                     $(e).attr("data-tab-index", i);
-                });
+                });*/
                 this.swipe(0);
             </script>
         </pf-swipe-tmpl>
