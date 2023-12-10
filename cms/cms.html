@@ -267,7 +267,7 @@
         CMS.loadComponent('/site/components.pkg').then(null, (ret) => {
             console.log('error', ret);
         }).then(() => {
-            return CMS.loadComponent('/site/config').then(() => {
+            return CMS.loadComponent('/site/global').then(() => {
                 if (CMS.homePath !== null) {
                     return CMS.node(CMS.homePath).then((node) => {
                         CMS.homePath = node.id;
@@ -276,7 +276,7 @@
                         CMS.homePath = null;
                     });
                 }
-            }, (ret) => { console.log('no config'); });
+            }, (ret) => { console.log('no global'); });
         }).then(() => {
             if (qsa.id)
                 CMS.open(qsa.id);

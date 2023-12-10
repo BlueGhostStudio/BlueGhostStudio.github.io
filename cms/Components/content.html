@@ -264,7 +264,7 @@
 
         <script data-fn="constructor">
             //this.__DATA__.refContentID = -1;
-            var contentUpdated = (args) => {
+            /*var contentUpdated = (args) => {
                 if (args[0] == this.__DATA__.refContentID)
                     this.loadRefContent(this.__DATA__.refContentID);
                 else if (this.__DATA__.node && this.__DATA__.node.id == args[0]) {
@@ -273,10 +273,38 @@
                     else
                         this.load(args[0], true);
                 }
-            }
-            CMSCONN.on("contentUpdated", contentUpdated, this);
-            CMSCONN.on("summaryUpdated", contentUpdated, this);
-            CMSCONN.on("titleUpdated", contentUpdated, this);
+            }*/
+            CMSCONN.on("contentUpdated", (args) => {
+                if (!this.__DATA__.contentElem)
+                    return;
+
+                if (args[0] == this.__DATA__.refContentID)
+                    this.loadRefContent(this.__DATA__.refContentID);
+                else if (this.__DATA__.node && this.__DATA__.node.id == args[0]
+                    && !this.__DATA__["LC::opt"].info
+                    && !this.__DATA__["LC::opt"].summary) {
+                    let node = this.__DATA__.node;
+                    node.content = args[1];
+                    this.load(node, true);
+                }
+            }, this);
+            CMSCONN.on("summaryUpdated", (args) => {
+                if (!this.__DATA__.contentElem)
+                    return;
+
+                if ((this.__DATA__["LC::opt"].info
+                        || this.__DATA__["LC::opt"].summary
+                        || this.__DATA__.refContentID == -2)
+                    && this.__DATA__.node
+                    && this.__DATA__.node.id == args[0])
+                    //this.__DATA__.contentElem.html(args[1]);
+                    this.generate(this.__DATA__.contentElem, "md", args[1]);
+            }, this);
+            CMSCONN.on("titleUpdated", (args) => {
+                if (this.__DATA__.node && this.__DATA__.node.id == args[0] &&
+                    this.__DATA__.headerElem)
+                   this.__DATA__.headerElem.text(args[1]);
+            }, this);
         </script>
     </pf-extend-tmpl> <!-- cms::node::loadContent end -->
 
