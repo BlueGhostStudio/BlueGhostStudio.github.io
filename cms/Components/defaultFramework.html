@@ -8,6 +8,23 @@
         <cms-style data-fn="style_page" data-backtrack></cms-style>
         <cms-style data-fn="style_colorScheme" data-backtrack></cms-style>
 
+        <pf-data data-fn="pageDecor" data-array>
+            <div class="decor d-main" data-fplc data-stal></div>
+            <div class="decor d-left" data-fplc data-stal></div>
+            <div class="decor d-lefttop" data-fplc data-stal></div>
+            <div class="decor d-top" data-fplc data-stal></div>
+            <div class="decor d-righttop" data-fplc data-stal></div>
+            <div class="decor d-right" data-fplc data-stal></div>
+            <div class="decor d-rightbottom" data-fplc data-stal></div>
+            <div class="decor d-bottom" data-fplc data-stal></div>
+            <div class="decor d-leftbottom" data-fplc data-stal></div>
+            <div class="decor d-0" data-fplc data-stal></div>
+            <div class="decor d-1" data-fplc data-stal></div>
+            <div class="decor d-2" data-fplc data-stal></div>
+            <div class="decor d-3" data-fplc data-stal></div>
+            <div class="decor d-4" data-fplc data-stal></div>
+        </pf-data>
+
         <pf-page data-fn="page">
             <header data-fw="true">
                 <!-- <cms-img id="logo" src="/site/logo"></cms-img> -->
@@ -61,6 +78,9 @@
         </script>
 
         <script data-fn="constructor">
+            for (let x = this.__DATA__.pageDecor.length - 1; x >= 0; x--)
+                this.__DATA__.pageDecor[x].prepend(this.page);
+
             this.parentDirID = -1;
             this.currentDirID = -1;
             /*this.style.load("/site/style/default").then(null, () => {
