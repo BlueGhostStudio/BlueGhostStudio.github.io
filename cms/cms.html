@@ -1,16 +1,33 @@
 <pf-package>
+
+    <pf-data data-fn="RPCGRP"></pf-data>
+
+    <pf-data data-fn="currentSiteFramework"></pf-data>
+
+    <pf-data data-fn="fraRootNode" data-js><script>
+            return { pid: null, id: null, title: '/', type: 'D' }
+    </script></pf-data>
+
+    <pf-data data-fn="rootNode" data-js><script>
+            return this.__DATA__.fraRootNode;
+    </script></pf-data>
+
+    <pf-data data-fn="currentNode" data-js><script>
+            return this.__DATA__.rootNode;
+    </script></pf-data>
+
+    <pf-data data-fn="parentDirID" data-number>-1</pf-data>
+    <pf-data data-fn="currentDirID" data-number>-1</pf-data>
+
+    <pf-data data-fn="config" data-object>
+        <pf-data data-fn="homePath"></pf-data>
+        <pf-data data-fn="logo"></pf-data>
+        <pf-data data-fn="siteTitle"></pf-data>
+    </pf-data>
+
     <script data-fn="load" data-args="relPath, nextLoad">
         window.CMS = this;
         window.__body__ = compile($('body'));
-
-        this.currentSiteFramework = null;
-        this.rootNode = this.fraRootNode = {
-            pid: null,
-            id: null,
-            title: '/',
-            type: 'D'
-        }
-        this.currentNode = this.rootNode;
 
         __PF_BASE_CLASS__.prototype.html = function (h) {
             if (h !== undefined) {
@@ -41,7 +58,7 @@
 
             var qsa = __queryStringArray__(location.href);
             if (qsa.g)
-                CMS.RPCGRP = qsa.g;
+                CMS.__DATA__.RPCGRP = qsa.g;
 
             RPCCONN.on("connected", () => {
                 rpc.asyncCall(this.RPCOBJ("cms::main"), "join");
@@ -82,12 +99,10 @@
         });
         $("head").append('<link type="text/css" rel="stylesheet" href="'
             + relPath + 'cms.css">');
-
-        CMS.homePath = null;
     </script>
 
     <script data-fn="RPCOBJ" data-args="obj">
-        return (this.RPCGRP ? this.RPCGRP + "::" : "") + obj;
+        return (this.__DATA__.RPCGRP ? this.__DATA__.RPCGRP + "::" : "") + obj;
     </script>
 
     <script data-fn="search" data-args="query">
@@ -166,7 +181,7 @@
 
     <script data-fn="backtrackNode" data-args="node, target, stop">
         if (node !== undefined || node !== null)
-            node = this.currentNode.id;
+            node = this.__DATA__.currentNode.id;
         else if (!isNaN(node))
             node = Number(node);
 
@@ -217,9 +232,9 @@
         return this.backtrackNode(path, 'site/framework.fra')
             .then((ret) => {
                 var tID = ret.target.id;
-                if (this.currentSiteFramework != tID) {
-                    this.currentSiteFramework = tID;
-                    this.fraRootNode = ret.node;
+                if (this.__DATA__.currentSiteFramework != tID) {
+                    this.__DATA__.currentSiteFramework = tID;
+                    this.__DATA__.fraRootNode = ret.node;
 
                     return this.loadComponent(tID).then(() => {
                         return Promise.resolve(path);
@@ -228,9 +243,9 @@
                     return Promise.resolve(path);
             },(ret) => {
                 if (ret.errno == 0) {
-                    if (this.currentSiteFramework != -1) {
-                        this.currentSiteFramework = -1;
-                        this.fraRootNode = CMS.rootNode;
+                    if (this.__DATA__.currentSiteFramework != -1) {
+                        this.__DATA__.currentSiteFramework = -1;
+                        this.__DATA__.fraRootNode = CMS.__DATA__.rootNode;
                         this.replaceBody('cms::default::framework');
                     }
                     return Promise.resolve(path);
@@ -241,7 +256,7 @@
 
     <script data-fn="open" data-args="path">
         if (path == '/'|| path == null || (path instanceof Object && path.id == null))
-            path = CMS.homePath;
+            path = CMS.__DATA__.config.homePath;
 
         //CMSCONN.emit("openNode", []);
         return CMS.loadSiteFramework(path).then((ret) => {
@@ -268,12 +283,12 @@
             console.log('error', ret);
         }).then(() => {
             return CMS.loadComponent('/site/global').then(() => {
-                if (CMS.homePath !== null) {
-                    return CMS.node(CMS.homePath).then((node) => {
-                        CMS.homePath = node.id;
+                if (CMS.__DATA__.config.homePath !== null) {
+                    return CMS.node(CMS.__DATA__.config.homePath).then((node) => {
+                        CMS.__DATA__.config.homePath = node.id;
                     }, (ret) => {
                         console.log('no exist home path');
-                        CMS.homePath = null;
+                        CMS.__DATA__.config.homePath = null;
                     });
                 }
             }, (ret) => { console.log('no global'); });
@@ -283,7 +298,7 @@
             else if (qsa.p)
                 CMS.open(qsa.p);
             else
-                CMS.open(CMS.homePath);
+                CMS.open(CMS.__DATA__.config.homePath);
         });
     </script>
 

@@ -4,7 +4,13 @@
     </script>
 
     <pf-extend-tmpl data-ft="cms::img::src">
-        <script data-fn="getSrc" data-args="src">
+        <pf-data data-fn="IMGSRC::opt" data-object>
+            <pf-data data-fn="fallbackLogo" data-js><script>
+                    return this.$.attr("data-fallbacklogo") !== undefined;
+            </script></pf-data>
+        </pf-data>
+
+        <script data-fn="getSrc" data-args="src, lookupFallbackLogo">
             var backtrack = this.$.attr("data-backtrack") !== undefined;
             var pm;
             if (backtrack)
@@ -30,8 +36,14 @@
                             });
                 }
             }, (ret) => {
-                console.log("error", ret);
-                return Promise.reject();
+                if (this.__DATA__["IMGSRC::opt"].fallbackLogo
+                    && !lookupFallbackLogo
+                    && CMS.__DATA__.config.logo)
+                    return this.getSrc(CMS.__DATA__.config.logo, true);
+                else {
+                    console.log("error", ret);
+                    return Promise.reject();
+                }
             });
         </script>
 
@@ -86,7 +98,7 @@
              data-fra="cms-site-title"
              data-tagName="pf-text">
         <script data-fn="constructor">
-            this.text(CMS.siteTitle);
+            this.text(CMS.__DATA__.config.siteTitle);
         </script>
     </pf-text>
 </pf-package>

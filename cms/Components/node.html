@@ -21,7 +21,7 @@
 
         <script data-fn="load" data-args="path, basePath, requestUpdate">
             if (basePath == undefined)
-                basePath = CMS.rootNode.id;
+                basePath = CMS.__DATA__.rootNode.id;
 
             return CMS.renderStyle(path, basePath, this.__DATA__.opt.less_options)
                 .then((ret) => {
@@ -31,7 +31,7 @@
                         this.text(ret.css);
                     }
                 }, (ret) => {
-                    if (basePath == CMS.rootNode.id) {
+                    if (basePath == CMS.__DATA__.rootNode.id) {
                         this.__DATA__.id = undefined;
                         this.$.empty();
                         return Promise.reject(ret);

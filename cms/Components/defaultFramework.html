@@ -28,7 +28,7 @@
         <pf-page data-fn="page">
             <header data-fw="true">
                 <!-- <cms-img id="logo" src="/site/logo"></cms-img> -->
-                <cms-img-div id="logo" data-backtrack></cms-img-div>
+                <cms-img-div id="logo" data-backtrack data-fallbacklogo></cms-img-div>
                 <cms-site-title id="siteTitle"></cms-site-title>
                 <cms-nav id="mainNav" data-path="/"></cms-nav>
             </header>
@@ -52,25 +52,25 @@
             this.$.removeClass("style_page_actived");
             this.$.removeClass("style_colorscheme_actived");
             CMS.node(path).then((node) => {
-                CMS.currentNode = node;
-                if (CMS.currentNode.id == CMS.homePath) {
+                CMS.__DATA__.currentNode = node;
+                if (CMS.__DATA__.currentNode.id == CMS.__DATA__.config.homePath) {
                     this.page.$.attr('data-type', 'H');
                     this.page.nodeIndex.$.addClass("flow-grid");
-                    return Promise.resolve(CMS.rootNode);
-                } else if (CMS.currentNode.type == 'D') {
+                    return Promise.resolve(CMS.__DATA__.rootNode);
+                } else if (CMS.__DATA__.currentNode.type == 'D') {
                     this.page.$.attr('data-type', "D");
                     this.page.nodeIndex.$.addClass("flow-grid");
-                    return Promise.resolve(CMS.currentNode);
+                    return Promise.resolve(CMS.__DATA__.currentNode);
                 } else {
                     this.page.$.attr('data-type', "C");
                     this.page.nodeIndex.$.removeClass("flow-grid");
-                    return CMS.node(CMS.currentNode.pid);
+                    return CMS.node(CMS.__DATA__.currentNode.pid);
                 }
             }).then((node) => {
-                if (this.currentDirID != node.id)
-                    this.currentDirID = node.id;
-                if (this.parentDirID != node.pid)
-                    this.parentDirID = node.pid;
+                if (CMS.__DATA__.currentDirID != node.id)
+                    CMS.__DATA__.currentDirID = node.id;
+                if (CMS.__DATA__.parentDirID != node.pid)
+                    CMS.__DATA__.parentDirID = node.pid;
 
                 CMSCONN.emit("currentNodeChanged", node);
             });
@@ -81,8 +81,6 @@
             for (let x = this.__DATA__.pageDecor.length - 1; x >= 0; x--)
                 this.__DATA__.pageDecor[x].prepend(this.page);
 
-            this.parentDirID = -1;
-            this.currentDirID = -1;
             /*this.style.load("/site/style/default").then(null, () => {
                     this.style.$.replaceWith('<link rel="stylesheet" href="cms/Components/defaultFramework.css">');
                 });*/
@@ -118,37 +116,37 @@
 
             CMSCONN.on("currentNodeChanged", () => {
                 this.page.path.$.css("display", "none");
-                this.page.path.load(this.currentDirID).then(() => {
+                this.page.path.load(CMS.__DATA__.currentDirID).then(() => {
                     this.page.path.$.css("display", "");
                 });
             }, this.page.path);
 
             CMSCONN.on("currentNodeChanged", () => {
-                if (this.page.secondaryNav.__DATA__.listNode != this.parentDirID) {
+                if (this.page.secondaryNav.__DATA__.listNode != CMS.__DATA__.parentDirID) {
                     this.page.secondaryNav.$.css("display", "none");
-                    this.page.secondaryNav.load(this.parentDirID).then(() => {
-                        this.page.secondaryNav.activate(this.currentDirID);
+                    this.page.secondaryNav.load(CMS.__DATA__.parentDirID).then(() => {
+                        this.page.secondaryNav.activate(CMS.__DATA__.currentDirID);
                         this.page.secondaryNav.$.css("display", "");
                     });
                 } else
-                    this.page.secondaryNav.activate(this.currentDirID);
+                    this.page.secondaryNav.activate(CMS.__DATA__.currentDirID);
             }, this.page.secondaryNav);
 
             CMSCONN.on("currentNodeChanged", (dirNode) => {
                 this.page.nodeIndex.$.css("display", "none");
-                (dirNode.id === CMS.rootNode.id
+                (dirNode.id === CMS.__DATA__.rootNode.id
                     ? this.page.nodeIndex.search({
                         "limit": { "count": 25 },
                         "type": "F"
                     })
-                    : this.page.nodeIndex.load(this.currentDirID)).then(() => {
+                    : this.page.nodeIndex.load(CMS.__DATA__.currentDirID)).then(() => {
                         this.page.nodeIndex.$.css("display", "");
                     });
             }, this.page.nodeIndex);
 
             CMSCONN.on("currentNodeChanged", () => {
                 this.page.content.$.css("display", "none");
-                this.page.content.load(CMS.currentNode).then(() => {
+                this.page.content.load(CMS.__DATA__.currentNode).then(() => {
                     this.page.content.$.css("display", "");
                 });
             }, this.page.content);

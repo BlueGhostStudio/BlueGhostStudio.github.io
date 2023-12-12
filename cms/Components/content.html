@@ -176,7 +176,7 @@
 
                 if (this.__DATA__.headerElem) { // 若组件存在header元素,元素加载node的标题
                     if (this.__DATA__.node.id === null)
-                        this.__DATA__.headerElem.text(CMS.siteTitle || this.__DATA__.node.title);
+                        this.__DATA__.headerElem.text(CMS.__DATA__.config.siteTitle || this.__DATA__.node.title);
                     else
                         this.__DATA__.headerElem.text(this.__DATA__.node.title);
                 }
@@ -253,8 +253,8 @@
                         return Promise.resolve();
                 }
             } else { // 否则 'node' 是 id 或 path
-                return (this.__DATA__["LC::opt"].info ? CMS.nodeInfo(node, CMS.rootNode.id)
-                           : CMS.node(node, CMS.rootNode.id)).then((node) => {
+                return (this.__DATA__["LC::opt"].info ? CMS.nodeInfo(node, CMS.__DATA__.rootNode.id)
+                           : CMS.node(node, CMS.__DATA__.rootNode.id)).then((node) => {
                     return this.load(node, requestUpdate);
                 }, (error) => {
                     return Promise.reject(error);
