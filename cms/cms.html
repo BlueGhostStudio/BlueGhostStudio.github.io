@@ -12,9 +12,7 @@
             return this.__DATA__.fraRootNode;
     </script></pf-data>
 
-    <pf-data data-fn="currentNode" data-js><script>
-            return this.__DATA__.rootNode;
-    </script></pf-data>
+    <pf-data data-fn="currentNodeID" data-null></pf-data>
 
     <pf-data data-fn="parentDirID" data-number>-1</pf-data>
     <pf-data data-fn="currentDirID" data-number>-1</pf-data>
@@ -182,7 +180,7 @@
 
     <script data-fn="backtrackNode" data-args="node, target, stop">
         if (node !== undefined || node !== null)
-            node = this.__DATA__.currentNode.id;
+            node = this.__DATA__.currentNodeID;
         else if (!isNaN(node))
             node = Number(node);
 
@@ -268,21 +266,42 @@
         return CMS.loadSiteFramework(path).then((ret) => {
             if ("openNode" in __body__) {
                 if (this.__DATA__.currentPath !== ret) {
-                    this.node(ret).then((node) => {
-                        this.__DATA__.currentNode = node;
-                        if (this.__DATA__.currentNode.id == CMS.__DATA__.config.homePath)
+                    /*this.node(ret).then((node) => {
+                        this.__DATA__.currentNodeID = node.id;
+                        if (this.__DATA__.currentNodeID == CMS.__DATA__.config.homePath)
                             return Promise.resolve(this.__DATA__.rootNode);
-                        else if (this.__DATA__.currentNode.type == 'D')
-                            return Promise.resolve(this.__DATA__.currentNode);
+                        else if (node.type == 'D')
+                            return Promise.resolve(node);
                         else
-                            return this.node(this.__DATA__.currentNode.pid);
+                            return this.node(node.pid);
                     }).then((node) => {
                         if (this.__DATA__.currentDirID != node.id)
                             this.__DATA__.currentDirID = node.id;
                         if (this.__DATA__.parentDirID != node.pid)
                             this.__DATA__.parentDirID = node.pid;
 
-                        __body__.openNode(this.__DATA__.currentNode);
+                        __body__.openNode(node);
+                    });*/
+                    this.node(ret).then((node) => {
+                        this.__DATA__.currentNodeID = node.id;
+                        if (this.__DATA__.currentNodeID == CMS.__DATA__.config.homePath)
+                            this.__DATA__.currentDirID = this.__DATA__.parentDirID = null;
+                        else if (node.type == 'D') {
+                            this.__DATA__.currentDirID = node.id;
+                            this.__DATA__.parentDirID = node.pid;
+                        } else {
+                            if (this.__DATA__.currentDirID !== node.pid) {
+                                this.__DATA__.currentDirID = node.pid;
+                                return this.node(node.pid).then((dirNode) => {
+                                    this.__DATA__.parentDirID = dirNode.pid;
+                                    return Promise.resolve(node);
+                                });
+                            }
+                        }
+
+                        return Promise.resolve(node);
+                    }).then((node) => {
+                        __body__.openNode(node);
                     });
                 }
             } else

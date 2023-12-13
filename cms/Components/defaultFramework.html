@@ -145,7 +145,7 @@
                     this.page.secondaryNav.activate(CMS.__DATA__.currentDirID);
             }, this.page.secondaryNav);
 
-            CMSCONN.on("currentNodeChanged", (dirNode) => {
+            CMSCONN.on("currentNodeChanged", () => {
                 this.page.nodeIndex.$.css("display", "none");
                 (CMS.__DATA__.currentDirID === CMS.__DATA__.rootNode.id
                     ? this.page.nodeIndex.search({
@@ -157,9 +157,9 @@
                     });
             }, this.page.nodeIndex);
 
-            CMSCONN.on("currentNodeChanged", () => {
+            CMSCONN.on("currentNodeChanged", (node) => {
                 this.page.content.$.css("display", "none");
-                this.page.content.load(CMS.__DATA__.currentNode).then(() => {
+                this.page.content.load(node).then(() => {
                     this.page.content.$.css("display", "");
                 });
             }, this.page.content);
