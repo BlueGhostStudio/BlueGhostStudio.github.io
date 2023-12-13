@@ -18,6 +18,7 @@
 
     <pf-data data-fn="parentDirID" data-number>-1</pf-data>
     <pf-data data-fn="currentDirID" data-number>-1</pf-data>
+    <pf-data data-fn="currentPath"></pf-data>
 
     <pf-data data-fn="config" data-object>
         <pf-data data-fn="homePath"></pf-data>
@@ -258,13 +259,35 @@
         if (path == '/'|| path == null || (path instanceof Object && path.id == null))
             path = CMS.__DATA__.config.homePath;
 
-        //CMSCONN.emit("openNode", []);
-        return CMS.loadSiteFramework(path).then((ret) => {
+        /*return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__)
                     __body__.openNode(ret);
                 else
                     console.log("No openNode method");
-            });
+            });*/
+        return CMS.loadSiteFramework(path).then((ret) => {
+            if ("openNode" in __body__) {
+                if (this.__DATA__.currentPath !== ret) {
+                    this.node(ret).then((node) => {
+                        this.__DATA__.currentNode = node;
+                        if (this.__DATA__.currentNode.id == CMS.__DATA__.config.homePath)
+                            return Promise.resolve(this.__DATA__.rootNode);
+                        else if (this.__DATA__.currentNode.type == 'D')
+                            return Promise.resolve(this.__DATA__.currentNode);
+                        else
+                            return this.node(this.__DATA__.currentNode.pid);
+                    }).then((node) => {
+                        if (this.__DATA__.currentDirID != node.id)
+                            this.__DATA__.currentDirID = node.id;
+                        if (this.__DATA__.parentDirID != node.pid)
+                            this.__DATA__.parentDirID = node.pid;
+
+                        __body__.openNode(this.__DATA__.currentNode);
+                    });
+                }
+            } else
+                console.log("No openNode method");
+        });
     </script>
 
     <script data-fn="connect" data-args="ip, port, path">

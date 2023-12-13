@@ -45,13 +45,26 @@
             <footer>BGMRPC - BGCMS - BGPF</footer>
         </pf-page>
 
-        <script data-fn="openNode" data-args="path">
+        <script data-fn="openNode" data-args="node">
             $(document).scrollTop(0);
 
             this.$.removeClass("style_framework_actived");
             this.$.removeClass("style_page_actived");
             this.$.removeClass("style_colorscheme_actived");
-            CMS.node(path).then((node) => {
+
+            if (node.id == CMS.__DATA__.config.homePath) {
+                this.page.$.attr('data-type', 'H');
+                this.page.nodeIndex.$.addClass('flow-grid');
+            } else if (node.type == 'D') {
+                this.page.$.attr('data-type', 'D');
+                this.page.nodeIndex.$.addClass('flow-grid');
+            } else {
+                this.page.$.attr('data-type', 'C');
+                this.page.nodeIndex.$.removeClass("flow-grid");
+            }
+
+            CMSCONN.emit("currentNodeChanged", node);
+            /*CMS.node(path).then((node) => {
                 CMS.__DATA__.currentNode = node;
                 if (CMS.__DATA__.currentNode.id == CMS.__DATA__.config.homePath) {
                     this.page.$.attr('data-type', 'H');
@@ -73,7 +86,7 @@
                     CMS.__DATA__.parentDirID = node.pid;
 
                 CMSCONN.emit("currentNodeChanged", node);
-            });
+            });*/
 
         </script>
 
@@ -134,7 +147,7 @@
 
             CMSCONN.on("currentNodeChanged", (dirNode) => {
                 this.page.nodeIndex.$.css("display", "none");
-                (dirNode.id === CMS.__DATA__.rootNode.id
+                (CMS.__DATA__.currentDirID === CMS.__DATA__.rootNode.id
                     ? this.page.nodeIndex.search({
                         "limit": { "count": 25 },
                         "type": "F"
