@@ -76,6 +76,30 @@
     font-weight: bold;
 }
 
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("/fonts/IBMPlexMono-Regular.woff2");
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("/fonts/IBMPlexMono-Italic.woff2");
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono";
+    src: url("/fonts/IBMPlexMono-Bold.woff2");
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: "IBM Plex Mono"
+    src: url("/fonts/IBMPlexMono-BoldItalic.woff2");
+    font-weight: bold;
+    font-style: italic;
+}
+
 div.cms_img_div {
     width: 64px;
     height: 64px;
