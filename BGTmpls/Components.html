@@ -87,9 +87,9 @@
             </script>
 
             <script data-fn="constructor">
-                if (this.__DATA__.listData) {
-                    for (let x in this.__DATA__.listData)
-                        this.append(this.__DATA__.listData[x]);
+                if (this.__DATA__.initial) {
+                    for (let x in this.__DATA__.initial)
+                        this.append(this.__DATA__.initial[x]);
                 }
             </script>
         </pf-list-tmpl>
@@ -182,6 +182,10 @@
 
     <pf-package name="controlers">
         <pf-text-input-tmpl data-ft="BGTmpls::textInputTmpl" type="text" data-fra="pf-text-input" data-tagName="input">
+            <pf-data data-fn="initial" data-object>
+                <pf-data data-fn="value" data-str></pf-data>
+            </pf-data>
+
             <script data-fn="value">
                 return this.$.val();
             </script>
@@ -189,6 +193,9 @@
                 this.$.val(value);
             </script>
             <script data-fn="constructor">
+                if (this.__DATA__.initial)
+                    this.setValue(this.__DATA__.initial.value || "");
+
                 this.$.keypress((function(event) {
                     if (event.which === 13 && this.onInputFinished) {
                         this.onInputFinished(this.$.val());
@@ -199,6 +206,10 @@
         </pf-text-input-tmpl>
 
         <pf-textarea-tmpl data-ft="BGTmpls::textareaTmpl" data-fra="pf-textarea" data-tagName="textarea">
+            <pf-data data-fn="initial" data-object>
+                <pf-data data-fn="value" data-str></pf-data>
+            </pf-data>
+
             <script data-fn="value">
                 return this.$.val();
             </script>
@@ -206,7 +217,9 @@
                 this.$.val(value);
             </script>
             <script data-fn="constructor">
-                this.$.val("");
+                if (this.__DATA__.initial)
+                    this.setValue(this.__DATA__.initial.value || "");
+
                 this.$.keydown((function(event) {
                     if (event.which === 13 && event.ctrlKey && this.onInputFinished) {
                         this.onInputFinished(this.$.val());
