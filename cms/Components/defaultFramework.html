@@ -129,30 +129,30 @@
 
             CMSCONN.on("currentNodeChanged", () => {
                 this.page.path.$.css("display", "none");
-                this.page.path.load(CMS.__DATA__.currentDirID).then(() => {
+                this.page.path.load(CMS.__DATA__.current.dirID).then(() => {
                     this.page.path.$.css("display", "");
                 });
             }, this.page.path);
 
             CMSCONN.on("currentNodeChanged", () => {
-                if (this.page.secondaryNav.__DATA__.listNode != CMS.__DATA__.parentDirID) {
+                if (this.page.secondaryNav.__DATA__.listNode != CMS.__DATA__.current.parentDirID) {
                     this.page.secondaryNav.$.css("display", "none");
-                    this.page.secondaryNav.load(CMS.__DATA__.parentDirID).then(() => {
-                        this.page.secondaryNav.activate(CMS.__DATA__.currentDirID);
+                    this.page.secondaryNav.load(CMS.__DATA__.current.parentDirID).then(() => {
+                        this.page.secondaryNav.activate(CMS.__DATA__.current.dirID);
                         this.page.secondaryNav.$.css("display", "");
                     });
                 } else
-                    this.page.secondaryNav.activate(CMS.__DATA__.currentDirID);
+                    this.page.secondaryNav.activate(CMS.__DATA__.current.dirID);
             }, this.page.secondaryNav);
 
             CMSCONN.on("currentNodeChanged", () => {
                 this.page.nodeIndex.$.css("display", "none");
-                (CMS.__DATA__.currentDirID === CMS.__DATA__.rootNode.id
+                (CMS.__DATA__.current.dirID === CMS.__DATA__.rootNode.id
                     ? this.page.nodeIndex.search({
                         "limit": { "count": 25 },
                         "type": "F"
                     })
-                    : this.page.nodeIndex.load(CMS.__DATA__.currentDirID)).then(() => {
+                    : this.page.nodeIndex.load(CMS.__DATA__.current.dirID)).then(() => {
                         this.page.nodeIndex.$.css("display", "");
                     });
             }, this.page.nodeIndex);
