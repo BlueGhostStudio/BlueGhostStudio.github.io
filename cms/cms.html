@@ -261,7 +261,45 @@
             path = CMS.__DATA__.config.homePath;
 
         if (this.__DATA__.current.path !== path) {
-            return CMS.loadSiteFramework(path).then((ret) => {
+            let origDirID = this.__DATA__.current.dirID;
+            this.__DATA__.current.path = path;
+
+            this.node(path).then((node) => {
+                this.__DATA__.current.id = node.id;
+                this.__DATA__.current.type = node.type;
+                this.__DATA__.current.contentType = node.contentType;
+
+                let testLoadSiteFramework = () => {
+                    return origDirID !== this.__DATA__.current.dirID
+                        ? this.loadSiteFramework(path).then(() => { return Promise.resolve(node); })
+                        : Promise.resolve(node);
+                }
+
+                if (this.__DATA__.current.id == CMS.__DATA__.config.homePath) {
+                    this.__DATA__.current.dirID = this.__DATA__.current.parentDirID = null;
+                    this.__DATA__.type = 'H';
+                } else if (node.type == 'D') {
+                    this.__DATA__.current.dirID = node.id;
+                    this.__DATA__.current.parentDirID = node.pid;
+                } else {
+                    if (this.__DATA__.current.dirID !== node.pid) {
+                        this.__DATA__.current.dirID = node.pid;
+
+                        return this.node(node.pid).then((dirNode) => {
+                            this.__DATA__.current.parentDirID = dirNode.pid;
+                            return testLoadSiteFramework();
+                        });
+                    }
+                }
+
+                return testLoadSiteFramework();
+            }).then((node) => {
+                if ("openNode" in __body__)
+                    __body__.openNode(node);
+                else
+                    console.log("No openNode method");
+            });
+            /*return CMS.loadSiteFramework(path).then((ret) => {
                 if ("openNode" in __body__) {
                     this.__DATA__.current.path = ret;
                     this.node(ret).then((node) => {
@@ -289,7 +327,7 @@
                     });
                 } else
                     console.log("No openNode method");
-            });
+            });*/
         }
     </script>
 
