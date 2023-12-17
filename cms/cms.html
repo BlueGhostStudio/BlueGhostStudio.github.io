@@ -266,7 +266,7 @@
 
             this.node(path).then((node) => {
                 this.__DATA__.current.id = node.id;
-                this.__DATA__.current.type = node.type;
+                // this.__DATA__.current.type = node.type;
                 this.__DATA__.current.contentType = node.contentType;
 
                 let testLoadSiteFramework = () => {
@@ -277,11 +277,13 @@
 
                 if (this.__DATA__.current.id == CMS.__DATA__.config.homePath) {
                     this.__DATA__.current.dirID = this.__DATA__.current.parentDirID = null;
-                    this.__DATA__.type = 'H';
+                    this.__DATA__.current.type = 'H';
                 } else if (node.type == 'D') {
                     this.__DATA__.current.dirID = node.id;
                     this.__DATA__.current.parentDirID = node.pid;
+                    this.__DATA__.current.type = 'D';
                 } else {
+                    this.__DATA__.current.type = 'C';
                     if (this.__DATA__.current.dirID !== node.pid) {
                         this.__DATA__.current.dirID = node.pid;
 

@@ -42,6 +42,8 @@
 
             <cms-node id="content" data-dir-ref="index"></cms-node>
 
+            <cms-plugins-container data-fn="pluginsContainer"></cms-plugins-container>
+
             <footer>BGMRPC - BGCMS - BGPF</footer>
         </pf-page>
 
@@ -163,6 +165,13 @@
                     this.page.content.$.css("display", "");
                 });
             }, this.page.content);
+
+            CMSCONN.on("currentNodeChanged", () => {
+                this.page.pluginsContainer.$.css("display", "none");
+                this.page.pluginsContainer.load().then(() => {
+                    this.page.pluginsContainer.$.css("display", "");
+                });
+            }, this.page.pluginsContainer);
         </script>
     </pf-body>
 
