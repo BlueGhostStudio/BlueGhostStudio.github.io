@@ -123,21 +123,21 @@
 
         <script data-fn="load">
             let loadPromise = new Promise((resolve, reject) => {
-                if (this.__DATA__.currentDirID === CMS.__DATA__.current.dirID) // 如果内容目录未改变
+                if (this.__DATA__.currentDirID === CMS.__DATA__.current.dirID)      // 如果内容目录未改变
                     resolve();
                 else {
                     this.__DATA__.currentDirID = CMS.__DATA__.current.dirID;
 
-                    CMS.backtrackNode(this.__DATA__.currentDirID, "site/plugins")            // 回溯
-                        .then((ret) => {                                       // 搜索成功
-                            if (this.__DATA__.pluginsID === ret.target.id)      // 如果插件已被加载
+                    CMS.backtrackNode(this.__DATA__.currentDirID, "site/plugins")   // 回溯
+                        .then((ret) => {                                            // 回溯成功
+                            if (this.__DATA__.pluginsID === ret.target.id)          // 如果插件已被加载
                                 resolve();               // 直接返回
                             else {
                                 this.loadPlugins(ret.target.id).then(() => {
                                     resolve();
                                 });
                             }
-                        }, (ret) => {                                          // 未搜索到
+                        }, (ret) => {                                               // 回溯失败
                             this.__DATA__.currentDirID = -1;
                             this.__DATA__.pluginsID = -1;
                             this.empty();
