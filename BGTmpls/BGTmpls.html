@@ -31,7 +31,7 @@
         window.BGTmpls = this;
         // window.__body__ = compile($('body'));
         window.__queryString__ = function (name, url) {
-            var q = /[^\?]*\?(.*)/.exec(url);
+            var q = /[^\?]*\?(.*)#.*/.exec(url);
 
             if (q === null)
                 return null;
@@ -42,7 +42,7 @@
             return q ? q[2] : null;
         }
         window.__queryStringArray__ = function (url) {
-            url = url.replace(/^[^?]*\?/, '');
+            url = url.replace(/^[^?]*\?|#.*$/g, '');
             var arr = url.split('&');
             var v = {};
             for (var x in arr) {
