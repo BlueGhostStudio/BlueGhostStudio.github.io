@@ -25,7 +25,22 @@
 
             <cms-node id="content" data-dir-ref="index"></cms-node>
 
-            <cms-plugins-container data-fn="pluginsContainer"></cms-plugins-container>
+            <cms-plugins-container data-fn="pluginsContainer" data-modified>
+                <pf-data data-fn="slots" data-object data-modified>
+                    <pf-data data-fn="contentNode" data-js><script>
+                            return this.toNS("body::root").page.content;
+                    </script></pf-data>
+                    <pf-data data-fn="contentHeader" data-js><script>
+                            return this.toNS("body::root").page.content.header;
+                    </script></pf-data>
+                    <pf-data data-fn="content" data-js><script>
+                            return this.toNS("body::root").page.content.content;
+                    </script></pf-data>
+                    <pf-data data-fn="nodeIndex" data-js><script>
+                            return this.toNS("body::root").page.nodeIndex;
+                    </script></pf-data>
+                </pf-data>
+            </cms-plugins-container>
 
             <footer>BGMRPC - BGCMS - BGPF</footer>
         </pf-page>

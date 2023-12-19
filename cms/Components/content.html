@@ -4,30 +4,30 @@
             "txt": (content, elem) => {
                 return Promise.resolve().then(() => {
                     elem.text(content || "");
-                    //elem.$.trigger("contentGenerated");
+                    elem.$.trigger("contentGenerated");
                 });
             }, "html": (content, elem) => {
                 return Promise.resolve().then(() => {
                     elem.html(content || "");
-                    //elem.$.trigger("contentGenerated");
+                    elem.$.trigger("contentGenerated");
                 });
             }, "md": (content, elem) => {
                 return Promise.resolve().then(() => {
                     elem.html(marked.parse(content || ""))
-                    //elem.$.trigger("contentGenerated");
+                    elem.$.trigger("contentGenerated");
                 });
             }, "fra": (content, elem) => {
                 let package = compile($(content || ""), elem);
                 return package.load().then((cmpObj) => {
                     elem.html(cmpObj.$.contents());
-                    elem.$.trigger("componentLoaded", [cmpObj]);
+                    elem.$.trigger("contentGenerated", [cmpObj]);
 
                     return Promise.resolve(cmpObj);
                 });
             }, "elm": (content, elem) => {
                 let elemObj = compile($(content || ""), elem);
                 elem.html(elemObj.$.contents());
-                elem.$.trigger("componentLoaded", [elemObj]);
+                elem.$.trigger("contentGenerated", [elemObj]);
 
                 return Promise.resolve(elemObj);
             },"png": (content, elem, summary) => {
@@ -45,7 +45,7 @@
                         return Promise.reject();
                 }).then((href) => {
                     elem.html('<img src="' + href + '" alt="' + summary + '">');
-                    //elem.$.trigger("contentGenerated");
+                    elem.$.trigger("contentGenerated");
                 }, () => {
                     elem.html('<img src="" alt="' + summary + '">');
                 });
