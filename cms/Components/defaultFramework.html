@@ -4,7 +4,15 @@
     </script>
 
     <pf-body data-ft="cms::default::framework" data-connected data-fns="body::root" data-tagName="body">
-        <cms-style data-fn="style_framework" data-backtrack></cms-style>
+        <cms-style data-fn="style_framework" data-backtrack>
+            <pf-data data-fn="importPaths" data-array>
+                <pf-data data-str>framework_plugin</pf-data>
+                <pf-data data-str>framework_common</pf-data>
+                <pf-data data-str>framework_home</pf-data>
+                <pf-data data-str>framework_dir</pf-data>
+                <pf-data data-str>framework_content</pf-data>
+            </pf-data>
+        </cms-style>
         <cms-style data-fn="style_page" data-backtrack></cms-style>
         <cms-style data-fn="style_colorScheme" data-backtrack></cms-style>
 
@@ -21,9 +29,9 @@
                 <cms-dir-nav id="secondaryNav"></cms-dir-nav>
             </div>
 
-            <cms-index id="nodeIndex" data-dir-ref="desc"></cms-index>
-
             <cms-node id="content" data-dir-ref="index"></cms-node>
+
+            <cms-index id="nodeIndex" data-dir-ref="desc"></cms-index>
 
             <cms-plugins-container data-fn="pluginsContainer" data-modified>
                 <pf-data data-fn="slots" data-object data-modified>

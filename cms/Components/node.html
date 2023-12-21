@@ -4,72 +4,158 @@
     </script>
 
     <!-- style -->
-    <cms-style-tmpl data-ft="cms::style"
-                    data-style
-                    data-fra="cms-style"
-                    data-tagName="style">
+    <cms-style-tmpl data-ft="cms::style" data-fra="cms-style" data-tagName="style">
+        <pf-data data-fn="basePath"></pf-data>              <!-- 查找样式表的基础路径 -->
+        <pf-data data-fn="importPaths" data-array></pf-data>                <!-- 导入样式表数组 -->
+        <pf-data data-fn="mainStyleDir" data-number>-1</pf-data>            <!-- 基础路径, 主样式表所在的目录 -->
         <pf-data data-fn="opt" data-object>
-            <pf-data data-fn="less_options" data-object></pf-data>
-            <pf-data data-fn="backtrack" data-js><script>
+            <pf-data data-fn="less_options" data-object></pf-data>          <!-- less 的选项 -->
+            <pf-data data-fn="backtrack" data-js><script>                   // 是否为回溯
                     return this.$.attr("data-backtrack") !== undefined;
             </script></pf-data>
+            <pf-data data-fn="style" data-js><script>                       // 主样式表的path
+                    return this.$.attr("data-style");
+            </script></pf-data>
         </pf-data>
-        <pf-data data-fn="stylePath" data-js><script>
-                return this.$.attr("data-style");
-        </script></pf-data>
-        <pf-data data-fn="id"></pf-data>
+        <pf-data data-fn="updatedTests" data-array></pf-data>               <!-- 用于判断是否需要重载的导入样式表的id -->
+        <pf-data data-fn="id"></pf-data>                                    <!-- 主样式表id, 判断是否需要重载 -->
+        <pf-data data-fn="main"></pf-data>
 
-        <script data-fn="load" data-args="path, basePath, requestUpdate">
-            if (basePath == undefined)
-                basePath = CMS.__DATA__.rootNode.id;
-
-            return CMS.renderStyle(path, basePath, this.__DATA__.opt.less_options)
-                .then((ret) => {
-                    if (requestUpdate || this.__DATA__.id != ret.id) {
-                        this.$.empty();
-                        this.__DATA__.id = ret.id;
-                        this.text(ret.css);
-                    }
-                }, (ret) => {
-                    if (basePath == CMS.__DATA__.rootNode.id) {
-                        this.__DATA__.id = undefined;
-                        this.$.empty();
-                        return Promise.reject(ret);
-                    } else
-                        return this.load(path);
-                });
-        </script>
-
-        <script data-fn="backtrackLoad" data-args="path, basePath">
-            return CMS.backtrackNode(basePath, path).then((ret) => {
-                return this.load(ret.target.id);
-            }, (ret) => {
-                this.__DATA__.id = undefined;
-                this.$.empty();
-                return Promise.reject(ret);
+        <script data-fn="loadLess" data-args="path, main">
+            return new Promise((resolve, reject) => {
+                if (main) { // 加载主样式表内容
+                    CMS.node(path, this.__DATA__.basePath).then((ret) => {
+                        let loaded = false;
+                        if (ret.id === this.__DATA__.id)            // 如果远端内容id与已加载的相同
+                            loaded = true;                          // 标注已加载
+                        else {                                      // 否则, 主样式表未加载
+                            this.__DATA__.mainStyleDir = ret.pid;   // 设 mainStyleDir
+                            this.__DATA__.id = ret.id;              // 主样式表id
+                        }
+                        // 返回主样式表loaded标志及内容
+                        resolve({ loaded: loaded, content: ret.content });
+                    }, (ret) => { reject(ret) });
+                } else { // 加载导入样式表内容
+                    CMS.node(path, this.__DATA__.mainStyleDir).then((ret) => {
+                        this.__DATA__.updatedTests.push(ret.id);
+                        resolve(ret.content);
+                    }, (ret) => { reject(ret) });
+                }
             });
         </script>
 
+        <script data-fn="renderLess" data-args="lessContent">
+            return less.render(lessContent, this.__DATA__.opt.less_options).then((output) => {
+                this.text(output.css);
+                return Promise.resolve();
+            }, (err) => {
+                this.$.empty();
+                return Promise.reject(err);
+            });
+        </script>
+
+        <script data-fn="load" data-args="path, basePath">
+            if (basePath !== undefined)
+                this.__DATA__.basePath = basePath;
+            else
+                this.__DATA__.basePath = CMS.__DATA__.current.dirID;
+
+            let reload = false;
+
+            if (path) {                                 // 若提供path参数
+                if (path === this.__DATA__.main) {      // 参数与this.__DATA__.main相等
+                    return Promise.resolve();           // 则指定样式表已加载，返回‘解决’
+                } else if(typeof path === "string")     // 否则, 设置this.__DATA__.main
+                    this.__DATA__.main = path;
+            } else {                                    // 如果参数为空/undefined
+                if (this.__DATA__.id === undefined) {
+                    return Promise.resolve();
+                }
+                path = this.__DATA__.id;
+                reload = true;                          // 则为重载
+            }
+
+            return new Promise((resolve, reject) => {
+                this.loadLess(path, true).then((ret) => {
+                    if (!reload && ret.loaded)          // 非重载且主样式表已读取
+                        resolve();                      // 放弃生成
+
+                    // 非重载或主样式表未读取
+                    else {
+                        this.__DATA__.updatedTests = [];// 清除更新检测表
+
+                        // 原有主样式表未加载且包含导入样式表
+                        if (this.__DATA__.importPaths.length > 0) {
+                            let mainLess = ret.content;
+
+                            Promise.allSettled(this.__DATA__.importPaths.map((elem) => {
+                                return this.loadLess(elem)
+                            }, this)).then((results) => {
+                                let buffer = [];
+                                results.forEach((result) => {
+                                    if (result.status === 'fulfilled')
+                                        buffer.push(result.value);
+                                });
+                                // 将各导入样式表及主样式表内容并接，然后生成为css
+                                this.renderLess(buffer.join('\n') + '\n' + mainLess).then(() => resolve(),
+                                    (err) => reject(err));
+                            });
+                        } else // 只有主样式表
+                            // 生成主样式表为css
+                            this.renderLess(ret.content).then(() => resolve(), (err) => reject(err));
+                    }
+                }, (err) => {
+                    this.__DATA__.id = undefined;
+                    this.__DATA__.mainStyleDir = -1;
+
+                    this.$.empty();
+                    reject(err);
+                });
+            });
+        </script>
+
+        <script data-fn="backtrackLoad" data-args="path">
+            this.__DATA__.main = path;
+            return new Promise((resolve, reject) => {
+                CMS.backtrackNode(CMS.__DATA__.currentDirID, path).then((ret) => {
+                    if (this.__DATA__.id === ret.target.id)
+                        resolve();
+                    else
+                        this.load(ret.target.id).then(() => resolve(), (err) => reject(err));
+                }, (err) => {
+                    this.__DATA__.id = undefined;
+                    this.__DATA__.mainStyleDir = -1;
+                    this.$.empty();
+
+                    reject(err);
+                });
+            });
+        </script>
+
+        <script data-fn="autoload">
+            if (!this.__DATA__.opt.style)
+                return Promise.reject();
+
+            return this.__DATA__.opt.backtrack
+                       ? this.backtrackLoad(this.__DATA__.opt.style)
+                       : this.load(this.__DATA__.opt.style);
+        </script>
+        
+        <!-- 为了兼容旧版 -->
         <script data-fn="setOptions" data-args="opt">
             this.__DATA__.opt.less_options = opt;
         </script>
-        
-        <script data-fn="constructor">
-            this.__DATA__.opt.backtrack = this.$.attr("data-backtrack") != undefined;
-            if (this.__DATA__.stylePath.length > 0)
-                this.__DATA__.opt.backtrack ? this.backtrackLoad(this.__DATA__.stylePath) :
-                this.load(this.__DATA__.stylePath);
 
+        <script data-fn="constructor">
             CMSCONN.on("contentUpdated", (args) => {
-                if (args[0] == this.__DATA__.id)
-                    this.load(this.__DATA__.id, undefined, true);
-            }, this);
-            /*CMSCONN.on("currentNodeChanged", () => {
-                this.__DATA__.opt.backtrack ? this.backtrackLoad(this.__DATA__.stylePath) :
-                this.load(this.__DATA__.stylePath);
-            }, this);*/
+                if (args[0] == this.__DATA__.id || this.__DATA__.updatedTests.includes(args[0]))
+                    this.load();
+            });
+
+            if (this.__DATA__.opt.style) // 如果指定了 data-style
+                this.autoload();
         </script>
-    </cms-style-tmpl> <!-- style end -->
+    </cms-style-tmpl>
 
     <header data-ft="cms::node::header"
             data-overloaded-prefix="cms_node_header"
