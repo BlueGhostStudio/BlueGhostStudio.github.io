@@ -4,7 +4,7 @@
     </script>
 
     <!-- style -->
-    <cms-style-tmpl data-ft="cms::style" data-fra="cms-style" data-tagName="style">
+    <pf-style data-ft="cms::style" data-fra="cms-style">
         <pf-data data-fn="basePath"></pf-data>              <!-- 查找样式表的基础路径 -->
         <pf-data data-fn="importPaths" data-array></pf-data>                <!-- 导入样式表数组 -->
         <pf-data data-fn="mainStyleDir" data-number>-1</pf-data>            <!-- 基础路径, 主样式表所在的目录 -->
@@ -147,6 +147,7 @@
         </script>
 
         <script data-fn="constructor">
+            this.superTmpl("BGTmpls::style").constructor.call(this);
             CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.__DATA__.id || this.__DATA__.updatedTests.includes(args[0]))
                     this.load();
@@ -155,7 +156,7 @@
             if (this.__DATA__.opt.style) // 如果指定了 data-style
                 this.autoload();
         </script>
-    </cms-style-tmpl>
+    </pf-style>
 
     <header data-ft="cms::node::header"
             data-overloaded-prefix="cms_node_header"

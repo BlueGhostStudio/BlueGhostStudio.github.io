@@ -649,5 +649,17 @@
                 }
             </script>
         </pf-container>
+
+        <pf-style-tmpl data-ft="BGTmpls::style"
+                       data-fra="pf-style"
+                       data-tagName="style">
+            <script data-fn="constructor">
+                $("head").append(this.$);
+
+                let style = this.__TEXT__.trim();
+                if (style.length > 0)
+                    this.text(style);
+            </script>
+        </pf-style-tmpl>
     </pf-package>
 </pf-package>
