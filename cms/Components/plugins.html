@@ -1,0 +1,392 @@
+<pf-package>
+    <script data-fn="load" data-args="relPath, nextLoad">
+        nextLoad();
+    </script>
+
+    <pf-container class="pluginsContainer"
+                  data-ft="cms::plugins::container"
+                  data-fra="cms-plugins-container"
+                  data-fns="plugins::root"
+                  data-tagname="pf-container">
+        <pf-data data-fn="slots" data-object>
+            <pf-data data-fn="contentNode"></pf-data>
+            <pf-data data-fn="contentHeader"></pf-data>
+            <pf-data data-fn="content"></pf-data>
+            <pf-data data-fn="nodeIndex"></pf-data>
+        </pf-data>
+        <pf-data data-fn="currentDirID" data-number>-1</pf-data>
+        <pf-data data-fn="pluginsID" data-number>-1</pf-data>
+
+        <script data-fn="loadPlugins" data-args="pluginsID">
+            if (pluginsID === undefined)
+                pluginsID = this.__DATA__.pluginsID;
+
+            return CMS.node(pluginsID).then((ret) => {
+                this.empty();
+                this.__DATA__.pluginsID = ret.id;
+                return contentGenerate[ret.contentType](ret.content, this);
+            });
+        </script>
+
+        <script data-fn="load">
+            let loadPromise = new Promise((resolve, reject) => {
+                if (this.__DATA__.currentDirID === CMS.__DATA__.current.dirID)      // 如果内容目录未改变
+                    resolve();
+                else {
+                    this.__DATA__.currentDirID = CMS.__DATA__.current.dirID;
+
+                    CMS.backtrackNode(this.__DATA__.currentDirID, "site/plugins")   // 回溯
+                        .then((ret) => {                                            // 回溯成功
+                            if (this.__DATA__.pluginsID === ret.target.id)          // 如果插件已被加载
+                                resolve();               // 直接返回
+                            else {
+                                this.loadPlugins(ret.target.id).then(() => {
+                                    resolve();
+                                });
+                            }
+                        }, (ret) => {                                               // 回溯失败
+                            this.__DATA__.currentDirID = -1;
+                            this.__DATA__.pluginsID = -1;
+                            this.empty();
+                            reject();
+                        });
+                }
+            });
+
+            return loadPromise.then(() => {
+                CMSCONN.emit("pluginsRefresh");
+            });
+        </script>
+
+        <script data-fn="constructor">
+            CMSCONN.on("contentUpdated", (args) => {
+                if (this.__DATA__.pluginsID == args[0]) {
+                    this.loadPlugins().then(() => {
+                        CMSCONN.emit("pluginsRefresh");
+                    });
+                }
+            }, this);
+        </script>
+    </pf-container>
+
+    <pf-extend-tmpl data-ft="cms::plugin::common">
+        <pf-data data-fn="scenes" data-object>
+            <pf-data data-fn="home" data-js><script>
+                    return this.$.attr("data-home") !== undefined;
+            </script></pf-data>
+            <pf-data data-fn="dir" data-js><script>
+                    return this.$.attr("data-dir") !== undefined;
+            </script></pf-data>
+            <pf-data data-fn="content" data-js><script>
+                    return this.$.attr("data-content") !== undefined;
+            </script></pf-data>
+        </pf-data>
+
+        <script data-fn="constructor">
+            if (this.__DATA__.initial) {
+                if (this.__DATA__.initial.home) {
+                    this.__DATA__.scenes.home = true;
+                    this.$.attr("data-home", "");
+                }
+                if (this.__DATA__.initial.dir) {
+                    this.__DATA__.scenes.dir = true;
+                    this.$.ttr("data-dir", "");
+                }
+                if (this.__DATA__.initial.content) {
+                    this.__DATA__.scenes.content = true;
+                    this.$.attr("data-content", "");
+                }
+
+                if (this.__DATA__.initial.title)
+                    this.$.attr("title", this.__DATA__.initial.title);
+            }
+
+            CMSCONN.on("pluginsRefresh", () => {
+                if ((CMS.__DATA__.current.type === 'H' && this.__DATA__.scenes.home) ||
+                     (CMS.__DATA__.current.type === 'D' && this.__DATA__.scenes.dir) ||
+                     (CMS.__DATA__.current.type === 'C' && this.__DATA__.scenes.content)) {
+                    if (typeof this.refresh === 'function')
+                        this.refresh();
+                } else if (typeof this.leave === 'function')
+                    this.leave();
+            }, this);
+        </script>
+    </pf-extend-tmpl>
+
+
+
+    <pf-container class="plugin" data-ft="cms::plugin::summary"
+                  data-content title="Summary" data-fra="cms-plugin-summary"
+                  data-tagName="pf-container">
+        <pf-extend data-fr="cms::plugin::common"></pf-extend>
+
+        <pf-viewport data-fn="viewport"></pf-viewport>
+
+        <script data-fn="refresh">
+            CMS.nodeInfo(CMS.__DATA__.current.id).then((ret) => {
+                contentGenerate.md(ret.summary, this.viewport);
+            });
+        </script>
+
+        <script data-fn="constructor">
+            CMSCONN.on("summaryUpdated", (args) => {
+                if (CMS.__DATA__.current.id == args[0])
+                    this.refresh();
+            });
+        </script>
+    </pf-container>
+
+    <pf-style data-ft="cms::plugin::extendStyle"  data-isolated
+              data-fra="cms-plugin-style">
+        <pf-extend data-fr="cms::plugin::common"></pf-extend>
+
+        <pf-data data-fn="default" data-str>
+pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
+    color: var(--accent);
+    border: 1px dashed var(--accent);
+    padding: 1ex;
+    border-radius: 1ex 0 0 1ex;
+}
+        </pf-data>
+        <pf-data data-fn="stylePath" data-str>site/style/plugin_extStyle</pf-data>
+        <pf-data data-fn="buffer" data-object>
+            <pf-data data-fn="dirID" data-number>-1</pf-data>
+            <pf-data data-fn="styleID" data-number>-1</pf-data>
+            <pf-data data-fn="less" data-str></pf-data>
+        </pf-data>
+
+        <script data-fn="renderStyle">
+            less.render(this.__DATA__.buffer.less || this.__DATA__.default, {
+                modifyVars: {
+                    '@nodeID': `"${CMS.__DATA__.current.id}"`,
+                    '@dirID':  `"${CMS.__DATA__.current.dirID}"`,
+                    '@parentID': `"${CMS.__DATA__.current.parentID}"`
+                }
+            }).then((output) => { this.text(output.css) });
+        </script>
+
+        <script data-fn="refresh">
+            let lessPromise;
+
+            if (this.__DATA__.buffer.dirID !== CMS.__DATA__.current.id) {
+                this.__DATA__.buffer.dirID = CMS.__DATA__.current.id;
+
+                lessPromise = CMS.backtrackNode(this.__DATA__.buffer.dirID,
+                    this.__DATA__.stylePath).then((ret) => {
+                        if (this.__DATA__.buffer.styleID !== ret.target.id) {
+                            this.__DATA__.buffer.styleID = ret.target.id;
+
+                            return CMS.node(this.__DATA__.buffer.styleID).then((ret) => {
+                                this.__DATA__.buffer.less = ret.content.trim();
+
+                                return Promise.resolve();
+                            });
+                        } else
+                            return Promise.resolve(this.__DATA__.buffer.less || this.default);
+                    }, (ret) => {
+                        this.__DATA__.buffer.styleID = -1;
+                        this.__DATA__.buffer.less = "";
+
+                        return  Promise.resolve();
+                    });
+            } else
+                lessPromise = Promise.resolve();
+
+            lessPromise.then((lessText) => {
+                this.renderStyle();
+            });
+        </script>
+        <script data-fn="leave">
+            this.text("");
+        </script>
+
+        <script data-fn="constructor">
+            this.superTmpl("BGTmpls::style").constructor.call(this);
+
+            CMSCONN.on("contentUpdated", (args) => {
+                if (args[0] === this.__DATA__.buffer.styleID) {
+                    this.__DATA__.buffer.less = args[1];
+                    this.renderStyle();
+                }
+            });
+        </script>
+    </pf-style>
+
+    <div class="decor" data-ft="cms::plugin::decor" data-isolated
+                       data-fra="cms-plugin-decor" data-tagName="div">
+        <pf-extend data-fr="cms::plugin::common"></pf-extend>
+
+        <script data-fn="refresh">
+            this.$.show();
+        </script>
+        <script data-fn="leave">
+            this.$.hide();
+        </script>
+
+        <script data-fn="constructor">
+            this.prepend(this.toNS("plugins::root")._);
+        </script>
+    </div>
+
+    <pf-container data-ft="cms::plugin::group" class="plugin group"
+                  data-fra="cms-plugin-group" data-tagName="pf-container">
+        <pf-extend data-fr="cms::plugin::common"></pf-extend>
+
+        <pf-data data-fn="plugins" data-array>
+        </pf-data>
+
+        <script data-fn="constructor">
+            for (let x in this.__DATA__.plugins) {
+                if (this.__DATA__.plugins[x].$.attr("data-isolated") === undefined)
+                    this.__DATA__.plugins[x].putInto(this);
+            }
+        </script>
+    </pf-container>
+
+    <cms-plugin-group data-ft="cms::plugin::TOC"
+                        data-fra="cms-plugin-toc" data-tagName="pf-container">
+        <pf-data data-fn="plugins" data-array>
+            <cms-plugin-style data-content>
+                <pf-data data-fn="default" data-str>
+:root {
+    scroll-behavior: smooth;
+}
+pf-container.plugin.group:has(> pf-container.plugin.toc) {
+    position: sticky;
+    top: 0;
+}
+pf-container.plugin.toc {
+    background-color: var(--base-shade3);
+    padding: 1ex;
+    border-radius: 1ex;
+}
+pf-container.plugin.toc a {
+    display: list-item;
+    list-style-type: decimal;
+
+    margin-block: 0.5ex;
+
+    text-wrap: wrap;
+    overflow-wrap: anywhere;
+
+    &::marker { font-weight: bold; }
+}
+
+pf-container.plugin.toc a.TOC_H1 {
+    counter-increment: H1;
+    margin-left: 40px;
+
+    &:first-child { counter-reset: H1 }
+    &::marker { content: counter(H1, upper-alpha) '. ' }
+}
+
+pf-container.plugin.toc a.TOC_H2 {
+    counter-increment: H2;
+    margin-left: 55px;
+
+    &::marker { content: counter(H2, lower-alpha) '. ' }
+}
+pf-container.plugin.toc {
+    a.TOC_H1 + a.TOC_H2 {
+        counter-reset: H2;
+    }
+}
+
+pf-container.plugin.toc a.TOC_H3 {
+    counter-increment: H3;
+    margin-left: 70px;
+
+    &::marker { content: counter(H3) '. ' }
+}
+pf-container.plugin.toc {
+    a.TOC_H2 + a.TOC_H3 {
+        counter-reset: H3;
+    }
+}
+
+pf-container.plugin.toc a.TOC_H4 {
+    counter-increment: H4;
+    margin-left: 85px;
+
+    &::marker { content: counter(H4) '. ' }
+}
+pf-container.plugin.toc {
+    a.TOC_H3 + a.TOC_H4 {
+        counter-reset: H4;
+    }
+}
+
+pf-container.plugin.toc a.TOC_H5 {
+    counter-increment: H5;
+    margin-left: 100px;
+
+    &::marker { content: counter(H5) '. ' }
+}
+pf-container.plugin.toc {
+    a.TOC_H4 + a.TOC_H5 {
+        counter-reset: H5;
+    }
+}
+
+pf-container.plugin.toc a.TOC_H6 {
+    counter-increment: H6;
+    margin-left: 115px;
+
+    &::marker { content: counter(H6) '. ' }
+}
+pf-container.plugin.toc {
+    a.TOC_H5 + a.TOC_H6 {
+        counter-reset: H4;
+    }
+}
+div.toc_anchor {
+    position: relative;
+    top: -40px;
+}
+                </pf-data>
+                <pf-data data-fn="stylePath" data-str>site/style/plugin_TOCStyle</pf-data>
+            </cms-plugin-style>
+
+            <pf-container class="plugin toc" data-content title="Article outline">
+                <pf-extend data-fr="cms::plugin::common"></pf-extend>
+                <script data-fn="refresh">
+                    this.toNS("plugins::root").__DATA__.slots.content.$.on("contentGenerated", this.generateTOC.bind(this));
+                    this.generateTOC();
+                </script>
+                <script data-fn="leave">
+                    this.toNS("plugins::root").__DATA__.slots.content.$.off("contentGenerated", this.generateTOC);
+                </script>
+
+                <script data-fn="generateTOC">
+                    this.$.empty();
+                    let contentElem = this.toNS("plugins::root").__DATA__.slots.content.$;
+                    contentElem.find("h1, h2, h3, h4, h5").each((index, elem) => {
+                        let tagName = $(elem).prop("tagName");
+                        let idn = `TOC_${index}`;
+                        let text = $(elem).text();
+                        //$(elem).attr("id", idn);
+                        $(`<div class="toc_anchor" id="${idn}"></div>`).insertBefore($(elem));
+                        this.$.append(`<a class="TOC_${tagName}" href="#${idn}">${text}</a>`);
+                    });
+                </script>
+
+                <script data-fn="destructor">
+                    this.toNS("plugins::root").__DATA__.slots.content.$.off("contentGenerated", this.generateTOC);
+                </script>
+            </pf-container>
+        </pf-data>
+    </cms-plugin-group>
+
+    <cms-plugin-group data-ft="cms::plugin::commonPlugins" class="plugin group"
+                        data-fra="cms-plugin-common" data-tagName="pf-container">
+        <pf-data data-fn="plugins" data-array>
+            <cms-plugin-style data-content></cms-plugin-style>
+            <cms-plugin-decor class="logo" data-content></cms-plugin-decor>
+            <cms-plugin-decor class="left" data-content></cms-plugin-decor>
+            <cms-plugin-decor class="main" data-content></cms-plugin-decor>
+            <cms-plugin-summary data-content></cms-plugin-summary>
+            <cms-plugin-toc></cms-plugin-toc>
+        </pf-data>
+    </cms-plugin-group>
+
+</pf-package>
