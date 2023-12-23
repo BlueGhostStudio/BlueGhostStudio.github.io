@@ -149,7 +149,7 @@
                 this.load(node);
 
             var fiCB = (item, id) => {
-                return item.node.id == id;
+                return item.__DATA__.node.id == id;
             }
 
             CMSCONN.on("nodeCreated", (args) => {
