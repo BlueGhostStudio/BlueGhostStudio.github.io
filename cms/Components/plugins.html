@@ -256,89 +256,64 @@ pf-container.plugin.group:has(> pf-container.plugin.toc) {
     top: 0;
 }
 pf-container.plugin.toc {
-    background-color: var(--base-shade3);
-    padding: 1ex;
-    border-radius: 1ex;
+    font-size: 90%;
 }
-pf-container.plugin.toc a {
-    display: list-item;
-    list-style-type: decimal;
+pf-container.plugin.toc a:where(.TOC_H1,.TOC_H2,.TOC_H3,.TOC_H4,.TOC_H5,.TOC_H6) {
+    position: relative;
 
-    margin-block: 0.5ex;
+    display: block;
+    margin-block: 2px;
+    padding: 1ex;
+
+    border-radius: 1ex 0 0 1ex;
+    background: linear-gradient(90deg, var(--base-shade2), transparent);
 
     text-wrap: wrap;
     overflow-wrap: anywhere;
+    opacity: 0.6;
 
-    &::marker { font-weight: bold; }
+    transform-origin: left center;
+    transition: all, 0.25s;
+
+    &:hover {
+        opacity: 1;
+        scale: 1.5;
+        text-shadow: 0 0 2px var(--accent);
+    }
 }
 
-pf-container.plugin.toc a.TOC_H1 {
-    counter-increment: H1;
-    margin-left: 40px;
+/*pf-container.plugin.toc a.TOC_H2 + a.TOC_H1,
+pf-container.plugin.toc a.TOC_H3 + a.TOC_H2,
+pf-container.plugin.toc a.TOC_H4 + a.TOC_H3,
+pf-container.plugin.toc a.TOC_H5 + a.TOC_H4,
+pf-container.plugin.toc a.TOC_H6 + a.TOC_H5 {
+    margin-block-start: 1em;
+}*/
 
-    &:first-child { counter-reset: H1 }
-    &::marker { content: counter(H1, upper-alpha) '. ' }
+pf-container.plugin.toc a.TOC_H1 {
+    font-weight: bold;
 }
 
 pf-container.plugin.toc a.TOC_H2 {
-    counter-increment: H2;
-    margin-left: 55px;
-
-    &::marker { content: counter(H2, lower-alpha) '. ' }
-}
-pf-container.plugin.toc {
-    a.TOC_H1 + a.TOC_H2 {
-        counter-reset: H2;
-    }
+    margin-left: 1em;
 }
 
 pf-container.plugin.toc a.TOC_H3 {
-    counter-increment: H3;
-    margin-left: 70px;
-
-    &::marker { content: counter(H3) '. ' }
-}
-pf-container.plugin.toc {
-    a.TOC_H2 + a.TOC_H3 {
-        counter-reset: H3;
-    }
+    margin-left: 2em;
 }
 
 pf-container.plugin.toc a.TOC_H4 {
-    counter-increment: H4;
-    margin-left: 85px;
-
-    &::marker { content: counter(H4) '. ' }
-}
-pf-container.plugin.toc {
-    a.TOC_H3 + a.TOC_H4 {
-        counter-reset: H4;
-    }
+    margin-left: 3em;
 }
 
 pf-container.plugin.toc a.TOC_H5 {
-    counter-increment: H5;
-    margin-left: 100px;
-
-    &::marker { content: counter(H5) '. ' }
-}
-pf-container.plugin.toc {
-    a.TOC_H4 + a.TOC_H5 {
-        counter-reset: H5;
-    }
+    margin-left: 4em;
 }
 
 pf-container.plugin.toc a.TOC_H6 {
-    counter-increment: H6;
-    margin-left: 115px;
+    margin-left: 5em;
+}
 
-    &::marker { content: counter(H6) '. ' }
-}
-pf-container.plugin.toc {
-    a.TOC_H5 + a.TOC_H6 {
-        counter-reset: H4;
-    }
-}
 div.toc_anchor {
     position: relative;
     top: -40px;
@@ -350,28 +325,30 @@ div.toc_anchor {
             <pf-container class="plugin toc" data-content title="Article outline">
                 <pf-extend data-fr="cms::plugin::common"></pf-extend>
                 <script data-fn="refresh">
-                    this.toNS("plugins::root").__DATA__.slots.content.$.on("contentGenerated", this.generateTOC.bind(this));
-                    this.generateTOC();
+                    this.__DATA__.genTocCallback();
                 </script>
                 <script data-fn="leave">
-                    this.toNS("plugins::root").__DATA__.slots.content.$.off("contentGenerated", this.generateTOC);
-                </script>
-
-                <script data-fn="generateTOC">
-                    this.$.empty();
-                    let contentElem = this.toNS("plugins::root").__DATA__.slots.content.$;
-                    contentElem.find("h1, h2, h3, h4, h5").each((index, elem) => {
-                        let tagName = $(elem).prop("tagName");
-                        let idn = `TOC_${index}`;
-                        let text = $(elem).text();
-                        //$(elem).attr("id", idn);
-                        $(`<div class="toc_anchor" id="${idn}"></div>`).insertBefore($(elem));
-                        this.$.append(`<a class="TOC_${tagName}" href="#${idn}">${text}</a>`);
-                    });
                 </script>
 
                 <script data-fn="destructor">
-                    this.toNS("plugins::root").__DATA__.slots.content.$.off("contentGenerated", this.generateTOC);
+                    this.toNS("plugins::root").__DATA__.slots.content.$.off("contentGenerated",
+                        this.__DATA__.genTocCallback);
+                </script>
+                <script data-fn="constructor">
+                    this.__DATA__.genTocCallback = () => {
+                        this.$.empty();
+                        let contentElem = this.toNS("plugins::root").__DATA__.slots.content.$;
+                        contentElem.find("h1, h2, h3, h4, h5").each((index, elem) => {
+                            let tagName = $(elem).prop("tagName");
+                            let idn = `TOC_${index}`;
+                            let text = $(elem).text();
+                            //$(elem).attr("id", idn);
+                            $(`<div class="toc_anchor" id="${idn}"></div>`).insertBefore($(elem));
+                            this.$.append(`<a class="TOC_${tagName}" href="#${idn}">${text}</a>`);
+                        });
+                    }
+                    this.toNS("plugins::root").__DATA__.slots.content.$.on("contentGenerated",
+                        this.__DATA__.genTocCallback);
                 </script>
             </pf-container>
         </pf-data>

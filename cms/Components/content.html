@@ -99,6 +99,16 @@
 
             this.__DATA__.headerElem = headerElem;
             this.__DATA__.contentElem = contentElem;
+
+            if (this.__DATA__.headerElem) {
+                this.__DATA__.headerElem.$.off("contentGenerated");
+                this.__DATA__.headerElem.$.on("contentGenerated", (event) => { event.stopPropagation() });
+            }
+            if (this.__DATA__.contentElem) {
+                this.__DATA__.contentElem.$.off("contentGenerated");
+                this.__DATA__.contentElem.$.on("contentGenerated", (event) => {
+                    event.stopPropagation() });
+            }
         </script>
 
         <script data-fn="onComponentLoaded" data-args="elem">
