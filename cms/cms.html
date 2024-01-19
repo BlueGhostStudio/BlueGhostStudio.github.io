@@ -4,13 +4,17 @@
 
     <pf-data data-fn="currentSiteFramework"></pf-data>
 
-    <pf-data data-fn="fraRootNode" data-js><script>
+    <pf-data data-fn="fraRootNode" data-js>
+        <script>
             return { pid: null, id: null, title: '/', type: 'D' }
-    </script></pf-data>
+        </script>
+    </pf-data>
 
-    <pf-data data-fn="rootNode" data-js><script>
+    <pf-data data-fn="rootNode" data-js>
+        <script>
             return this.__DATA__.fraRootNode;
-    </script></pf-data>
+        </script>
+    </pf-data>
 
     <pf-data data-fn="current" data-object>
         <pf-data data-fn="id" data-null></pf-data>
@@ -142,8 +146,8 @@
             node = Number(node);
 
         return (pNode !== undefined
-            ? rpc.asyncCall(this.RPCOBJ("cms::main"), "refNode", pNode, node)
-            : rpc.asyncCall(this.RPCOBJ("cms::main"), "refNode", node))
+            ? rpc.asyncCall(this.RPCOBJ("cms::main"), "CRefNode", pNode, node)
+            : rpc.asyncCall(this.RPCOBJ("cms::main"), "CRefNode", node))
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret.node);
@@ -188,7 +192,7 @@
         else if (!isNaN(node))
             node = Number(node);
 
-        return rpc.asyncCall(this.RPCOBJ("cms::web"),  "backtrackNode", node, target, stop)
+        return rpc.asyncCall(this.RPCOBJ("cms::web"), "backtrackNode", node, target, stop)
             .then((ret) => {
                 if (ret.ok)
                     return Promise.resolve(ret);
@@ -214,9 +218,9 @@
                     $('head').append(style);
 
                 return Promise.resolve(ret.id);
-                }, (ret) => {
-                    Promise.reject(ret);
-                });
+            }, (ret) => {
+                Promise.reject(ret);
+            });
     </script>
 
     <script data-fn="replaceBody" data-args="tmpl">
@@ -231,7 +235,7 @@
     <script data-fn="loadSiteFramework" data-args="path">
         if (path == undefined || path.length == 0)
             path = '/';
-        
+
         return this.backtrackNode(path, 'site/framework.fra')
             .then((ret) => {
                 var tID = ret.target.id;
@@ -244,7 +248,7 @@
                     });
                 } else
                     return Promise.resolve(path);
-            },(ret) => {
+            }, (ret) => {
                 if (ret.errno == 0) {
                     if (this.__DATA__.currentSiteFramework != -1) {
                         this.__DATA__.currentSiteFramework = -1;
@@ -258,7 +262,7 @@
     </script>
 
     <script data-fn="open" data-args="path">
-        if (path == '/'|| path == null || (path instanceof Object && path.id == null))
+        if (path == '/' || path == null || (path instanceof Object && path.id == null))
             path = CMS.__DATA__.config.homePath;
 
         if (this.__DATA__.current.path !== path) {

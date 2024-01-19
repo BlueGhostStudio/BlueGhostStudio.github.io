@@ -30,7 +30,7 @@
                 elem.$.trigger("contentGenerated", [elemObj]);
 
                 return Promise.resolve(elemObj);
-            },"png": (content, elem, summary) => {
+            }, "png": (content, elem, summary) => {
                 if (summary == undefined)
                     summary = "";
 
@@ -49,6 +49,18 @@
                 }, () => {
                     elem.html('<img src="" alt="' + summary + '">');
                 });
+            }, "dot": (content, elem, summary) => {
+                if (/^\s*<svg[^>]*>[\s\S]*<\/svg>\s*$/.test(content))
+                    return Promise.resolve().then(() => {
+                        elem.html(content || "");
+                    });
+                else
+                    return rpc.asyncCall("graphviz", "render", content).then((ret) => {
+                        if (ret.ok)
+                            elem.html(ret.svg);
+                        else
+                            return Promise.reject();
+                    }, () => Promise.reject());
             }
         }
         contentGenerate["cmp"]
@@ -62,8 +74,7 @@
     </script>
 
     <!-- cms::node::loadContent -->
-    <pf-extend-tmpl data-ft="cms::node::loadContent"
-                    data-overloaded-prefix="cms_node_loadContent">
+    <pf-extend-tmpl data-ft="cms::node::loadContent" data-overloaded-prefix="cms_node_loadContent">
         <pf-data data-fn="LC::opt" data-object>
             <pf-data data-fn="dirRef" data-js>
                 <!-- dirRef的意义是,当node为一个目录时,依据此字段指定的文件来生成内容 -->
@@ -107,7 +118,8 @@
             if (this.__DATA__.contentElem) {
                 this.__DATA__.contentElem.$.off("contentGenerated");
                 this.__DATA__.contentElem.$.on("contentGenerated", (event) => {
-                    event.stopPropagation() });
+                    event.stopPropagation()
+                });
             }
         </script>
 
@@ -133,8 +145,8 @@
                 this.__content__.removeSelf();*/
 
             return contentGenerate[contentType](content, elem, summary).then((elemObj) => {
-                    this.__content__ = elemObj;
-                });
+                this.__content__ = elemObj;
+            });
         </script>
 
         <script data-fn="loadRefContent" data-args="path">
@@ -143,7 +155,7 @@
             }, () => {
                 try {
                     var ext = JSON.parse(this.__DATA__.node.extData);
-                } catch(e) {}
+                } catch (e) { }
 
                 if (ext != undefined && "dirRef" in ext && path in ext.dirRef)
                     return CMS.node(ext.dirRef[path]);
@@ -203,7 +215,7 @@
                             if (node.type == 'D') { //若node为'D'时
                                 if (this.__DATA__["LC::opt"].dirRef == undefined) // 若没有指定 dirRef,则只加载摘要
                                     return this.generate(this.__DATA__.contentElem, "md",
-                                    this.__DATA__.node.summary)
+                                        this.__DATA__.node.summary)
                                 else {
                                     if (this.__DATA__.refContentID == -1) // 若组件未加载
                                         return this.loadRefContent(this.__DATA__["LC::opt"].dirRef);
@@ -242,7 +254,7 @@
                                  */
                                 else
                                     return this.generate(this.__DATA__.contentElem, "md",
-                                    this.__DATA__.node.summary);
+                                        this.__DATA__.node.summary);
                             } else { // 未知的类型
                                 this.__DATA__.refContentID = -1;
                                 this.__DATA__.contentElem.text("unknow type");
@@ -254,7 +266,7 @@
                              * 设置组件的class为 "empty"
                              */
                             if ((this.__DATA__.headerElem == undefined
-                                    || this.__DATA__.headerElem.$.html().trim().length == 0)
+                                || this.__DATA__.headerElem.$.html().trim().length == 0)
                                 && (this.__DATA__.contentElem == undefined
                                     || this.__DATA__.contentElem.$.html().trim().length == 0))
                                 this.$.addClass("empty");
@@ -264,11 +276,11 @@
                 }
             } else { // 否则 'node' 是 id 或 path
                 return (this.__DATA__["LC::opt"].info ? CMS.nodeInfo(node, CMS.__DATA__.rootNode.id)
-                           : CMS.node(node, CMS.__DATA__.rootNode.id)).then((node) => {
-                    return this.load(node, requestUpdate);
-                }, (error) => {
-                    return Promise.reject(error);
-                });
+                    : CMS.node(node, CMS.__DATA__.rootNode.id)).then((node) => {
+                        return this.load(node, requestUpdate);
+                    }, (error) => {
+                        return Promise.reject(error);
+                    });
             }
         </script>
 
@@ -303,8 +315,8 @@
                     return;
 
                 if ((this.__DATA__["LC::opt"].info
-                        || this.__DATA__["LC::opt"].summary
-                        || this.__DATA__.refContentID == -2)
+                    || this.__DATA__["LC::opt"].summary
+                    || this.__DATA__.refContentID == -2)
                     && this.__DATA__.node
                     && this.__DATA__.node.id == args[0])
                     //this.__DATA__.contentElem.html(args[1]);
@@ -313,7 +325,7 @@
             CMSCONN.on("titleUpdated", (args) => {
                 if (this.__DATA__.node && this.__DATA__.node.id == args[0] &&
                     this.__DATA__.headerElem)
-                   this.__DATA__.headerElem.text(args[1]);
+                    this.__DATA__.headerElem.text(args[1]);
             }, this);
         </script>
     </pf-extend-tmpl> <!-- cms::node::loadContent end -->

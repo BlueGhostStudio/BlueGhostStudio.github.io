@@ -5,9 +5,16 @@
 
     <pf-extend-tmpl data-ft="cms::img::src">
         <pf-data data-fn="IMGSRC::opt" data-object>
-            <pf-data data-fn="fallbackLogo" data-js><script>
+            <pf-data data-fn="fallbackLogo" data-js>
+                <script>
                     return this.$.attr("data-fallbacklogo") !== undefined;
-            </script></pf-data>
+                </script>
+            </pf-data>
+            <pf-data data-fn="src" data-js>
+                <script>
+                    return this.$.attr("data-src");
+                </script>
+            </pf-data>
         </pf-data>
 
         <script data-fn="getSrc" data-args="src, lookupFallbackLogo">
@@ -48,7 +55,7 @@
         </script>
 
         <script data-fn="constructor">
-            var src = this.$.attr("data-src");
+            var src = this.__DATA__["IMGSRC::opt"].src;
 
             if (src && src.length > 0)
                 this.load(src);
@@ -63,16 +70,6 @@
                 this.$.attr("src", ret);
             });
         </script>
-
-        <!-- <script data-fn="constructor">
-            var src = this.$.attr("src");
-
-            CMSCONN.on("currentNodeChanged", () => {
-                this.getSrc(this.src).then((ret) => {
-                    this.$.attr("src", ret);
-                });
-            }, this);
-        </script> -->
     </cms-img-tmpl>
 
     <div data-ft="cms::img::div" class="cms_img_div" data-fra="cms-img-div" data-tagName="div">
@@ -83,24 +80,55 @@
                 this.$.css("--bg-img-src", `url("${ret}")`);
             });
         </script>
-        <!-- <script data-fn="constructor">
-            this.src = this.$.attr("data-src");
-
-            CMSCONN.on("currentNodeChanged", () => {
-                this.getSrc(this.src).then((ret) => {
-                    this.$.css("--bg-img-src", 'url("' + ret + '")');
-                });
-            }, this);
-        </script> -->
     </div>
 
-    <pf-text data-ft="cms::siteTitle"
-             data-fra="cms-site-title"
-             data-tagName="pf-text">
+    <cms-svg-tmpl data-ft="cms::SVG" data-fra="cms-svg" data-tagName="svg">
+        <script data-fn="load" data-args="svg">
+            svgElem = $(svg);
+            this.$.replaceWith(svgElem);
+            this.$ = svgElem;
+        </script>
+    </cms-svg-tmpl>
+
+    <cms-svg data-ft="cms::graphviz" data-fra="cms-graphviz">
+        <pf-data data-fn="opt" data-object>
+            <pf-data data-fn="src" data-js>
+                <script>
+                    return this.$.attr("data-src");
+                </script>
+            </pf-data>
+        </pf-data>
+        <pf-data data-fn="id" data-number>-1</pf-data>
+
+        <script data-fn="load" data-args="node">
+            return CMS.node(node).then((ret) => {
+                this.__DATA__.id = ret.id;
+                this.superTmpl("cms::SVG").load.call(this, ret.content);
+            }, () => Promise.reject());
+        </script>
+
+        <script data-fn="constructor">
+            var src = this.__DATA__.opt.src;
+
+            if (src && src.length > 0)
+                this.load(src);
+
+            CMSCONN.on("contentUpdated", (args) => {
+                if (args[0] == this.__DATA__.id) {
+                    rpc.asyncCall("graphviz", "render", args[1]).then((ret) => {
+                        if (ret.ok)
+                            //this.load(ret.svg);
+                            this.superTmpl("cms::SVG").load.call(this, ret.svg);
+                    });
+                }
+            }, this);
+        </script>
+    </cms-svg>
+
+    <pf-text data-ft="cms::siteTitle" data-fra="cms-site-title" data-tagName="pf-text">
         <script data-fn="constructor">
             this.text(CMS.__DATA__.config.siteTitle);
         </script>
     </pf-text>
 
 </pf-package>
-
