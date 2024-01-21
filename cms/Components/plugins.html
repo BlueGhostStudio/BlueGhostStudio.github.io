@@ -3,11 +3,8 @@
         nextLoad();
     </script>
 
-    <pf-container class="pluginsContainer"
-                  data-ft="cms::plugins::container"
-                  data-fra="cms-plugins-container"
-                  data-fns="plugins::root"
-                  data-tagname="pf-container">
+    <pf-container class="pluginsContainer" data-ft="cms::plugins::container" data-fra="cms-plugins-container"
+        data-fns="plugins::root" data-tagname="pf-container">
         <pf-data data-fn="slots" data-object>
             <pf-data data-fn="contentNode"></pf-data>
             <pf-data data-fn="contentHeader"></pf-data>
@@ -71,15 +68,21 @@
 
     <pf-extend-tmpl data-ft="cms::plugin::common">
         <pf-data data-fn="scenes" data-object>
-            <pf-data data-fn="home" data-js><script>
+            <pf-data data-fn="home" data-js>
+                <script>
                     return this.$.attr("data-home") !== undefined;
-            </script></pf-data>
-            <pf-data data-fn="dir" data-js><script>
+                </script>
+            </pf-data>
+            <pf-data data-fn="dir" data-js>
+                <script>
                     return this.$.attr("data-dir") !== undefined;
-            </script></pf-data>
-            <pf-data data-fn="content" data-js><script>
+                </script>
+            </pf-data>
+            <pf-data data-fn="content" data-js>
+                <script>
                     return this.$.attr("data-content") !== undefined;
-            </script></pf-data>
+                </script>
+            </pf-data>
         </pf-data>
 
         <script data-fn="constructor">
@@ -103,8 +106,8 @@
 
             CMSCONN.on("pluginsRefresh", () => {
                 if ((CMS.__DATA__.current.type === 'H' && this.__DATA__.scenes.home) ||
-                     (CMS.__DATA__.current.type === 'D' && this.__DATA__.scenes.dir) ||
-                     (CMS.__DATA__.current.type === 'C' && this.__DATA__.scenes.content)) {
+                    (CMS.__DATA__.current.type === 'D' && this.__DATA__.scenes.dir) ||
+                    (CMS.__DATA__.current.type === 'C' && this.__DATA__.scenes.content)) {
                     if (typeof this.refresh === 'function')
                         this.refresh();
                 } else if (typeof this.leave === 'function')
@@ -115,9 +118,8 @@
 
 
 
-    <pf-container class="plugin" data-ft="cms::plugin::summary"
-                  data-content title="Summary" data-fra="cms-plugin-summary"
-                  data-tagName="pf-container">
+    <pf-container class="plugin" data-ft="cms::plugin::summary" data-content title="Summary"
+        data-fra="cms-plugin-summary" data-tagName="pf-container">
         <pf-extend data-fr="cms::plugin::common"></pf-extend>
 
         <pf-viewport data-fn="viewport"></pf-viewport>
@@ -136,17 +138,16 @@
         </script>
     </pf-container>
 
-    <pf-style data-ft="cms::plugin::extendStyle"  data-isolated
-              data-fra="cms-plugin-style">
+    <pf-style data-ft="cms::plugin::extendStyle" data-isolated data-fra="cms-plugin-style">
         <pf-extend data-fr="cms::plugin::common"></pf-extend>
 
         <pf-data data-fn="default" data-str>
-pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
-    color: var(--accent);
-    border: 1px dashed var(--accent);
-    padding: 1ex;
-    border-radius: 1ex 0 0 1ex;
-}
+            pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
+            color: var(--accent);
+            border: 1px dashed var(--accent);
+            padding: 1ex;
+            border-radius: 1ex 0 0 1ex;
+            }
         </pf-data>
         <pf-data data-fn="stylePath" data-str>site/style/plugin_extStyle</pf-data>
         <pf-data data-fn="buffer" data-object>
@@ -159,7 +160,7 @@ pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
             less.render(this.__DATA__.buffer.less || this.__DATA__.default, {
                 modifyVars: {
                     '@nodeID': `"${CMS.__DATA__.current.id}"`,
-                    '@dirID':  `"${CMS.__DATA__.current.dirID}"`,
+                    '@dirID': `"${CMS.__DATA__.current.dirID}"`,
                     '@parentID': `"${CMS.__DATA__.current.parentID}"`
                 }
             }).then((output) => { this.text(output.css) });
@@ -187,7 +188,7 @@ pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
                         this.__DATA__.buffer.styleID = -1;
                         this.__DATA__.buffer.less = "";
 
-                        return  Promise.resolve();
+                        return Promise.resolve();
                     });
             } else
                 lessPromise = Promise.resolve();
@@ -212,8 +213,7 @@ pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
         </script>
     </pf-style>
 
-    <div class="decor" data-ft="cms::plugin::decor" data-isolated
-                       data-fra="cms-plugin-decor" data-tagName="div">
+    <div class="decor" data-ft="cms::plugin::decor" data-isolated data-fra="cms-plugin-decor" data-tagName="div">
         <pf-extend data-fr="cms::plugin::common"></pf-extend>
 
         <script data-fn="refresh">
@@ -228,8 +228,8 @@ pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
         </script>
     </div>
 
-    <pf-container data-ft="cms::plugin::group" class="plugin group"
-                  data-fra="cms-plugin-group" data-tagName="pf-container">
+    <pf-container data-ft="cms::plugin::group" class="plugin group" data-fra="cms-plugin-group"
+        data-tagName="pf-container">
         <pf-extend data-fr="cms::plugin::common"></pf-extend>
 
         <pf-data data-fn="plugins" data-array>
@@ -243,81 +243,80 @@ pf-list > pf-viewport > article[data-node-id="@{nodeID}"]{
         </script>
     </pf-container>
 
-    <cms-plugin-group data-ft="cms::plugin::TOC"
-                        data-fra="cms-plugin-toc" data-tagName="pf-container">
+    <cms-plugin-group data-ft="cms::plugin::TOC" data-fra="cms-plugin-toc" data-tagName="pf-container">
         <pf-data data-fn="plugins" data-array>
             <cms-plugin-style data-content>
                 <pf-data data-fn="default" data-str>
-:root {
-    scroll-behavior: smooth;
-}
-pf-container.plugin.group:has(> pf-container.plugin.toc) {
-    position: sticky;
-    top: 0;
-}
-pf-container.plugin.toc {
-    font-size: 90%;
-}
-pf-container.plugin.toc a:where(.TOC_H1,.TOC_H2,.TOC_H3,.TOC_H4,.TOC_H5,.TOC_H6) {
-    position: relative;
+                    :root {
+                        scroll-behavior: smooth;
+                    }
+                    pf-container.plugin.group:has(> pf-container.plugin.toc) {
+                        position: sticky;
+                        top: 0;
+                    }
+                    pf-container.plugin.toc {
+                        font-size: 90%;
+                    }
+                    pf-container.plugin.toc a:where(.TOC_H1,.TOC_H2,.TOC_H3,.TOC_H4,.TOC_H5,.TOC_H6) {
+                        position: relative;
 
-    display: block;
-    margin-block: 2px;
-    padding: 1ex;
+                        display: block;
+                        margin-block: 2px;
+                        padding: 1ex;
 
-    border-radius: 1ex 0 0 1ex;
-    background: linear-gradient(90deg, var(--base-shade2), transparent);
+                        border-radius: 1ex 0 0 1ex;
+                        background: linear-gradient(90deg, var(--base-shade2), transparent);
 
-    text-wrap: wrap;
-    overflow-wrap: anywhere;
-    opacity: 0.6;
+                        text-wrap: wrap;
+                        overflow-wrap: anywhere;
+                        opacity: 0.6;
 
-    transform-origin: left center;
-    transition: all, 0.25s;
+                        transform-origin: left center;
+                        transition: all, 0.25s;
 
-    &:hover {
-        opacity: 1;
-        scale: 1.5;
-        text-shadow: 0 0 2px var(--accent);
-    }
-}
+                        &:hover {
+                            opacity: 1;
+                            // scale: 1.5;
+                            text-shadow: 0 0 2px var(--accent);
+                        }
+                    }
 
-/*pf-container.plugin.toc a.TOC_H2 + a.TOC_H1,
-pf-container.plugin.toc a.TOC_H3 + a.TOC_H2,
-pf-container.plugin.toc a.TOC_H4 + a.TOC_H3,
-pf-container.plugin.toc a.TOC_H5 + a.TOC_H4,
-pf-container.plugin.toc a.TOC_H6 + a.TOC_H5 {
-    margin-block-start: 1em;
-}*/
+                    /*pf-container.plugin.toc a.TOC_H2 + a.TOC_H1,
+                    pf-container.plugin.toc a.TOC_H3 + a.TOC_H2,
+                    pf-container.plugin.toc a.TOC_H4 + a.TOC_H3,
+                    pf-container.plugin.toc a.TOC_H5 + a.TOC_H4,
+                    pf-container.plugin.toc a.TOC_H6 + a.TOC_H5 {
+                    margin-block-start: 1em;
+                    }*/
 
-pf-container.plugin.toc a.TOC_H1 {
-    font-weight: bold;
-}
+                    pf-container.plugin.toc a.TOC_H1 {
+                        font-weight: bold;
+                    }
 
-pf-container.plugin.toc a.TOC_H2 {
-    margin-left: 1em;
-}
+                    pf-container.plugin.toc a.TOC_H2 {
+                        margin-left: 1em;
+                    }
 
-pf-container.plugin.toc a.TOC_H3 {
-    margin-left: 2em;
-}
+                    pf-container.plugin.toc a.TOC_H3 {
+                        margin-left: 2em;
+                    }
 
-pf-container.plugin.toc a.TOC_H4 {
-    margin-left: 3em;
-}
+                    pf-container.plugin.toc a.TOC_H4 {
+                        margin-left: 3em;
+                    }
 
-pf-container.plugin.toc a.TOC_H5 {
-    margin-left: 4em;
-}
+                    pf-container.plugin.toc a.TOC_H5 {
+                        margin-left: 4em;
+                    }
 
-pf-container.plugin.toc a.TOC_H6 {
-    margin-left: 5em;
-}
+                    pf-container.plugin.toc a.TOC_H6 {
+                        margin-left: 5em;
+                    }
 
-div.toc_anchor {
-    position: relative;
-    top: -40px;
-}
+                    div.toc_anchor {
+                        position: relative;
+                        top: -40px;
+                    }
                 </pf-data>
                 <pf-data data-fn="stylePath" data-str>site/style/plugin_TOCStyle</pf-data>
             </cms-plugin-style>
@@ -354,8 +353,8 @@ div.toc_anchor {
         </pf-data>
     </cms-plugin-group>
 
-    <cms-plugin-group data-ft="cms::plugin::commonPlugins" class="plugin group"
-                        data-fra="cms-plugin-common" data-tagName="pf-container">
+    <cms-plugin-group data-ft="cms::plugin::commonPlugins" class="plugin group" data-fra="cms-plugin-common"
+        data-tagName="pf-container">
         <pf-data data-fn="plugins" data-array>
             <cms-plugin-style data-content></cms-plugin-style>
             <cms-plugin-decor class="logo" data-content></cms-plugin-decor>
