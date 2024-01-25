@@ -97,6 +97,7 @@
                     return this.$.attr("data-src");
                 </script>
             </pf-data>
+            <pf-data data-fn="dot"></pf-data>
         </pf-data>
         <pf-data data-fn="id" data-number>-1</pf-data>
 
@@ -107,11 +108,29 @@
             }, () => Promise.reject());
         </script>
 
+        <script data-fn="render" data-args="dot">
+            console.log("---- in render ----", dot);
+            this.__DATA__.id = -1;
+
+            return rpc.asyncCall("graphviz", "render", dot).then((ret) => {
+                if (ret.ok) {
+                    this.superTmpl("cms::SVG").load.call(this, ret.svg);
+                    return Promise.resolve();
+                } else
+                    return Promise.reject();
+            }, () => Promise.reject());
+        </script>
+
         <script data-fn="constructor">
             var src = this.__DATA__.opt.src;
+            var dot = this.__DATA__.opt.dot;
+
+            console.log("----------", src, dot);
 
             if (src && src.length > 0)
                 this.load(src);
+            else if (dot && dot.length > 0)
+                this.render(dot);
 
             CMSCONN.on("contentUpdated", (args) => {
                 if (args[0] == this.__DATA__.id) {
