@@ -1,4 +1,6 @@
 <pf-RPC>
+    <pf-data data-fn="reconnectCount" data-number>10</pf-data>
+
     <script data-fn="load" data-args="relPath, nextLoad">
         window.rpc = this;
         this.initRPC();
@@ -8,6 +10,9 @@
 
     <script data-fn="enablePingpong">
         RPCCONN.on("connected", () => {
+            console.log("this.__DATA__.reconnectCount", this.__DATA__.reconnectCount);
+
+            this.__DATA__.reconnectCount = 10;
             if (this.pingTimeoutID !== undefined)
                 clearTimeout(this.pingTimeoutID);
             if (this.pingIntervalID !== undefined)
@@ -20,21 +25,33 @@
                 clearTimeout(this.pingTimeoutID);
             if (this.pingIntervalID !== undefined)
                 clearTimeout(this.pingIntervalID);
-            rpc.connect();
+
+            if (this.__DATA__.reconnectCount > 0) {
+                rpc.connect();
+                this.__DATA__.reconnectCount--;
+            }
         });
     </script>
 
     <script data-fn="ping">
         this.pingTimeoutID = setTimeout(() => {
             rpc.connect();
-        }, 2000);
-        rpc.asyncCall("fake", "ping").then(null, () => {
+        }, 30000);
+        /*rpc.asyncCall("fake", "ping").then(null, () => {
             clearTimeout(this.pingTimeoutID);
             RPCCONN.emit("pong");
             this.pingIntervalID = setTimeout(() => {
                 RPCCONN.emit("ping");
                 this.ping();
             }, 2000);
+        });*/
+        rpc.asyncCall("fake", "ping").finally(() => {
+            clearTimeout(this.pingTimeoutID);
+            RPCCONN.emit("pong");
+            this.pingIntervalID = setTimeout(() => {
+                RPCCONN.emit("ping");
+                this.ping();
+            }, 30000);
         });
     </script>
 
